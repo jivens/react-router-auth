@@ -12,8 +12,14 @@ function App(props) {
   const [authTokens, setAuthTokens] = useState(existingTokens);
   
   const setTokens = (data) => {
-    localStorage.setItem("tokens", JSON.stringify(data));
-    setAuthTokens(data);
+    if (!data) {
+      localStorage.removeItem("tokens")
+      setAuthTokens();
+    }
+    else {
+      localStorage.setItem("tokens", JSON.stringify(data));
+      setAuthTokens(data);
+    }
   }
 
   return (

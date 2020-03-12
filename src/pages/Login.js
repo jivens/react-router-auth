@@ -8,12 +8,16 @@ import { useAuth } from "../context/auth";
 import { gql } from 'apollo-boost';
 
 
-function Login() {
+function Login(props) {
+  console.log(props)
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const { client, setAuthTokens } = useAuth();
+
+  const referer = props.location.state.referer || '/';
+  console.log(props.location.pathname)
 
   const getUserToken = gql`
     query($email: String!, $password: String!) {
@@ -57,7 +61,8 @@ function Login() {
   }
 
   if (isLoggedIn) {
-    return <Redirect to="/" />;
+    return <Redirect to={referer} />;
+    //return <Redirect to="/" />;
   }
 
   return (
