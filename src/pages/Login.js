@@ -9,7 +9,6 @@ import { gql } from 'apollo-boost';
 
 
 function Login(props) {
-  console.log(props)
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userName, setUserName] = useState("");
@@ -17,7 +16,6 @@ function Login(props) {
   const { client, setAuthTokens } = useAuth();
 
   const referer = props.location.state.referer || '/';
-  console.log(props.location.pathname)
 
   const getUserToken = gql`
     query($email: String!, $password: String!) {
@@ -27,8 +25,22 @@ function Login(props) {
     }
   `;
 
+  const getUserFromToken = gql`
+    query {
+      getUserFromToken_Q {
+        id
+        username
+        first
+        last
+        email
+        roles
+        password
+      }
+    }
+  `;
+
   async function postLogin() {
-    let userQuery = await client.query({
+    let tokenQuery = await client.query({
       query: getUserToken,
       variables: {
         email: userName,
@@ -36,11 +48,17 @@ function Login(props) {
       },
       errorPolicy: 'all'
     })
-    if (!userQuery.data.loginUser_Q) {
+    if (!tokenQuery.data.loginUser_Q) {
       setIsError(true)
     }
     else {
-      const token = userQuery.data.loginUser_Q[0].password
+      const token = tokenQuery.data.loginUser_Q[0].password
+      localStorage.setItem("tokens", JSON.stringify(token));
+      let userQuery = await client.query({
+        query: getUserFromToken,
+        errorPolicy: 'all'
+      })
+      console.log("User query is: ", userQuery)
       setAuthTokens(token)
       setLoggedIn(true)
     }
