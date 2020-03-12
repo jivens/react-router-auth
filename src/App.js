@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { gql } from 'apollo-boost';
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
@@ -12,20 +13,46 @@ import 'react-toastify/dist/ReactToastify.css';
 function App(props) {
   const existingTokens = JSON.parse(localStorage.getItem('tokens'));
   const [authTokens, setAuthTokens] = useState(existingTokens);
+  const existingUser = JSON.parse(localStorage.getItem('user'));
+  const [user, setUser] = useState(existingUser);
   
-  const setTokens = (data) => {
+  const getUserFromToken = gql`
+    query {
+      getUserFromToken_Q {
+        id
+        username
+        first
+        last
+        email
+        roles
+        password
+      }
+    }
+`;
+
+  const setTokens = async (data) => {
     if (!data) {
       localStorage.removeItem("tokens")
+      localStorage.removeItem("user")
       setAuthTokens();
+      setUser();
     }
     else {
       localStorage.setItem("tokens", JSON.stringify(data));
       setAuthTokens(data);
+      let userQuery = await props.client.query({
+        query: getUserFromToken,
+        errorPolicy: 'all'
+      })
+      console.log("User query is: ", userQuery)
+      localStorage.setItem("user", JSON.stringify(userQuery.data.getUserFromToken_Q))
+      setUser(userQuery.data.getUserFromToken_Q)
+      toast.success(`Successfully logged in as: ${userQuery.data.getUserFromToken_Q.username}`)
     }
   }
 
   return (
-    <AuthContext.Provider value={{ client: props.client, authTokens, setAuthTokens: setTokens}}>
+    <AuthContext.Provider value={{ client: props.client, user, authTokens, setAuthTokens: setTokens}}>
       <Router>
         <div>
           <ToastContainer />

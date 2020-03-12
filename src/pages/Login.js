@@ -26,19 +26,7 @@ function Login(props) {
     }
   `;
 
-  const getUserFromToken = gql`
-    query {
-      getUserFromToken_Q {
-        id
-        username
-        first
-        last
-        email
-        roles
-        password
-      }
-    }
-  `;
+
 
   async function postLogin() {
     let tokenQuery = await client.query({
@@ -56,12 +44,6 @@ function Login(props) {
     else {
       const token = tokenQuery.data.loginUser_Q[0].password
       localStorage.setItem("tokens", JSON.stringify(token));
-      let userQuery = await client.query({
-        query: getUserFromToken,
-        errorPolicy: 'all'
-      })
-      console.log("User query is: ", userQuery)
-      toast.success(`Successfully logged in as: ${userQuery.data.getUserFromToken_Q.username}`)
       setAuthTokens(token)
       setLoggedIn(true)
     }
