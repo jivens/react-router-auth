@@ -6,6 +6,7 @@ import logoImg from "../img/logo.jpg";
 import { Card, Logo, Form, Input, Button, Error } from "../components/AuthForm";
 import { useAuth } from "../context/auth";
 import { gql } from 'apollo-boost';
+import { toast } from 'react-toastify';
 
 
 function Login(props) {
@@ -49,6 +50,7 @@ function Login(props) {
       errorPolicy: 'all'
     })
     if (!tokenQuery.data.loginUser_Q) {
+      toast.error(`Username or Password is incorrect`) 
       setIsError(true)
     }
     else {
@@ -59,6 +61,7 @@ function Login(props) {
         errorPolicy: 'all'
       })
       console.log("User query is: ", userQuery)
+      toast.success(`Successfully logged in as: ${userQuery.data.getUserFromToken_Q.username}`)
       setAuthTokens(token)
       setLoggedIn(true)
     }

@@ -1,12 +1,14 @@
 import React from "react";
 import { Button } from "../components/AuthForm";
 import { useAuth } from "../context/auth";
+import { toast } from 'react-toastify'
 
 function Admin(props) {
   const { setAuthTokens } = useAuth();
 
   function logOut() {
     setAuthTokens();
+    toast.success(`Logged Out`)
   }
 
   return (

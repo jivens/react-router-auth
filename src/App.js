@@ -6,6 +6,8 @@ import Admin from './pages/Admin';
 import Login from "./pages/Login";
 import Signup from './pages/Signup';
 import { AuthContext } from "./context/auth";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App(props) {
   const existingTokens = JSON.parse(localStorage.getItem('tokens'));
@@ -26,6 +28,7 @@ function App(props) {
     <AuthContext.Provider value={{ client: props.client, authTokens, setAuthTokens: setTokens}}>
       <Router>
         <div>
+          <ToastContainer />
           <ul>
             <li>
               <Link to="/">Home Page</Link>
