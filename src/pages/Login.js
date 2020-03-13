@@ -6,7 +6,7 @@ import logoImg from "../img/logo.jpg";
 import { Card, Logo, Form, Input, Button, Error } from "../components/AuthForm";
 import { useAuth } from "../context/auth";
 import { gql } from 'apollo-boost';
-import { toast } from 'react-toastify';
+import { handleErrors, broadCastError } from '../utils/messages';
 
 
 function Login(props) {
@@ -16,7 +16,7 @@ function Login(props) {
   const [password, setPassword] = useState("");
   const { client, setAuthTokens } = useAuth();
 
-  const referer = props.location.state.referer || '/';
+  const referer = (props.location && props.location.state && props.location.state.referer) ? props.location.state.referer : '/';
 
   const getUserToken = gql`
     query($email: String!, $password: String!) {
@@ -29,23 +29,28 @@ function Login(props) {
 
 
   async function postLogin() {
-    let tokenQuery = await client.query({
-      query: getUserToken,
-      variables: {
-        email: userName,
-        password: password
-      },
-      errorPolicy: 'all'
-    })
-    if (!tokenQuery.data.loginUser_Q) {
-      toast.error(`Username or Password is incorrect`) 
-      setIsError(true)
-    }
-    else {
-      const token = tokenQuery.data.loginUser_Q[0].password
-      localStorage.setItem("tokens", JSON.stringify(token));
-      setAuthTokens(token)
-      setLoggedIn(true)
+    try {
+      let tokenQuery = await client.query({
+        query: getUserToken,
+        variables: {
+          email: userName,
+          password: password
+        },
+        errorPolicy: 'all'
+      })
+      if (!tokenQuery.data.loginUser_Q) {
+        broadCastError(`Username or Password is incorrect`) 
+        setIsError(true)
+      }
+      else {
+        const token = tokenQuery.data.loginUser_Q[0].password
+        localStorage.setItem("tokens", JSON.stringify(token));
+        setAuthTokens(token)
+        setLoggedIn(true)
+      }
+    } 
+    catch(e) {
+      handleErrors(e)
     }
 
     // axios.post("http://localhost:4000/api", {

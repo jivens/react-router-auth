@@ -7,7 +7,8 @@ import Admin from './pages/Admin';
 import Login from "./pages/Login";
 import Signup from './pages/Signup';
 import { AuthContext } from "./context/auth";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
+import { broadCastSuccess } from './utils/messages';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App(props) {
@@ -44,10 +45,9 @@ function App(props) {
         query: getUserFromToken,
         errorPolicy: 'all'
       })
-      console.log("User query is: ", userQuery)
       localStorage.setItem("user", JSON.stringify(userQuery.data.getUserFromToken_Q))
       setUser(userQuery.data.getUserFromToken_Q)
-      toast.success(`Successfully logged in as: ${userQuery.data.getUserFromToken_Q.username}`)
+      broadCastSuccess(`Successfully logged in as: ${userQuery.data.getUserFromToken_Q.username}`)
     }
   }
 

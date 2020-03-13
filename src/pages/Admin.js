@@ -1,14 +1,14 @@
 import React from "react";
 import { Button } from "../components/AuthForm";
 import { useAuth } from "../context/auth";
-import { toast } from 'react-toastify'
+import { broadCastSuccess } from '../utils/messages'
 
 function Admin(props) {
   const { setAuthTokens } = useAuth();
 
   function logOut() {
     setAuthTokens();
-    toast.success(`Logged Out`)
+    broadCastSuccess(`Logged Out`)
   }
 
   return (

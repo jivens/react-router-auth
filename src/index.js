@@ -5,9 +5,9 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 //import { createHttpLink } from 'apollo-link-http';
 //import { InMemoryCache } from 'apollo-cache-inmemory';
-import { setContext } from 'apollo-link-context';
-import { split } from 'apollo-link';
-import { getMainDefinition } from 'apollo-utilities';
+//import { setContext } from 'apollo-link-context';
+//import { split } from 'apollo-link';
+//import { getMainDefinition } from 'apollo-utilities';
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 //import { ApolloProvider } from 'react-apollo';
 
@@ -47,7 +47,7 @@ import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost'
 //     authLink.concat(httpLink)
 //   )
   
-  const token = JSON.parse(localStorage.getItem('tokens'));
+  // const token = JSON.parse(localStorage.getItem('tokens'));
 
   // const client = new ApolloClient({
   //   cache: new InMemoryCache(),
