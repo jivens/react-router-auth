@@ -1,3 +1,4 @@
+
 import { map } from "lodash"
 import React, { useState } from "react"
 import { NavLink } from 'react-router-dom'
@@ -11,7 +12,6 @@ import {
   Responsive,
   Popup
 } from "semantic-ui-react";
-
 import 'semantic-ui-css/semantic.min.css';
 
 let rightMenuItems = (currentUser) => {
@@ -50,9 +50,9 @@ const NavBarMobile = ({
      <Icon name="home" />
       Home
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/admin" name="Admin" size='mini' key="miniadmin">
+    <Menu.Item as={NavLink} to="/admin" name="admin" size='mini' key="miniadmin">
     <Icon name="leaf" />
-       Admin
+       Roots
     </Menu.Item>
     </Sidebar>
     <Sidebar.Pusher
