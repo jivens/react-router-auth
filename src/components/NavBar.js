@@ -1,7 +1,9 @@
-import { .map } from "lodash";
-import React, { Component } from "react";
-import { NavLink, withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
+
+import { map } from "lodash"
+import React, { useState } from "react"
+import { NavLink } from 'react-router-dom'
+import { useAuth } from '../context/auth'
+
 import {
   Container,
   Icon,
@@ -20,7 +22,7 @@ let rightMenuItems = (currentUser) => {
       rightItems.push({ to: "/users", icon: 'user', content:"User Profile", key: 'ruser'})
     }
     else {
-      rightItems.push({ to: "/register", icon: 'user outline', content:"Log In/Sign Up", key: 'rreg'})
+      rightItems.push({ to: "/login", icon: 'user outline', content:"Log In/Sign Up", key: 'rreg'})
     }
     return rightItems
   }
@@ -63,7 +65,7 @@ const NavBarMobile = ({
             <Icon name="sidebar" />
           </Menu.Item>
           <Menu.Menu position="right">
-            {.map(rightItems, item  => <Popup content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}
+            {map(rightItems, item  => <Popup key={item.key} content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}
           </Menu.Menu>
         </Menu>
         {children}
@@ -76,11 +78,11 @@ const NavBarDesktop = ({ rightItems }) => (
     <Menu.Item as={NavLink} to="/" name="home" key="mhome">
        <Icon name="home" />
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/admin" name="admin" key="madmin">
-       Roots
+    <Menu.Item as={NavLink} to="/admin" name="Admin" key="madmin">
+       Admin
     </Menu.Item>
     <Menu.Menu position="right">
-      {.map(rightItems, item  => <Popup content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}
+      {map(rightItems, item  => <Popup key={item.key} content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}
     </Menu.Menu>
   </Menu>
 );
@@ -89,42 +91,36 @@ const NavBarChildren = ({ children }) => (
   <Container style={{ marginTop: "5em" }}>{children}</Container>
 );
 
-function NavBar {
-  state = {
-    visible: false
-  };
+function NavBar(props) {
+  let [visible, setVisible] = useState(false)
+  const { user } = useAuth()
 
-  handlePusher = () => {
-    const { visible } = this.state;
-
-    if (visible) this.setState({ visible: false });
-  };
-
-  handleToggle = () => this.setState({ visible: !this.state.visible });
-
-  render() {
-    const { children} = this.props;
-    const { visible } = this.state;
-
-    return (
-      <div>
-        <Responsive {...Responsive.onlyMobile}>
-          <NavBarMobile
-            onPusherClick={this.handlePusher}
-            onToggle={this.handleToggle}
-            rightItems={rightMenuItems(this.props.users.currentUser)}
-            visible={visible}
-          >
-            <NavBarChildren>{children}</NavBarChildren>
-          </NavBarMobile>
-        </Responsive>
-        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-          <NavBarDesktop rightItems={rightMenuItems(this.props.users.currentUser)} />
-          <NavBarChildren>{children}</NavBarChildren>
-        </Responsive>
-      </div>
-    );
+  const handlePusher = () => {
+    if (visible) setVisible(false)
   }
+
+  const handleToggle = () => setVisible(!visible)
+
+  const { children } = props;
+
+  return (
+    <div>
+      <Responsive {...Responsive.onlyMobile}>
+        <NavBarMobile
+          onPusherClick={handlePusher}
+          onToggle={handleToggle}
+          rightItems={rightMenuItems(user)}
+          visible={visible}
+        >
+          <NavBarChildren>{children}</NavBarChildren>
+        </NavBarMobile>
+      </Responsive>
+      <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+        <NavBarDesktop rightItems={rightMenuItems(user)} />
+        <NavBarChildren>{children}</NavBarChildren>
+      </Responsive>
+    </div>
+  )
 }
 
 export default NavBar
