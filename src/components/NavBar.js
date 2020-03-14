@@ -22,7 +22,7 @@ let rightMenuItems = (currentUser) => {
       rightItems.push({ to: "/users", icon: 'user', content:"User Profile", key: 'ruser'})
     }
     else {
-      rightItems.push({ to: "/register", icon: 'user outline', content:"Log In/Sign Up", key: 'rreg'})
+      rightItems.push({ to: "/login", icon: 'user outline', content:"Log In/Sign Up", key: 'rreg'})
     }
     return rightItems
   }
