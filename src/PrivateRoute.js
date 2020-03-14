@@ -9,14 +9,14 @@ function PrivateRoute({ component: Component, ...rest }) {
   
     const { authTokens, user } = useAuth();
 
-    if (user) {
-      console.log('roles', user.roles)
-      console.log(rest.path)
-      console.log(path_role_permissions[rest.path])
-      console.log(intersectionWith(path_role_permissions[rest.path], user.roles, isEqual))
-    } else {
-      console.log("User does not exist")
-    }
+    // if (user) {
+    //   console.log('roles', user.roles)
+    //   console.log(rest.path)
+    //   console.log(path_role_permissions[rest.path])
+    //   console.log(intersectionWith(path_role_permissions[rest.path], user.roles, isEqual))
+    // } else {
+    //   console.log("User does not exist")
+    // }
 
     return(
         <Route 

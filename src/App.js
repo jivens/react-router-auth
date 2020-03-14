@@ -9,6 +9,7 @@ import Signup from './pages/Signup';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
+import NavBar from './components/NavBar'
 import 'react-toastify/dist/ReactToastify.css';
 
 function App(props) {
@@ -55,19 +56,21 @@ function App(props) {
     <AuthContext.Provider value={{ client: props.client, user, authTokens, setAuthTokens: setTokens}}>
       <Router>
         <div>
-          <ToastContainer />
-          <ul>
-            <li>
-              <Link to="/">Home Page</Link>
-            </li>
-            <li>
-              <Link to="/admin">Admin Page</Link>
-            </li>
-          </ul>
-          <Route exact path="/" component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <PrivateRoute path="/admin" component={Admin} />
+          <NavBar>
+            <ToastContainer key="ToastContainer"/>
+            <ul key="OptionsList">
+              <li key="HomeLi">
+                <Link to="/" key="HomeLink">Home Page</Link>
+              </li>
+              <li key="AdminLi">
+                <Link to="/admin" key="AdminLink">Admin Page</Link>
+              </li>
+            </ul>
+            <Route exact path="/" component={Home} key="HomePage" />
+            <Route path="/login" component={Login} key="LoginPage" />
+            <Route path="/signup" component={Signup} key="SignupPage" />
+            <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
+          </NavBar>
         </div>
       </Router>
     </AuthContext.Provider>
