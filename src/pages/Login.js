@@ -15,8 +15,6 @@ import { handleErrors, broadCastError } from '../utils/messages';
 function Login(props) {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
-  let [email, setEmail] = useState("");
-  let [password, setPassword] = useState("");
   const { client, setAuthTokens } = useAuth();
 
   const referer = (props.location && props.location.state && props.location.state.referer) ? props.location.state.referer : '/';
@@ -31,25 +29,27 @@ function Login(props) {
 
 
 
-  async function postLogin() {
+  async function postLogin(values, setSubmitting) {
     try {
       let tokenQuery = await client.query({
         query: getUserToken,
         variables: {
-          email: email,
-          password: password
+          email: values.email,
+          password: values.password
         },
         errorPolicy: 'all'
       })
       if (!tokenQuery.data.loginUser_Q) {
         broadCastError(`Username or Password is incorrect`) 
         setIsError(true)
+        setSubmitting(false)
       }
       else {
         const token = tokenQuery.data.loginUser_Q[0].password
         localStorage.setItem("tokens", JSON.stringify(token));
         setAuthTokens(token)
         setLoggedIn(true)
+        setSubmitting(false)
       }
     } 
     catch(e) {
@@ -109,11 +109,8 @@ function Login(props) {
                   id="email"
                   placeholder="email"
                   type="email"
-                  value={email}
-                  onChange={e => {
-                    setEmail(e.target.value)
-                    handleChange(e)
-                  }}
+                  value={ values.email }
+                  onChange={ handleChange }
                   onBlur={ handleBlur }
                   className={ errors.email && touched.email ? 'text-input error' : 'text-input'}
                 />
@@ -127,11 +124,8 @@ function Login(props) {
                   id="password"
                   placeholder="Password"
                   type="password"
-                  value={password}
-                  onChange={e => {
-                    setPassword(e.target.value)
-                    handleChange(e)
-                  }}
+                  value={ values.password }
+                  onChange={ handleChange }
                   onBlur={ handleBlur }
                   className={ errors.password && touched.password ? 'text-input error' : 'text-input' }
                 />
