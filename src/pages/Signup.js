@@ -54,7 +54,7 @@ function Signup(props) {
   //   return <div>Error</div>
   // }
 
-  async function onFormSubmit (client, values, setSubmitting) {
+  async function onFormSubmit (values, setSubmitting) {
     try {
       const result = await client.mutate({
         mutation: addUserMutation,
@@ -103,7 +103,7 @@ function Signup(props) {
         }}
         validationSchema={signupSchema}
         onSubmit={(values, { setSubmitting }) => {
-          onFormSubmit(client, values, setSubmitting);
+          onFormSubmit(values, setSubmitting);
         }}
         >
         {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
