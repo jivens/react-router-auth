@@ -1,10 +1,28 @@
-import React from "react";
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, Redirect } from 'react-router-dom';
 import logoImg from "../img/logo.jpg";
 import { Logo, Card } from '../components/AuthForm'
 import { Button, Input } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
+//import { useMutation } from "@apollo/react-hooks"
+import { gql } from 'apollo-boost';
+import { useAuth } from "../context/auth";
+import { handleErrors, broadCastSuccess, broadCastError } from '../utils/messages';
+
+const addUserMutation = gql`
+  mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
+    addUser_M(first: $first, last: $last, username: $username, email: $email, password: $password) {
+      id
+      first
+      last
+      username
+      email
+      password
+      roles
+    }
+  }
+`;
 
 let signupSchema = Yup.object().shape({
   first: Yup.string()
@@ -26,17 +44,67 @@ let signupSchema = Yup.object().shape({
   });
 
 
-function Signup() {
+function Signup(props) {
+  const { client } = useAuth();
+  const [hasRegistered, setHasRegistered] = useState(false)
+  // const [addUser, { loading: addUserLoading, error: addUserError}] = useMutation(addUserMutation, { client: client })
+  // if (addUserLoading) return <div>Loading</div>
+  // if (addUserError) {
+  //   broadCastError(addUserError)
+  //   return <div>Error</div>
+  // }
+
+  async function onFormSubmit (client, values, setSubmitting) {
+    try {
+      const result = await client.mutate({
+        mutation: addUserMutation,
+        variables: {
+          first: values.first,
+          last: values.last,
+          username: values.username,
+          email: values.email,
+          password: values.password
+        }
+      })
+      if (result.error) {
+        broadCastError(result.error)
+        setSubmitting(false)
+      } else {
+        broadCastSuccess(`User ${values.username} successfully added!`)
+        setSubmitting(false)
+        setHasRegistered(true)
+      }
+      // addUser({variables: {
+      //   first: values.first,
+      //   last: values.last,
+      //   username: values.username,
+      //   email: values.email,
+      //   password: values.password
+      // }}) 
+    } catch (error) {
+      handleErrors(error)
+      setSubmitting(false)
+    }
+  }
+
+  if (hasRegistered) {
+    return <Redirect to="/login" />;
+    //return <Redirect to="/" />;
+  }
+
   return (
     <Card>
       <Logo src={logoImg} />
       <Formik 
         initialValues={{ 
-
           email: '', 
           password: '', 
-          passwordConfirmation: ''}}
+          passwordConfirmation: ''
+        }}
         validationSchema={signupSchema}
+        onSubmit={(values, { setSubmitting }) => {
+          onFormSubmit(client, values, setSubmitting);
+        }}
         >
         {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
           <Form>
