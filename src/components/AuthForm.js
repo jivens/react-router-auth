@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 const Card = styled.div`
   box-sizing: border-box;
-  max-width: 410px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
@@ -36,7 +36,7 @@ const Button = styled.button`
 `;
 
 const Logo = styled.img`
-  width: 50%;
+  width: 10rem;
   margin-bottom: 1rem;
 `;
 

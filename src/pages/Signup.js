@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, Redirect } from 'react-router-dom';
 import logoImg from "../img/logo.jpg";
-import { Logo, Card } from '../components/AuthForm'
-import { Button, Input } from 'semantic-ui-react';
+import { Logo } from '../components/AuthForm'
+import { Grid, Button, Input, Segment, Message, Image } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 //import { useMutation } from "@apollo/react-hooks"
@@ -93,113 +93,127 @@ function Signup(props) {
   }
 
   return (
-    <Card>
-      <Logo src={logoImg} />
-      <Formik 
-        initialValues={{ 
-          email: '', 
-          password: '', 
-          passwordConfirmation: ''
-        }}
-        validationSchema={signupSchema}
-        onSubmit={(values, { setSubmitting }) => {
-          onFormSubmit(values, setSubmitting);
-        }}
-        >
-        {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
-          <Form>
-             <Input
-                fluid
-                icon="write"
-                iconPosition="left"
-                id="first"
-                placeholder="First Name"
-                type="text"
-                value={ values.first }
-                onChange={ handleChange }
-                onBlur={ handleBlur }
-                className={ errors.first && touched.first ? 'text-input error' : 'text-input' }
-              />
-             {errors.first && touched.first && ( <div className="input-feedback">{errors.first}</div>
-              )}
-              <Input
-                fluid
-                icon="write"
-                iconPosition="left"
-                id="last"
-                placeholder="Last Name"
-                type="text"
-                value={ values.last }
-                onChange={ handleChange }
-                onBlur={ handleBlur }
-                className={ errors.last && touched.last ? 'text-input error' : 'text-input' }
-              />
-             {errors.last && touched.last && ( <div className="input-feedback">{errors.last}</div>
-              )}
-              <Input
-                fluid
-                icon="user"
-                iconPosition="left"
-                id="username"
-                placeholder="Username"
-                type="text"
-                value={ values.username }
-                onChange={ handleChange }
-                onBlur={ handleBlur }
-                className={ errors.username && touched.username ? 'text-input error' : 'text-input' }
-              />
-             {errors.user && touched.user && ( <div className="input-feedback">{errors.user}</div>
-              )}
-              <Input
-                fluid
-                icon="mail"
-                iconPosition="left"
-                id="email"
-                placeholder="email"
-                type="text"
-                value={ values.email }
-                onChange={ handleChange }
-                onBlur={ handleBlur }
-                className={ errors.email && touched.email ? 'text-input error' : 'text-input'}
-              />
-             {errors.email && touched.email && ( <div className="input-feedback">{errors.email}</div>
-              )}
-              <Input
-                fluid
-                icon='lock'
-                iconPosition='left'
-                id="password"
-                placeholder="Password"
-                type="password"
-                value={ values.password }
-                onChange={ handleChange }
-                onBlur={ handleBlur }
-                className={ errors.password && touched.password ? 'text-input error' : 'text-input' }
-              />
-             {errors.password && touched.password && ( <div className="input-feedback">{errors.password}</div>
-              )}
-              <Input
-                fluid
-                icon='lock'
-                iconPosition='left'
-                id="passwordConfirmation"
-                placeholder="Confirm your password"
-                type="password"
-                value={ values.passwordConfirmation }
-                onChange={ handleChange }
-                onBlur={ handleBlur }
-                className={ errors.passwordConfirmation && touched.passwordConfirmation ? 'text-input error' : 'text-input' }
-              />
-             {errors.passwordConfirmation && touched.passwordConfirmation && ( <div className="input-feedback">{errors.passwordConfirmation}</div>
-              )}
-              <Button color="blue" size="large" type="submit" disabled={isSubmitting}>
-                Submit
-              </Button>
-          </Form>
-          )}
-        </Formik>
-      <Link to="/login">Already have an account?</Link>
-    </Card>
+    <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+      <Grid.Column style={{ maxWidth: 450 }}>
+        <Logo src={logoImg} />
+        <Formik 
+          initialValues={{ 
+            first: '',
+            last: '',
+            username: '',
+            email: '', 
+            password: '', 
+            passwordConfirmation: ''
+          }}
+          validationSchema={signupSchema}
+          onSubmit={(values, { setSubmitting }) => {
+            onFormSubmit(values, setSubmitting);
+          }}
+          >
+          {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
+            <Form>
+              <Segment stacked>
+               <Input
+                  fluid
+                  icon="write"
+                  iconPosition="left"
+                  id="first"
+                  placeholder="First Name"
+                  type="text"
+                  value={ values.first }
+                  onChange={ handleChange }
+                  onBlur={ handleBlur }
+                  className={ errors.first && touched.first ? 'text-input error' : 'text-input' }
+                />
+               {errors.first && touched.first && ( <div className="input-feedback">{errors.first}</div>
+                )}
+                <Input
+                  fluid
+                  icon="write"
+                  iconPosition="left"
+                  id="last"
+                  placeholder="Last Name"
+                  type="text"
+                  value={ values.last }
+                  onChange={ handleChange }
+                  onBlur={ handleBlur }
+                  className={ errors.last && touched.last ? 'text-input error' : 'text-input' }
+                />
+               {errors.last && touched.last && ( <div className="input-feedback">{errors.last}</div>
+                )}
+                <Input
+                  fluid
+                  icon="user"
+                  iconPosition="left"
+                  id="username"
+                  placeholder="Username"
+                  type="text"
+                  value={ values.username }
+                  onChange={ handleChange }
+                  onBlur={ handleBlur }
+                  className={ errors.username && touched.username ? 'text-input error' : 'text-input' }
+                />
+               {errors.user && touched.user && ( <div className="input-feedback">{errors.user}</div>
+                )}
+                <Input
+                  fluid
+                  icon="mail"
+                  iconPosition="left"
+                  id="email"
+                  placeholder="email"
+                  type="text"
+                  value={ values.email }
+                  onChange={ handleChange }
+                  onBlur={ handleBlur }
+                  className={ errors.email && touched.email ? 'text-input error' : 'text-input'}
+                />
+               {errors.email && touched.email && ( <div className="input-feedback">{errors.email}</div>
+                )}
+                <Input
+                  fluid
+                  icon='lock'
+                  iconPosition='left'
+                  id="password"
+                  placeholder="Password"
+                  type="password"
+                  value={ values.password }
+                  onChange={ handleChange }
+                  onBlur={ handleBlur }
+                  className={ errors.password && touched.password ? 'text-input error' : 'text-input' }
+                />
+               {errors.password && touched.password && ( <div className="input-feedback">{errors.password}</div>
+                )}
+                <Input
+                  fluid
+                  icon='lock'
+                  iconPosition='left'
+                  id="passwordConfirmation"
+                  placeholder="Confirm your password"
+                  type="password"
+                  value={ values.passwordConfirmation }
+                  onChange={ handleChange }
+                  onBlur={ handleBlur }
+                  className={ errors.passwordConfirmation && touched.passwordConfirmation ? 'text-input error' : 'text-input' }
+                />
+               {errors.passwordConfirmation && touched.passwordConfirmation && ( <div className="input-feedback">{errors.passwordConfirmation}</div>
+                )}
+                  <Button 
+                    color="blue" 
+                    size="medium" 
+                    type="submit" 
+                    disabled={isSubmitting}
+                  >
+                    Submit
+                  </Button>
+                </Segment>
+            </Form>
+            )}
+          </Formik>
+          <Message>
+            <Link to="/login">Already have an account?</Link>
+          </Message>
+      </Grid.Column>
+      </Grid>
   );
 }
 
