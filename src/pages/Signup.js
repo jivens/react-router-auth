@@ -111,7 +111,7 @@ function Signup(props) {
           }}
           >
           {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
-            <Form size="large">
+            <Form>
               <Segment stacked>
                <Input
                   style={{ paddingBottom: '5px' }}

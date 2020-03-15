@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 //import axios from 'axios';
 import logoImg from "../img/logo.jpg";
-import { Card, Logo, Form, Input, Button, Error } from "../components/AuthForm";
+import { Logo, Error } from "../components/AuthForm";
+import { Grid, Button, Input, Segment, Message } from 'semantic-ui-react';
+import * as Yup from 'yup';
+import { Formik, Form } from 'formik';
 import { useAuth } from "../context/auth";
 import { gql } from 'apollo-boost';
 import { handleErrors, broadCastError } from '../utils/messages';
@@ -12,8 +15,8 @@ import { handleErrors, broadCastError } from '../utils/messages';
 function Login(props) {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  let [email, setEmail] = useState("");
+  let [password, setPassword] = useState("");
   const { client, setAuthTokens } = useAuth();
 
   const referer = (props.location && props.location.state && props.location.state.referer) ? props.location.state.referer : '/';
@@ -33,7 +36,7 @@ function Login(props) {
       let tokenQuery = await client.query({
         query: getUserToken,
         variables: {
-          email: userName,
+          email: email,
           password: password
         },
         errorPolicy: 'all'
@@ -68,36 +71,91 @@ function Login(props) {
     // });
   }
 
+  let loginSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Please enter a valid email address')
+      .required('Required'),
+    password: Yup.string()
+      .required('Required'),
+  });
+
   if (isLoggedIn) {
     return <Redirect to={referer} />;
     //return <Redirect to="/" />;
   }
 
   return (
-    <Card>
-      <Logo src={logoImg} />
-      <Form>
-        <Input
-          type="username"
-          value={userName}
-          onChange={e => {
-            setUserName(e.target.value);
+   <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+      <Grid.Column style={{ maxWidth: 450 }}>
+        <Logo src={logoImg} />
+        <Formik 
+          initialValues={{ 
+            email: '', 
+            password: '', 
           }}
-          placeholder="email"
-        />
-        <Input
-          type="password"
-          value={password}
-          onChange={e => {
-            setPassword(e.target.value);
+          validationSchema={loginSchema}
+          onSubmit={(values, { setSubmitting }) => {
+            postLogin(values, setSubmitting);
           }}
-          placeholder="password"
-        />
-        <Button onClick={postLogin}>Sign In</Button>
-      </Form>
-      <Link to="/signup">Don't have an account?</Link>
-        { isError &&<Error>The username or password provided were incorrect!</Error> }
-    </Card>
+          >
+          {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
+            <Form>
+              <Segment stacked>
+                <Input
+                  fluid
+                  style={{ paddingBottom: '5px' }}
+                  icon="mail"
+                  iconPosition="left"
+                  id="email"
+                  placeholder="email"
+                  type="email"
+                  value={email}
+                  onChange={e => {
+                    setEmail(e.target.value)
+                    handleChange(e)
+                  }}
+                  onBlur={ handleBlur }
+                  className={ errors.email && touched.email ? 'text-input error' : 'text-input'}
+                />
+               {errors.email && touched.email && ( <div className="input-feedback">{errors.email}</div>
+                )}
+                <Input
+                  fluid
+                  style={{ paddingBottom: '5px' }}
+                  icon='lock'
+                  iconPosition='left'
+                  id="password"
+                  placeholder="Password"
+                  type="password"
+                  value={password}
+                  onChange={e => {
+                    setPassword(e.target.value)
+                    handleChange(e)
+                  }}
+                  onBlur={ handleBlur }
+                  className={ errors.password && touched.password ? 'text-input error' : 'text-input' }
+                />
+               {errors.password && touched.password && ( <div className="input-feedback">{errors.password}</div>
+                )}
+                  <Button 
+                    fluid
+                    color="blue" 
+                    size="large" 
+                    type="submit" 
+                    disabled={isSubmitting}
+                  >
+                    Sign In
+                  </Button>
+                </Segment>
+            </Form>
+            )}
+          </Formik>
+          <Message>
+            <Link to="/signup">Don't have an account?</Link>
+            { isError &&<Error>The username or password provided were incorrect!</Error> }
+          </Message>
+      </Grid.Column>
+      </Grid>
   );
 }
 
