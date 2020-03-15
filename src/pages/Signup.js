@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, Redirect } from 'react-router-dom';
 import logoImg from "../img/logo.jpg";
 import { Logo } from '../components/AuthForm'
-import { Grid, Button, Input, Segment, Message, Image } from 'semantic-ui-react';
+import { Grid, Button, Input, Segment, Message } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 //import { useMutation } from "@apollo/react-hooks"
@@ -111,9 +111,10 @@ function Signup(props) {
           }}
           >
           {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
-            <Form>
+            <Form size="large">
               <Segment stacked>
                <Input
+                  style={{ paddingBottom: '5px' }}
                   fluid
                   icon="write"
                   iconPosition="left"
@@ -129,6 +130,7 @@ function Signup(props) {
                 )}
                 <Input
                   fluid
+                  style={{ paddingBottom: '5px' }}
                   icon="write"
                   iconPosition="left"
                   id="last"
@@ -143,6 +145,7 @@ function Signup(props) {
                 )}
                 <Input
                   fluid
+                  style={{ paddingBottom: '5px' }}
                   icon="user"
                   iconPosition="left"
                   id="username"
@@ -157,6 +160,7 @@ function Signup(props) {
                 )}
                 <Input
                   fluid
+                  style={{ paddingBottom: '5px' }}
                   icon="mail"
                   iconPosition="left"
                   id="email"
@@ -171,6 +175,7 @@ function Signup(props) {
                 )}
                 <Input
                   fluid
+                  style={{ paddingBottom: '5px' }}
                   icon='lock'
                   iconPosition='left'
                   id="password"
@@ -185,6 +190,7 @@ function Signup(props) {
                 )}
                 <Input
                   fluid
+                  style={{ paddingBottom: '5px' }}
                   icon='lock'
                   iconPosition='left'
                   id="passwordConfirmation"
@@ -198,8 +204,9 @@ function Signup(props) {
                {errors.passwordConfirmation && touched.passwordConfirmation && ( <div className="input-feedback">{errors.passwordConfirmation}</div>
                 )}
                   <Button 
+                    fluid
                     color="blue" 
-                    size="medium" 
+                    size="large" 
                     type="submit" 
                     disabled={isSubmitting}
                   >

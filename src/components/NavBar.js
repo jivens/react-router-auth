@@ -52,7 +52,7 @@ const NavBarMobile = ({
     </Menu.Item>
     <Menu.Item as={NavLink} to="/admin" name="admin" size='mini' key="miniadmin">
     <Icon name="leaf" />
-       Roots
+      Admin
     </Menu.Item>
     </Sidebar>
     <Sidebar.Pusher
