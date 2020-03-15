@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { gql } from 'apollo-boost';
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
 import Login from "./pages/Login";
 import Signup from './pages/Signup';
+import Users from './pages/Users';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
@@ -52,24 +53,24 @@ function App(props) {
     }
   }
 
+  const NotFound = () => <div>Not found</div>
+  const NotFoundRedirect = () => <Redirect to='/not-found' />
+
   return (
     <AuthContext.Provider value={{ client: props.client, user, authTokens, setAuthTokens: setTokens}}>
       <Router>
         <div>
           <NavBar>
             <ToastContainer key="ToastContainer"/>
-            <ul key="OptionsList">
-              <li key="HomeLi">
-                <Link to="/" key="HomeLink">Home Page</Link>
-              </li>
-              <li key="AdminLi">
-                <Link to="/admin" key="AdminLink">Admin Page</Link>
-              </li>
-            </ul>
-            <Route exact path="/" component={Home} key="HomePage" />
-            <Route path="/login" component={Login} key="LoginPage" />
-            <Route path="/signup" component={Signup} key="SignupPage" />
-            <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
+            <Switch>
+              <Route exact path="/" component={Home} key="HomePage" />
+              <Route path="/login" component={Login} key="LoginPage" />
+              <Route path="/signup" component={Signup} key="SignupPage" />
+              <PrivateRoute path="/users" component={Users} key="Users" />
+              <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
+              <Route path="/not-found" component={NotFound} key="NotFound" />
+              <Route component={NotFoundRedirect} key="NotFoundRedirect" />
+            </Switch>
           </NavBar>
         </div>
       </Router>
