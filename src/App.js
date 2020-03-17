@@ -57,7 +57,7 @@ function App(props) {
   const NotFoundRedirect = () => <Redirect to='/not-found' />
 
   return (
-    <AuthContext.Provider value={{ client: props.client, user, authTokens, setAuthTokens: setTokens}}>
+    <AuthContext.Provider value={{ client: props.client, user, setUser, authTokens, setAuthTokens: setTokens}}>
       <Router>
         <div>
           <NavBar>
