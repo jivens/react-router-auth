@@ -1,4 +1,5 @@
 import React from 'react';
+import { Redirect } from 'react-router-dom';
 import { Grid, Header, Segment, Button } from 'semantic-ui-react';
 import { useAuth } from "../context/auth";
 import { broadCastSuccess } from '../utils/messages';
@@ -19,7 +20,7 @@ function Users(props) {
             User Actions
         </Header>
         <Segment stacked textAlign='center'>
-          <Button size='large' color='blue' onClick={(e) => props.history.push('/userprofile')}>
+          <Button size='large' color='blue' onClick={(e)=> props.history.push('/userprofile')}>
             Update Your Profile
           </Button>
           <Button size='large' color='black' path='/changepassword' onClick={(e) => props.history.push('/changepassword')}>

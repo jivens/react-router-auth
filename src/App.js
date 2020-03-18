@@ -7,10 +7,11 @@ import Admin from './pages/Admin';
 import Login from "./pages/Login";
 import Signup from './pages/Signup';
 import Users from './pages/Users';
+import UserProfile from './pages/UserProfile';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
-import NavBar from './components/NavBar'
+import NavBar from './components/NavBar';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App(props) {
@@ -68,6 +69,7 @@ function App(props) {
               <Route path="/signup" component={Signup} key="SignupPage" />
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
+              <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
               <Route path="/not-found" component={NotFound} key="NotFound" />
               <Route component={NotFoundRedirect} key="NotFoundRedirect" />
             </Switch>

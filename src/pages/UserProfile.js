@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import logoImg from "../img/logo.jpg";
 import { Logo } from '../components/AuthForm'
-import { Grid, Button, Input, Segment, Message } from 'semantic-ui-react';
+import { Grid, Button, Input, Segment } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { gql } from 'apollo-boost';
@@ -22,6 +22,7 @@ const updateUserMutation = gql`
     }
   }
 `;
+
 
 let userProfileSchema = Yup.object().shape({
   first: Yup.string()
@@ -45,7 +46,8 @@ let userProfileSchema = Yup.object().shape({
 
 function UserProfile(props) {
   const { client, user } = useAuth();
-  const [hasUpdated, setHasUpdated] = useState(false)
+  //const [hasUpdated, setHasUpdated] = useState(false)
+  const [hasRegistered, setHasRegistered] = useState(false)
 
   async function onFormSubmit (values, setSubmitting) {
     try {
@@ -84,21 +86,21 @@ function UserProfile(props) {
         <Logo src={logoImg} />
         <Formik 
           initialValues={{ 
-            first: '',
-            last: '',
-            username: '',
-            email: '', 
-            password: '', 
+            first: user.first,
+            last: user.last,
+            username: user.username,
+            email: user.email, 
+            password: user.password, 
             passwordConfirmation: ''
           }}
-          validationSchema={signupSchema}
+          validationSchema={userProfileSchema}
           onSubmit={(values, { setSubmitting }) => {
             onFormSubmit(values, setSubmitting);
           }}
           >
           {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
             <Form>
-              <Segment stacked>
+              <Segment>
                <Input
                   style={{ paddingBottom: '5px' }}
                   fluid
@@ -202,9 +204,6 @@ function UserProfile(props) {
             </Form>
             )}
           </Formik>
-          <Message>
-            <Link to="/login">Already have an account?</Link>
-          </Message>
       </Grid.Column>
       </Grid>
   );
