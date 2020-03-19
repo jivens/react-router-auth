@@ -5,7 +5,8 @@ import { broadCastSuccess } from '../utils/messages';
 
 function Users(props) {
 
-  const { setAuthTokens } = useAuth();
+  const { setAuthTokens, user } = useAuth();
+  console.log('the user.roles is', user.roles)
 
   function logOut() {
     setAuthTokens();
@@ -14,24 +15,29 @@ function Users(props) {
 
   return (
     <Grid textAlign='center'  verticalAlign='top'>
-      <Grid.Column style={{ maxWidth: 600 }} textAlign='center'>
+      <Grid.Column style={{ maxWidth: 750 }} textAlign='center'>
         <Header as='h2'  textAlign='center'>
             User Actions
         </Header>
         <Segment stacked textAlign='center'>
-          <Button size='large' color='blue' onClick={(e)=> props.history.push('/userprofile')}>
+          <Button color='blue' onClick={(e)=> props.history.push('/userprofile')}>
             Update Your Profile
           </Button>
-          <Button size='large' color='black' path='/changepassword' onClick={(e) => props.history.push('/changepassword')}>
+          <Button  color='black' path='/changepassword' onClick={(e) => props.history.push('/changepassword')}>
             Change Your Password
           </Button>
-          <Button size='large' color='blue'
+          <Button color='blue'
             onClick={(e) => {
               logOut()
               props.history.push('/')
             }}>
             Logout
           </Button>
+          { user.roles.includes('admin') &&
+            (<Button  color='black' onClick={(e)=> props.history.push('/userlist')}>
+              Administer Users
+            </Button>)
+          }
         </Segment>
       </Grid.Column>
     </Grid>
