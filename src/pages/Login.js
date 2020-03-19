@@ -8,7 +8,7 @@ import { Grid, Button, Input, Segment, Message } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { useAuth } from "../context/auth";
-import { gql } from 'apollo-boost';
+import { getUserToken } from "../queries/queries";
 import { handleErrors, broadCastError } from '../utils/messages';
 
 
@@ -18,16 +18,6 @@ function Login(props) {
   const { client, setAuthTokens } = useAuth();
 
   const referer = (props.location && props.location.state && props.location.state.referer) ? props.location.state.referer : '/';
-
-  const getUserToken = gql`
-    query($email: String!, $password: String!) {
-      loginUser_Q(email: $email, password: $password) {
-        password
-      }
-    }
-  `;
-
-
 
   async function postLogin(values, setSubmitting) {
     try {

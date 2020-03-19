@@ -5,24 +5,9 @@ import { Logo } from '../components/AuthForm'
 import { Grid, Button, Input, Segment } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
-import { gql } from 'apollo-boost';
 import { useAuth } from "../context/auth";
 import { handleErrors, broadCastSuccess, broadCastError } from '../utils/messages';
-
-const updateUserMutation = gql`
-  mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
-    updateUser_M(first: $first, last: $last, username: $username, email: $email, password: $password) {
-      id
-      first
-      last
-      username
-      email
-      password
-      roles
-    }
-  }
-`;
-
+import { getUserToken, updateUserMutation } from '../queries/queries';
 
 let userProfileSchema = Yup.object().shape({
   first: Yup.string()
@@ -45,9 +30,33 @@ let userProfileSchema = Yup.object().shape({
 
 
 function UserProfile(props) {
-  const { client, user } = useAuth();
+  const { client, user, setAuthTokens } = useAuth();
   //const [hasUpdated, setHasUpdated] = useState(false)
-  const [hasRegistered, setHasRegistered] = useState(false)
+  const [hasUpdated, setHasUpdated] = useState(false)
+
+  async function postLogin(values) {
+    try {
+      let tokenQuery = await client.query({
+        query: getUserToken,
+        variables: {
+          email: values.email,
+          password: values.password
+        },
+        errorPolicy: 'all'
+      })
+      if (!tokenQuery.data.loginUser_Q) {
+        broadCastError(`Username or Password is incorrect`) 
+      }
+      else {
+        const token = tokenQuery.data.loginUser_Q[0].password
+        localStorage.setItem("tokens", JSON.stringify(token));
+        setAuthTokens(token)
+      }
+    } 
+    catch(e) {
+      handleErrors(e)
+    }
+  }
 
   async function onFormSubmit (values, setSubmitting) {
     try {
@@ -66,8 +75,11 @@ function UserProfile(props) {
         setSubmitting(false)
       } else {
         broadCastSuccess(`User ${values.username} successfully updated!`)
+        // We need to re-login using the new values to reset the token 
+        // and reset the user
+        postLogin(values)
         setSubmitting(false)
-        setHasRegistered(true)
+        setHasUpdated(true)
       }
     } catch (error) {
       handleErrors(error)
@@ -75,9 +87,8 @@ function UserProfile(props) {
     }
   }
 
-  if (hasRegistered) {
-    return <Redirect to="/login" />;
-    //return <Redirect to="/" />;
+  if (hasUpdated) {
+    return <Redirect to="/" />;
   }
 
   return (
