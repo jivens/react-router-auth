@@ -21,3 +21,17 @@ export const updateUserMutation = gql`
     }
   }
 `;
+
+export const getUsersQuery = gql`
+  {
+    users_Q {
+      id
+      first
+      last
+      username
+      password
+      email
+      roles
+    }
+  }
+`;
