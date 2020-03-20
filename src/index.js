@@ -8,7 +8,7 @@ import * as serviceWorker from './serviceWorker';
 //import { setContext } from 'apollo-link-context';
 //import { split } from 'apollo-link';
 //import { getMainDefinition } from 'apollo-utilities';
-import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
+//import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 //import { ApolloProvider } from 'react-apollo';
 
 // const httpLink = createHttpLink({
@@ -69,23 +69,28 @@ import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost'
   //   }
   // });
 
-  const client = new ApolloClient({
-    link: new ApolloLink((operation, forward) => {
-      const token = JSON.parse(localStorage.getItem('tokens'))
-      console.log("My token is:", token ? `Bearer ${token}` : '')
-      operation.setContext({
-        headers: {
-          token: token ? `Bearer ${token}` : '', 
-        }
-      });
-      return forward(operation);
-    }).concat(
-      new HttpLink({
-        uri: 'http://localhost:4000/api',
-      })
-    ),
-    cache: new InMemoryCache()
-  });
+  // const client = new ApolloClient({
+  //   link: new ApolloLink((operation, forward) => {
+  //     const token = JSON.parse(localStorage.getItem('tokens'))
+  //     console.log("My token is:", token ? `Bearer ${token}` : '')
+  //     operation.setContext({
+  //       headers: {
+  //         token: token ? `Bearer ${token}` : '', 
+  //       }
+  //     });
+  //     return forward(operation);
+  //   }).concat(
+  //     new HttpLink({
+  //       uri: 'http://localhost:4000/api',
+  //     })
+  //   ),
+  //   cache: new InMemoryCache(),
+  //   defaultOptions: {
+  //     watchQuery: {
+  //       fetchPolicy: 'network-only',
+  //     },
+  //   },
+  // });
 
 
   // const client = new ApolloClient({
@@ -103,7 +108,7 @@ import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost'
   // })
 
 ReactDOM.render(
-    <App client={client} />,
+    <App />,
     document.getElementById('root')
 );
 
