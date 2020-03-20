@@ -36,7 +36,7 @@ function Login(props) {
       }
       else {
         const token = tokenQuery.data.loginUser_Q[0].password
-        localStorage.setItem("tokens", JSON.stringify(token));
+        //localStorage.setItem("tokens", JSON.stringify(token));
         setAuthTokens(token)
         setLoggedIn(true)
         setSubmitting(false)

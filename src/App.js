@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { gql } from 'apollo-boost';
+import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
@@ -16,11 +17,35 @@ import NavBar from './components/NavBar';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App(props) {
+
   const existingTokens = JSON.parse(localStorage.getItem('tokens'));
   const [authTokens, setAuthTokens] = useState(existingTokens);
   const existingUser = JSON.parse(localStorage.getItem('user'));
   const [user, setUser] = useState(existingUser);
-  
+
+  const client = new ApolloClient({
+    link: new ApolloLink((operation, forward) => {
+      const token = JSON.parse(localStorage.getItem('tokens'))
+      console.log("My token is:", token ? `Bearer ${token}` : '')
+      operation.setContext({
+        headers: {
+          token: token ? `Bearer ${token}` : '', 
+        }
+      });
+      return forward(operation);
+    }).concat(
+      new HttpLink({
+        uri: 'http://localhost:4000/api',
+      })
+    ),
+    cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'network-only',
+      },
+    },
+  });
+
   const getUserFromToken = gql`
     query {
       getUserFromToken_Q {
@@ -45,7 +70,7 @@ function App(props) {
     else {
       localStorage.setItem("tokens", JSON.stringify(data));
       setAuthTokens(data);
-      let userQuery = await props.client.query({
+      let userQuery = await client.query({
         query: getUserFromToken,
         errorPolicy: 'all'
       })
@@ -59,7 +84,7 @@ function App(props) {
   const NotFoundRedirect = () => <Redirect to='/not-found' />
 
   return (
-    <AuthContext.Provider value={{ client: props.client, user, setUser, authTokens, setAuthTokens: setTokens}}>
+    <AuthContext.Provider value={{ client: client, user, setUser, authTokens, setAuthTokens: setTokens}}>
       <Router>
         <div>
           <NavBar>
