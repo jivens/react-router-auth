@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import Signup from './pages/Signup';
 import Users from './pages/Users';
 import UserProfile from './pages/UserProfile';
-import UserList from './pages/UserList';
+import UserListContainer from './pages/UserListContainer';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
@@ -96,7 +96,7 @@ function App(props) {
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
-              <PrivateRoute path="/userlist" component={UserList} key="UserList" />
+              <PrivateRoute path="/userlist" component={UserListContainer} key="UserListContainer" />
               <Route path="/not-found" component={NotFound} key="NotFound" />
               <Route component={NotFoundRedirect} key="NotFoundRedirect" />
             </Switch>
