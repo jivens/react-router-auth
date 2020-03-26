@@ -1,26 +1,15 @@
 import React from "react";
-import { Button } from "../components/AuthForm";
 import { useTable } from 'react-table';
 import styled from 'styled-components'
-import { useAuth } from "../context/auth";
-import { handleErrors } from '../utils/messages'
-import { getUsersQuery } from '../queries/queries';
+import { Grid } from 'semantic-ui-react';
 
   const TableStyles = styled.div`
     padding: 1rem;
      table {
-      display: block;
-      width: 100%;
+      box-sizing:border-box;
+      box-shadow:0 2px 15px 0 rgba(0,0,0,0.15);
       overflow: auto;
-      thead {
-        display: block;
-        width: 100%;
-      }
       tbody {
-        display: block;
-        width: 100%;
-        box-sizing:border-box;
-        box-shadow:0 2px 15px 0 rgba(0,0,0,0.15);
         overflow: auto;
         padding: 1rem;
       }
@@ -33,12 +22,9 @@ import { getUsersQuery } from '../queries/queries';
         border-bottom: 1px solid #ddd;
       }
       th {
-        display: block;
-        border: 0px;
-        background: #fafafa;
-        padding: .5rem;
-        text-align: left;
-      },
+        background: rgba(0,0,0,0.15);
+        padding: 1rem;
+      }
       td {
         margin: 0;
         padding: 0.5rem;
@@ -51,25 +37,9 @@ import { getUsersQuery } from '../queries/queries';
         :last-child {
           border-right: 0;
           }
-        .resizer {
-          right: -1.5px;
-          background: #ddd;
-          width: 3px;
-          height: 100%;
-          position: absolute;
-          top: 0;
-          z-index: 1;
-          touch-action:none;
-          &.isResizing {
-            background: #ddd;
-          }
-        }
       }
       th {
         &:last-of-type {
-          resizer {
-            right: -2px;
-          }
         }
       }
     }
@@ -97,31 +67,23 @@ import { getUsersQuery } from '../queries/queries';
 
 function UserList(props) {
 
-  const { client } = useAuth();
+  //const { client } = useAuth();
 
-  function getUsers() {
-    let users = []
-    // try {
-      client.query({
-        query: getUsersQuery,
-        errorPolicy: 'all'
-      }).then((usersQuery) => {
-        console.log(usersQuery)
-        let userData = usersQuery.data.users_Q
-        return userData
-      })
-      .catch((error) => {
-        return []
-      })
-      //console.log('Users Query', usersQuery)
-      //users = usersQuery.data.users_Q
-      //return users
-    // } 
-    // catch(e) {
-    //   handleErrors(e)
-    //   return []
-    // }
-  }
+  // function getUsers() {
+  //   let users = []
+  //   // try {
+  //     client.query({
+  //       query: getUsersQuery,
+  //       errorPolicy: 'all'
+  //     }).then((usersQuery) => {
+  //       console.log(usersQuery)
+  //       let userData = usersQuery.data.users_Q
+  //       return userData
+  //     })
+  //     .catch((error) => {
+  //       return []
+  //     })
+  // }
 
   function Table({ columns, data }) {
     // Use the state and functions returned from useTable to build your UI
@@ -181,21 +143,27 @@ function UserList(props) {
       {
         Header: 'Username',
         accessor: 'username'
-      },
-      {
-        Header: 'Roles',
-        accessor: 'roles'
-      },
+      }
     ],
     []
   )
 
-
-
   return (
-    <TableStyles>
-      <Table columns={columns} data={userData} />
-    </TableStyles>
+    <React.Fragment>
+      <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+        <Grid.Row>
+          <h3>Manage Users</h3>
+        </Grid.Row>
+        <Grid.Row>
+          <TableStyles>
+            <Table 
+              columns={columns} 
+              data={userData} 
+            />
+          </TableStyles>
+        </Grid.Row>
+      </Grid>
+    </React.Fragment>
   )
 
 }
