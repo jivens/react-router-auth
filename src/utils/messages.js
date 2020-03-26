@@ -8,7 +8,8 @@ export function broadCastSuccess(successMessage) {
     toast.success(successMessage)
 }
 
-export function handleErrors({ graphQLErrors, networkError }) {
+export function handleErrors(error) {
+    const { graphQLErrors, networkError } = error
     if (graphQLErrors)
     graphQLErrors.map(({ message, locations, path }) =>
         toast.error(
@@ -17,4 +18,7 @@ export function handleErrors({ graphQLErrors, networkError }) {
     );
 
     if (networkError) toast.error(`[Network error]: ${networkError}`);
+
+    // Assume you have a string message
+    broadCastError(error)
 }
