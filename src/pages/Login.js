@@ -9,7 +9,7 @@ import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { useAuth } from "../context/auth";
 import { getUserToken } from "../queries/queries";
-import { handleErrors, broadCastError } from '../utils/messages';
+import { handleErrors } from '../utils/messages';
 
 
 function Login(props) {
@@ -30,7 +30,7 @@ function Login(props) {
         errorPolicy: 'all'
       })
       if (!tokenQuery.data.loginUser_Q) {
-        broadCastError(`Username or Password is incorrect`) 
+        handleErrors(`Username or Password is incorrect`) 
         setIsError(true)
         setSubmitting(false)
       }

@@ -8,7 +8,7 @@ import { Formik, Form } from 'formik';
 //import { useMutation } from "@apollo/react-hooks"
 import { gql } from 'apollo-boost';
 import { useAuth } from "../context/auth";
-import { handleErrors, broadCastSuccess, broadCastError } from '../utils/messages';
+import { handleErrors, broadCastSuccess } from '../utils/messages';
 
 const addUserMutation = gql`
   mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
@@ -67,7 +67,7 @@ function Signup(props) {
         }
       })
       if (result.error) {
-        broadCastError(result.error)
+        handleErrors(result.error)
         setSubmitting(false)
       } else {
         broadCastSuccess(`User ${values.username} successfully added!`)

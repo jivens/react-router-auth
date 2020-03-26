@@ -6,7 +6,7 @@ import { Grid, Button, Input, Segment } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import { useAuth } from "../context/auth";
-import { handleErrors, broadCastSuccess, broadCastError } from '../utils/messages';
+import { handleErrors, broadCastSuccess } from '../utils/messages';
 import { getUserToken, updateUserMutation } from '../queries/queries';
 
 let userProfileSchema = Yup.object().shape({
@@ -45,7 +45,7 @@ function UserProfile(props) {
         errorPolicy: 'all'
       })
       if (!tokenQuery.data.loginUser_Q) {
-        broadCastError(`Username or Password is incorrect`) 
+        handleErrors(`Username or Password is incorrect`) 
       }
       else {
         const token = tokenQuery.data.loginUser_Q[0].password
@@ -71,7 +71,7 @@ function UserProfile(props) {
         }
       })
       if (result.error) {
-        broadCastError(result.error)
+        handleErrors(result.error)
         setSubmitting(false)
       } else {
         broadCastSuccess(`User ${values.username} successfully updated!`)
