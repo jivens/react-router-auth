@@ -1,5 +1,5 @@
 import React from "react";
-import { useTable } from 'react-table';
+import { useTable, useSortBy } from 'react-table';
 import styled from 'styled-components'
 import { Grid } from 'semantic-ui-react';
 
@@ -45,7 +45,7 @@ import { Grid } from 'semantic-ui-react';
     }
 
     pagination: {
-      padding: 10px;
+      padding: 20px;
     }
 
     globalFilter: {
@@ -65,8 +65,21 @@ import { Grid } from 'semantic-ui-react';
     }
   `
 
+
+
 function UserList(props) {
 
+  const headerProps = (props, { column }) => getStyles(props, column.align)
+  const getStyles = (props, align = 'left') => [
+    props,
+    {
+      style: {
+        justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
+        alignItems: 'flex-start',
+        display: 'flex',
+      },
+    },
+  ]
   //const { client } = useAuth();
 
   // function getUsers() {
@@ -94,9 +107,11 @@ function UserList(props) {
       rows,
       prepareRow,
     } = useTable({
-      columns,
-      data,
-    })
+        columns,
+        data,
+      },
+      useSortBy,
+    )
 
     // Render the UI for your table
     return (
@@ -105,7 +120,9 @@ function UserList(props) {
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                <th {...column.getHeaderProps(column.getSortByToggleProps(), headerProps)}>{column.render('Header')}
+                  {column.isSorted ? (column.isSortedDesc ? "↑" : "↓") : ""}
+                </th>
               ))}
             </tr>
           ))}
@@ -143,6 +160,11 @@ function UserList(props) {
       {
         Header: 'Username',
         accessor: 'username'
+      },
+      {
+        Header: 'Roles',
+        accessor: 'roles',
+        Cell: ({ cell: { value } }) => ( value.join(", ")),
       }
     ],
     []
@@ -150,7 +172,7 @@ function UserList(props) {
 
   return (
     <React.Fragment>
-      <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+      <Grid textAlign='center' style={{ height: '50vh' }} verticalAlign='bottom'>
         <Grid.Row>
           <h3>Manage Users</h3>
         </Grid.Row>
