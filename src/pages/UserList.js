@@ -1,72 +1,9 @@
 import React from "react";
 import { useTable, useSortBy } from 'react-table';
-import styled from 'styled-components'
+import TableStyles from "../components/table-styles";
 import { Grid } from 'semantic-ui-react';
 
-  const TableStyles = styled.div`
-    padding: 1rem;
-     table {
-      box-sizing:border-box;
-      box-shadow:0 2px 15px 0 rgba(0,0,0,0.15);
-      overflow: auto;
-      tbody {
-        overflow: auto;
-        padding: 1rem;
-      }
-      tr {
-        :last-child {
-          td {
-            border-bottom: 0;
-          }
-        }
-        border-bottom: 1px solid #ddd;
-      }
-      th {
-        background: rgba(0,0,0,0.15);
-        padding: 1rem;
-      }
-      td {
-        margin: 0;
-        padding: 0.5rem;
-        word-wrap: break-word;
-        border-left: 1px solid #ddd;
-        :first-child {
-          border-left: 0;
-          }
-        position: relative;
-        :last-child {
-          border-right: 0;
-          }
-      }
-      th {
-        &:last-of-type {
-        }
-      }
-    }
-
-    pagination: {
-      padding: 20px;
-    }
-
-    globalFilter: {
-      padding: 50px 10px 20px 30px;
-    }
-    ul {
-      list-style: none;
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: row;
-      line-height: -1em;
-      margin: 0px;
-      padding: 0px;
-    }
-    li {
-      padding: 1rem;
-    }
-  `
-
-
-
+  
 function UserList(props) {
 
   const headerProps = (props, { column }) => getStyles(props, column.align)
