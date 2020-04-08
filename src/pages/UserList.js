@@ -1,6 +1,7 @@
 import React from "react";
 import { useTable, useSortBy } from 'react-table';
 import TableStyles from "../components/table-styles";
+import { GlobalFilter } from "../components/Filters"
 import { Grid } from 'semantic-ui-react';
 
   
