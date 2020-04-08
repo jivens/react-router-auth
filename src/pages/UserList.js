@@ -1,67 +1,96 @@
 import React from "react";
-import { useTable, useSortBy } from 'react-table';
+import { useTable, useSortBy, useGlobalFilter, useFilters } from 'react-table';
 import TableStyles from "../components/table-styles";
-import { GlobalFilter } from "../components/Filters"
-import { Grid } from 'semantic-ui-react';
+import { DefaultColumnFilter, fuzzyTextFilterFn, GlobalFilter } from "../components/Filters"
+import { Grid , Segment } from 'semantic-ui-react';
 
   
 function UserList(props) {
-
-  const headerProps = (props, { column }) => getStyles(props, column.align)
-  const getStyles = (props, align = 'left') => [
-    props,
-    {
-      style: {
-        justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
-        alignItems: 'flex-start',
-        display: 'flex',
-      },
-    },
-  ]
-  //const { client } = useAuth();
-
-  // function getUsers() {
-  //   let users = []
-  //   // try {
-  //     client.query({
-  //       query: getUsersQuery,
-  //       errorPolicy: 'all'
-  //     }).then((usersQuery) => {
-  //       console.log(usersQuery)
-  //       let userData = usersQuery.data.users_Q
-  //       return userData
-  //     })
-  //     .catch((error) => {
-  //       return []
-  //     })
-  // }
-
+ 
   function Table({ columns, data }) {
-    // Use the state and functions returned from useTable to build your UI
+    const filterTypes = React.useMemo(
+      () => ({
+        fuzzyText: fuzzyTextFilterFn,
+        text: (rows, id, filterValue) => {
+          return rows.filter(row => {
+            const rowValue = row.values[id];
+            return rowValue !== undefined
+              ? String(rowValue)
+                  .toLowerCase()
+                  .startsWith(String(filterValue).toLowerCase())
+              : true;
+          });
+        }
+      }),
+      []
+    );
+  
+    const defaultColumn = React.useMemo(
+      () => ({
+        Filter: DefaultColumnFilter, // Let's set up our default Filter UI
+      }),
+      []
+    );
     const {
       getTableProps,
       getTableBodyProps,
       headerGroups,
-      rows,
       prepareRow,
-    } = useTable({
+      rows,
+      state,
+      preGlobalFilteredRows,
+      setGlobalFilter,
+    } = useTable(
+      {
         columns,
         data,
+        defaultColumn,
+        filterTypes,
       },
-      useSortBy,
+      useGlobalFilter,
+      useFilters,
+      useSortBy
     )
 
     // Render the UI for your table
     return (
+      <>
+      <Segment>
+        <GlobalFilter
+          preGlobalFilteredRows={preGlobalFilteredRows}
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          />
+      </Segment>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps(), headerProps)}>{column.render('Header')}
-                  {column.isSorted ? (column.isSortedDesc ? "↑" : "↓") : ""}
-                </th>
-              ))}
+              {headerGroup.headers.map((column, i) => {
+                const {
+                  render,
+                  getHeaderProps,
+                  isSorted,
+                  isSortedDesc,
+                  getSortByToggleProps,
+                  canFilter
+                } = column;
+                const extraClass = isSorted
+                  ? isSortedDesc
+                    ? "↑"
+                    : "↓"
+                  : "";
+                return (
+                  <th
+                    key={`th-${i}`}
+                    className={extraClass}              >
+                    <div {...getHeaderProps(getSortByToggleProps())}>
+                      {render("Header")}
+                    </div>
+                    <div>{canFilter ? render("Filter") : null}</div>
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
@@ -78,6 +107,7 @@ function UserList(props) {
           })}
         </tbody>
       </table>
+      </>
     )
   }
 

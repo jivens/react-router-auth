@@ -18,7 +18,7 @@ export function GlobalFilter({
         onChange={e => {
           setGlobalFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         }}
-        placeholder={`${count} records...`}
+        placeholder={`Search all ${count} records...`}
         style={{
           fontSize: '1.1rem',
           border: '0',
@@ -41,7 +41,7 @@ export function DefaultColumnFilter({
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         //alert(e.target.value + " " + id + " " + tableName)
-        if (tableName == "AffixTable") {
+        if (tableName === "AffixTable") {
           let filtered = []
           //if (filtered.contains)
           filtered.push({
