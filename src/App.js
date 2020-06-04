@@ -35,7 +35,7 @@ function App(props) {
       return forward(operation);
     }).concat(
       new HttpLink({
-        uri: 'http://localhost:4000/api',
+        uri: 'http://localhost:8080',
       })
     ),
     cache: new InMemoryCache(),
@@ -46,15 +46,20 @@ function App(props) {
     },
   });
 
+  const authClient = new ApolloClient({
+    link: new HttpLink({ uri: 'http://localhost:4000/api' }),
+    cache: new InMemoryCache(),
+  });
+
+
   const getUserFromToken = gql`
     query {
-      getUserFromToken_Q {
+      users {
         id
         username
         first
         last
         email
-        roles
         password
       }
     }
@@ -84,7 +89,7 @@ function App(props) {
   const NotFoundRedirect = () => <Redirect to='/not-found' />
 
   return (
-    <AuthContext.Provider value={{ client: client, user, setUser, authTokens, setAuthTokens: setTokens}}>
+    <AuthContext.Provider value={{ client: client, authClient: authClient, user, setUser, authTokens, setAuthTokens: setTokens}}>
       <Router>
         <div>
           <NavBar>

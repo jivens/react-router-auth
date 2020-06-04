@@ -15,13 +15,13 @@ import { handleErrors } from '../utils/messages';
 function Login(props) {
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { client, setAuthTokens } = useAuth();
+  const { authClient, setAuthTokens } = useAuth();
 
   const referer = (props.location && props.location.state && props.location.state.referer) ? props.location.state.referer : '/';
 
   async function postLogin(values, setSubmitting) {
     try {
-      let tokenQuery = await client.query({
+      let tokenQuery = await authClient.query({
         query: getUserToken,
         variables: {
           email: values.email,
@@ -36,6 +36,7 @@ function Login(props) {
       }
       else {
         const token = tokenQuery.data.loginUser_Q[0].password
+        console.log('the token is ', token)
         //localStorage.setItem("tokens", JSON.stringify(token));
         setAuthTokens(token)
         setLoggedIn(true)

@@ -31,7 +31,6 @@ export const getUsersQuery = gql`
       username
       password
       email
-      roles
     }
   }
 `;

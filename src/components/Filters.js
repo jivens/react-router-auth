@@ -18,7 +18,7 @@ export function GlobalFilter({
         onChange={e => {
           setGlobalFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         }}
-        placeholder={`Search all ${count} records...`}
+        placeholder={`${count} records...`}
         style={{
           fontSize: '1.1rem',
           border: '0',
