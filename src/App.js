@@ -29,7 +29,7 @@ function App(props) {
       console.log("My token is:", token ? `Bearer ${token}` : '')
       operation.setContext({
         headers: {
-          token: token ? `Bearer ${token}` : '', 
+          authorization: token ? `Bearer ${token}` : '', 
         }
       });
       return forward(operation);
@@ -47,20 +47,36 @@ function App(props) {
   });
 
   const authClient = new ApolloClient({
-    link: new HttpLink({ uri: 'http://localhost:4000/api' }),
+    link: new ApolloLink((operation, forward) => {
+      const token = JSON.parse(localStorage.getItem('tokens'))
+      console.log("My token is:", token ? `Bearer ${token}` : '')
+      operation.setContext({
+        headers: {
+          authorization: token ? `Bearer ${token}` : '', 
+        }
+      });
+      return forward(operation);
+    }).concat(
+      new HttpLink({
+        uri: 'http://localhost:4000/api',
+      })
+    ),
     cache: new InMemoryCache(),
   });
 
 
   const getUserFromToken = gql`
     query {
-      users {
+      getUserFromToken_Q {
         id
         username
         first
         last
         email
         password
+        roles {
+          role_code
+        }
       }
     }
 `;
@@ -69,19 +85,28 @@ function App(props) {
     if (!data) {
       localStorage.removeItem("tokens")
       localStorage.removeItem("user")
+      console.log("Setting the goddamn authorization tokens")
       setAuthTokens();
+      console.log("Setting the goddamn user")
       setUser();
     }
     else {
+      console.log("Setting the goddamn authorization tokens")
       localStorage.setItem("tokens", JSON.stringify(data));
       setAuthTokens(data);
-      let userQuery = await client.query({
+      console.log("Setting the goddamn user")
+      let userQuery = await authClient.query({
         query: getUserFromToken,
         errorPolicy: 'all'
       })
-      localStorage.setItem("user", JSON.stringify(userQuery.data.getUserFromToken_Q))
-      setUser(userQuery.data.getUserFromToken_Q)
-      broadCastSuccess(`Successfully logged in as: ${userQuery.data.getUserFromToken_Q.username}`)
+      console.log(userQuery)
+      let user = userQuery.data.getUserFromToken_Q
+      let roles = []
+      user.roles.forEach(role => roles.push(role.role_code))
+      user.roles = roles
+      localStorage.setItem("user", JSON.stringify(user))
+      setUser(user)
+      broadCastSuccess(`Successfully logged in as: ${user.username}`)
     }
   }
 
