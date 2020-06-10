@@ -8,6 +8,26 @@ query($email: String!, $password: String!) {
 }
 `;
 
+export const insertAffixMutation = gql`
+  mutation AddAffix {
+    insert_affixes_one(object: { editnote: "editnote", english: "english", link: "link",  nicodemus: "nicodemus", page: "page", salish: "salish", type: "type"} ){
+      active
+      createdAt
+      editnote
+      english
+      id
+      link
+      nicodemus
+      page
+      prevId
+      salish
+      type
+      updatedAt
+      userId
+    }
+  }
+`;
+
 export const updateUserMutation = gql`
   mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
     updateUser_M(first: $first, last: $last, username: $username, email: $email, password: $password) {

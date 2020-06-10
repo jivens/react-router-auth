@@ -1,8 +1,8 @@
 export const path_role_permissions = {
-    '/admin': ['admin'],
-    '/userlist': ['admin'],
-    '/users': ['admin', 'view'],
-    '/userprofile': ['admin', 'view'],
+    '/admin': ['update'],
+    '/userlist': ['update'],
+    '/users': ['update', 'view'],
+    '/userprofile': ['update', 'view'],
     '/home' : ['*'],
 }
 
