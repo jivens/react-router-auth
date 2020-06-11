@@ -54,23 +54,3 @@ export const getUsersQuery = gql`
     }
   }
 `;
-
-export const insertAffixMutation = gql`
-  mutation{
-    insert_affixes_one(object: { editnote: "Editnote", english: "ENGLISH", link: "link",  nicodemus: "NICODEMUS", page: "page", salish: "salish", type: "type"} ){
-      active
-      createdAt
-      editnote
-      english
-      id
-      link
-      nicodemus
-      page
-      prevId
-      salish
-      type
-      updatedAt
-      userId
-    }
-  }
-`
