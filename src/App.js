@@ -85,16 +85,16 @@ function App(props) {
     if (!data) {
       localStorage.removeItem("tokens")
       localStorage.removeItem("user")
-      console.log("Setting the goddamn authorization tokens")
+      console.log("Setting the authorization tokens")
       setAuthTokens();
-      console.log("Setting the goddamn user")
+      console.log("Setting the user")
       setUser();
     }
     else {
-      console.log("Setting the goddamn authorization tokens")
+      console.log("Setting the authorization tokens")
       localStorage.setItem("tokens", JSON.stringify(data));
       setAuthTokens(data);
-      console.log("Setting the goddamn user")
+      console.log("Setting the user")
       let userQuery = await authClient.query({
         query: getUserFromToken,
         errorPolicy: 'all'
