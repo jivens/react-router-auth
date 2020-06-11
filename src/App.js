@@ -10,11 +10,13 @@ import Signup from './pages/Signup';
 import Users from './pages/Users';
 import UserProfile from './pages/UserProfile';
 import UserListContainer from './pages/UserListContainer';
+import Testmutation from './pages/Testmutation';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
 import NavBar from './components/NavBar';
 import 'react-toastify/dist/ReactToastify.css';
+import { ApolloProvider } from '@apollo/react-hooks';
 
 function App(props) {
 
@@ -35,7 +37,7 @@ function App(props) {
       return forward(operation);
     }).concat(
       new HttpLink({
-        uri: 'http://localhost:8080',
+        uri: 'http://localhost:8080/v1/graphql',
       })
     ),
     cache: new InMemoryCache(),
@@ -115,6 +117,7 @@ function App(props) {
 
   return (
     <AuthContext.Provider value={{ client: client, authClient: authClient, user, setUser, authTokens, setAuthTokens: setTokens}}>
+      {/* <ApolloProvider client = {client}> */}
       <Router>
         <div>
           <NavBar>
@@ -127,12 +130,14 @@ function App(props) {
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
               <PrivateRoute path="/userlist" component={UserListContainer} key="UserListContainer" />
+              <Route path="/testmutation" component={Testmutation} key="TestmutationPage" />
               <Route path="/not-found" component={NotFound} key="NotFound" />
               <Route component={NotFoundRedirect} key="NotFoundRedirect" />
             </Switch>
           </NavBar>
         </div>
       </Router>
+      {/* </ApolloProvider> */}
     </AuthContext.Provider>
   );
 }
