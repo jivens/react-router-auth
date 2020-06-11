@@ -19,7 +19,7 @@ function UserListContainer(props) {
 
     console.log("Data from user query: ", userList)
 
-	if (user && user.roles && user.roles.includes('admin')) {
+	if (user && user.roles && user.roles.includes('update')) {
   		return <UserList userListData={userList.data.users_Q} />
     }
     

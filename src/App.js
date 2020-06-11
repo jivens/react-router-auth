@@ -9,6 +9,7 @@ import Login from "./pages/Login";
 import Signup from './pages/Signup';
 import Users from './pages/Users';
 import UserProfile from './pages/UserProfile';
+import AddAffix from './pages/AddAffix';
 import UserListContainer from './pages/UserListContainer';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
@@ -35,7 +36,7 @@ function App(props) {
       return forward(operation);
     }).concat(
       new HttpLink({
-        uri: 'http://localhost:8080',
+        uri: 'http://localhost:8080/v1/graphql',
       })
     ),
     cache: new InMemoryCache(),
@@ -123,6 +124,7 @@ function App(props) {
               <Route exact path="/" component={Home} key="HomePage" />
               <Route path="/login" component={Login} key="LoginPage" />
               <Route path="/signup" component={Signup} key="SignupPage" />
+              <Route path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
