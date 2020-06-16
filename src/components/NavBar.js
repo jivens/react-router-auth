@@ -82,6 +82,9 @@ const NavBarDesktop = ({ rightItems }) => (
     <Menu.Item as={NavLink} to="/admin" name="Admin" key="madmin">
        Admin
     </Menu.Item>
+    <Menu.Item as={NavLink} to="/affixes" name="Affixes" key="maffixes">
+       Affixes
+    </Menu.Item>
     <Menu.Menu position="right">
       {map(rightItems, item  => <Popup key={item.key} content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}
     </Menu.Menu>
