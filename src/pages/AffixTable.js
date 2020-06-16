@@ -22,6 +22,8 @@ const getStyles = (props, align = 'left') => [
 function Table({
   columns,
   data,
+  setLimit,
+  setOffset,
   loading,
    })
   { const filterTypes = React.useMemo(
@@ -180,7 +182,7 @@ function Table({
       </table>
 
       <div className="pagination">
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+        <button onClick={() => setOffset(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
         <button onClick={() => previousPage()} disabled={!canPreviousPage}>
@@ -228,7 +230,7 @@ function Table({
 }
 
 
-function AffixTable({affixes}) {
+function AffixTable({setLimit, setOffset, affixes}) {
   const columns = React.useMemo(
     () => [
       {
@@ -310,6 +312,8 @@ function AffixTable({affixes}) {
       <Table
         columns={columns}
         data={data}
+        setLimit={setLimit}
+        setOffset={setOffset}
       />
     </TableStyles>
   )

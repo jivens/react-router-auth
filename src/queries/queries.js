@@ -43,21 +43,21 @@ export const updateUserMutation = gql`
 `;
 
 export const getUsersQuery = gql`
-  {
-    users_Q {
-      id
-      first
-      last
-      username
-      password
-      email
+    query($limit: Int, $offset: Int) {
+      users_Q(limit: $limit, offset: $offset) {
+        id
+        first
+        last
+        username
+        password
+        email
+      }
     }
-  }
 `;
 
 export const getAffixesQuery = gql`
-  query getAffixesQuery($active: String, $search_str: String) {
-    affixes(where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}) {
+  query getAffixesQuery($active: String, $search_str: String, $limit: Int, $offset: Int) {
+    affixes(limit: $limit, offset: $offset, where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}) {
       active
       english
       nicodemus
