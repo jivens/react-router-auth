@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "../components/AuthForm";
 import { useAuth } from "../context/auth";
 import { broadCastSuccess } from '../utils/messages'
@@ -8,9 +8,10 @@ import AffixTable from "./AffixTable";
 
 function Affixes(props) {
   const { client } = useAuth();
-  
- 
-  const { loading, error, data } = useQuery(getAffixesQuery, {client: client});
+  const [limit, setLimit] = useState(10);
+  const [offset, setOffset] = useState(0);
+   
+  const { loading, error, data } = useQuery(getAffixesQuery, {client: client, variables: { limit: limit, offset: offset} });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -20,7 +21,7 @@ function Affixes(props) {
     return <div>Error!</div>;
   }
   
-  return <AffixTable affixes={data.affixes} />;
+  return <AffixTable setLimit={setLimit} setOffset={setOffset} affixes={data.affixes} />;
   
 }
 
