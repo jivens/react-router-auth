@@ -54,3 +54,25 @@ export const getUsersQuery = gql`
     }
   }
 `;
+
+export const getAffixesQuery = gql`
+  query getAffixesQuery($active: String, $search_str: String) {
+    affixes(where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}) {
+      active
+      english
+      nicodemus
+      createdAt
+      editnote
+      link
+      page
+      prevId
+      salish
+      type
+      updatedAt
+      id
+      user{
+        username
+      }
+    }
+  }
+  `;

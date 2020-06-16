@@ -12,6 +12,7 @@ import UserProfile from './pages/UserProfile';
 import AddAffix from './pages/AddAffix';
 import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
+import Affixes from './pages/Affixes';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
@@ -128,6 +129,7 @@ function App(props) {
               <Route path="/login" component={Login} key="LoginPage" />
               <Route path="/signup" component={Signup} key="SignupPage" />
               <Route path="/addaffix" component={AddAffix} key="AddAffix" />
+              <Route path="/affixes" component={Affixes} key="Affixes" />
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
