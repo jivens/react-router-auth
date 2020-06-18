@@ -8,10 +8,14 @@ import AffixTable from "./AffixTable";
 
 function Affixes(props) {
   const { client } = useAuth();
-  const [limit, setLimit] = useState(10);
-  const [offset, setOffset] = useState(0);
-   
-  const { loading, error, data } = useQuery(getAffixesQuery, {client: client, variables: { limit: limit, offset: offset} });
+  let [limit, setLimit] = useState(20);
+  let [offset, setOffset] = useState(0);
+  let setTheOffset = (offset) => { 
+    console.log(offset)
+    setOffset(offset)
+  }
+  
+  let { loading, error, data } = useQuery(getAffixesQuery, {client: client, variables: { limit: limit, offset: offset} });
 
   if (loading) {
     return <div>Loading...</div>;
@@ -21,7 +25,7 @@ function Affixes(props) {
     return <div>Error!</div>;
   }
   
-  return <AffixTable setLimit={setLimit} setOffset={setOffset} affixes={data.affixes} />;
+  return <AffixTable setLimit={setLimit} setOffset={setTheOffset} affixes={data.affixes} />;
   
 }
 
