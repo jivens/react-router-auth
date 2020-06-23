@@ -290,8 +290,7 @@ function AffixTable() {
         offset: offset
        }
     })
-    console.log(data)
-    return data.affixes
+    return data
     // .then((affixData) => {
     //   console.log(affixData.data.affixes)
     //   return affixData.data.affixes
@@ -319,9 +318,9 @@ function AffixTable() {
       if (fetchId === fetchIdRef.current) { 
         getAffixes(pageSize, pageSize * pageIndex)
         .then((data) => {
-          console.log(data)
-          setData(data)
-          setPageCount(Math.ceil(195 / pageSize))
+          let totalCount = data.affixes_aggregate.aggregate.count
+          setData(data.affixes)
+          setPageCount(Math.ceil(totalCount / pageSize))
           setLoading(false)
         })
         .catch((error) => {

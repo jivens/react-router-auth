@@ -55,24 +55,30 @@ export const getUsersQuery = gql`
     }
 `;
 
+// need aggregate permission to get the total count
 export const getAffixesQuery = gql`
-  query getAffixesQuery($active: String, $search_str: String, $limit: Int, $offset: Int) {
-    affixes(limit: $limit, offset: $offset, where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}) {
-      active
-      english
-      nicodemus
-      createdAt
-      editnote
-      link
-      page
-      prevId
-      salish
-      type
-      updatedAt
-      id
-      user{
-        username
-      }
+query getAffixesQuery($active: String, $search_str: String, $limit: Int, $offset: Int) {
+  affixes_aggregate(where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}, order_by: $affix_order) {
+    aggregate {
+      count
     }
   }
+  affixes(limit: $limit, offset: $offset, where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}) {
+    active
+    english
+    nicodemus
+    createdAt
+    editnote
+    link
+    page
+    prevId
+    salish
+    type
+    updatedAt
+    id
+    user {
+      username
+    }
+  }
+}
   `;
