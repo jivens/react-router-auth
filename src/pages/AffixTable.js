@@ -76,6 +76,7 @@ function Table({
       // This means we'll also have to provide our own
       // pageCount.
       pageCount: controlledPageCount,
+      manualSorting: true
     },
     usePagination
   )
@@ -279,15 +280,17 @@ function AffixTable() {
   const [data, setData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const [pageCount, setPageCount] = React.useState(0)
+  const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
   const { client } = useAuth();
 
-  async function getAffixes(limit, offset) {
+  async function getAffixes(limit, offset, orderBy) {
     const { data } = await client.query({
       query: getAffixesQuery,
       variables: { 
         limit: limit,
-        offset: offset
+        offset: offset,
+        affix_order: orderBy
        }
     })
     return data
@@ -316,7 +319,7 @@ function AffixTable() {
     setTimeout(() => {
       // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) { 
-        getAffixes(pageSize, pageSize * pageIndex)
+        getAffixes(pageSize, pageSize * pageIndex, orderBy)
         .then((data) => {
           let totalCount = data.affixes_aggregate.aggregate.count
           setData(data.affixes)
