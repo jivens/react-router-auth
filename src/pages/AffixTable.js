@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTable, usePagination } from 'react-table'
+import { useTable, usePagination, useSortBy } from 'react-table'
 import { useAuth } from "../context/auth";
 import { useQuery } from '@apollo/react-hooks'
 import { getAffixesQuery } from './../queries/queries'
+import { sortReshape } from "./../utils/reshapers"
 
 //import makeData from './makeData'
 
@@ -49,6 +50,7 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
+  sortBy: controlledSortBy,
 }) {
   const {
     getTableProps,
@@ -65,7 +67,7 @@ function Table({
     previousPage,
     setPageSize,
     // Get the state from the instance
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, sortBy },
   } = useTable(
     {
       columns,
@@ -76,14 +78,16 @@ function Table({
       // This means we'll also have to provide our own
       // pageCount.
       pageCount: controlledPageCount,
+      manualSortBy: true
     },
+    useSortBy,
     usePagination
   )
 
   // Listen for changes in pagination and use the state to fetch our new data
   React.useEffect(() => {
-    fetchData({ pageIndex, pageSize })
-  }, [fetchData, pageIndex, pageSize])
+    fetchData({ pageIndex, pageSize, sortBy })
+  }, [fetchData, pageIndex, pageSize, sortBy])
 
   // Render the UI for your table
   return (
@@ -97,6 +101,7 @@ function Table({
               pageCount,
               canNextPage,
               canPreviousPage,
+              sortBy
             },
             null,
             2
@@ -108,7 +113,7 @@ function Table({
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render('Header')}
                   <span>
                     {column.isSorted
@@ -209,6 +214,7 @@ function AffixTable() {
         accessor: 'id',
         tableName: 'AffixTable',
         show: false,
+        id: 'id'
       },
       {
         Header: 'Type',
@@ -216,6 +222,7 @@ function AffixTable() {
         //Filter: SelectColumnFilter,
         tableName: 'AffixTable',
         show: true,
+        id: 'type'
       },
       {
         Header: 'Nicodemus',
@@ -223,6 +230,7 @@ function AffixTable() {
         //filter: 'fuzzyText',
         tableName: 'AffixTable',
         show: true,
+        id: 'nicodemus'
       },
       {
         Header: 'English',
@@ -230,6 +238,7 @@ function AffixTable() {
         //filter: 'fuzzyText',
         tableName: 'AffixTable',
         show: true,
+        id: 'english'
       },
       {
         Header: 'Link',
@@ -238,6 +247,7 @@ function AffixTable() {
         //Cell: ({ row }) => <a href={row.original.link} target="_blank" rel="noopener noreferrer">{row.original.page}</a>,
         tableName: 'AffixTable',
         show: true,
+        id: 'link'
       },
       {
         Header: 'Username',
@@ -246,6 +256,7 @@ function AffixTable() {
         //filter: 'includes',
         tableName: 'AffixTable',
         show: false,
+        id: 'username'
       },
       {
         Header: 'Active',
@@ -253,6 +264,7 @@ function AffixTable() {
         //filter: 'fuzzyText',
         tableName: 'AffixTable',
         show: false,
+        id: 'active'
       },
       {
         Header: 'Edit/Delete',
@@ -260,6 +272,7 @@ function AffixTable() {
         sortable: false,
         width: 100,
         show: false,
+        id: 'editDelete',
         tableName: 'AffixTable',
         // Cell: ({row, original}) => (
         //   <div>
@@ -282,12 +295,13 @@ function AffixTable() {
   const fetchIdRef = React.useRef(0)
   const { client } = useAuth();
 
-  async function getAffixes(limit, offset) {
+  async function getAffixes(limit, offset, sortBy) {
     const { data } = await client.query({
       query: getAffixesQuery,
       variables: { 
         limit: limit,
-        offset: offset
+        offset: offset,
+        affix_order: sortBy
        }
     })
     return data
@@ -301,7 +315,7 @@ function AffixTable() {
     // })  
   }  
 
-  const fetchData = React.useCallback(({ pageSize, pageIndex }) => {
+  const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy }) => {
     // This will get called when the table needs new data
     // You could fetch your data from literally anywhere,
     // even a server. But for this example, we'll just fake it.
@@ -315,8 +329,10 @@ function AffixTable() {
     // We'll even set a delay to simulate a server here
     setTimeout(() => {
       // Only update the data if this is the latest fetch
-      if (fetchId === fetchIdRef.current) { 
-        getAffixes(pageSize, pageSize * pageIndex)
+      if (fetchId === fetchIdRef.current) {
+        const controlledSort = sortReshape(sortBy) 
+        console.log(controlledSort)
+        getAffixes(pageSize, pageSize * pageIndex, controlledSort)
         .then((data) => {
           let totalCount = data.affixes_aggregate.aggregate.count
           setData(data.affixes)
