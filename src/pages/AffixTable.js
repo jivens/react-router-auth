@@ -5,17 +5,13 @@ import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilte
 import { useAuth } from "../context/auth";
 import { useQuery } from '@apollo/react-hooks'
 import { getAffixesQuery } from './../queries/queries'
-import { sortReshape } from "./../utils/reshapers"
-
-//import makeData from './makeData'
+import { sortReshape, filterReshape } from "./../utils/reshapers"
 
 const Styles = styled.div`
   padding: 1rem;
-
   table {
     border-spacing: 0;
     border: 1px solid black;
-
     tr {
       :last-child {
         td {
@@ -23,35 +19,29 @@ const Styles = styled.div`
         }
       }
     }
-
     th,
     td {
       margin: 0;
       padding: 0.5rem;
       border-bottom: 1px solid black;
       border-right: 1px solid black;
-
       :last-child {
         border-right: 0;
       }
     }
   }
-
   .pagination {
     padding: 0.5rem;
   }
 `
 
-// Let's add a fetchData method to our Table component that will be used to fetch
-// new data when pagination state changes
-// We can also add a loading state to let our table know it's loading new data
+
 function Table({
   columns,
   data,
   fetchData,
   loading,
   pageCount: controlledPageCount,
-  sortBy: controlledSortBy,
 }) {
 
   const filterTypes = React.useMemo(
@@ -121,14 +111,13 @@ function Table({
     useGlobalFilter,
     useFilters,
     useSortBy,
-    usePagination,
-    
+    usePagination,   
   )
 
   // Listen for changes in pagination and use the state to fetch our new data
   React.useEffect(() => {
-    fetchData({ pageIndex, pageSize, sortBy })
-  }, [fetchData, pageIndex, pageSize, sortBy])
+    fetchData({ pageIndex, pageSize, sortBy, filters })
+  }, [fetchData, pageIndex, pageSize, sortBy, filters])
 
   // Render the UI for your table
   return (
@@ -156,9 +145,9 @@ function Table({
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  {column.render('Header')}
-                  <span>
+                <th {...column.getHeaderProps()}>
+                  <span {...column.getSortByToggleProps()}>
+                    {column.render('Header')}                 
                     {column.isSorted
                       ? column.isSortedDesc
                         ? ' 🔽'
@@ -211,10 +200,7 @@ function Table({
           </tr>
         </tbody>
       </table>
-      {/* 
-        Pagination can be built however you'd like. 
-        This is just a very basic UI implementation:
-      */}
+
       <div className="pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
@@ -263,8 +249,6 @@ function Table({
   )
 }
 
-// Let's simulate a large dataset on the server (outside of our component)
-//const serverData = makeData(10000)
 
 function AffixTable() {
   const columns = React.useMemo(
@@ -287,7 +271,7 @@ function AffixTable() {
       {
         Header: 'Nicodemus',
         accessor: 'nicodemus',
-        // filter: 'fuzzyText',
+        //filter: 'fuzzyText',
         tableName: 'AffixTable',
         show: true,
         id: 'nicodemus'
@@ -355,13 +339,14 @@ function AffixTable() {
   const fetchIdRef = React.useRef(0)
   const { client } = useAuth();
 
-  async function getAffixes(limit, offset, sortBy) {
+  async function getAffixes(limit, offset, sortBy, filters) {
     const { data } = await client.query({
       query: getAffixesQuery,
       variables: { 
         limit: limit,
         offset: offset,
-        affix_order: sortBy
+        affix_order: sortBy,
+        where: filters
        }
     })
     return data
@@ -375,7 +360,7 @@ function AffixTable() {
     // })  
   }  
 
-  const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy }) => {
+  const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters }) => {
     // This will get called when the table needs new data
     // You could fetch your data from literally anywhere,
     // even a server. But for this example, we'll just fake it.
@@ -391,8 +376,13 @@ function AffixTable() {
       // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) {
         const controlledSort = sortReshape(sortBy) 
-        console.log(controlledSort)
-        getAffixes(pageSize, pageSize * pageIndex, controlledSort)
+        const controlledFilter = filterReshape(filters)
+        console.log(controlledFilter)
+        // reset to first page when filters change
+        // if (filters.length > 0) {
+        //   pageIndex = 0
+        // }
+        getAffixes(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
         .then((data) => {
           let totalCount = data.affixes_aggregate.aggregate.count
           setData(data.affixes)

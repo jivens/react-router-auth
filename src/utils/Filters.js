@@ -30,9 +30,22 @@ export function GlobalFilter({
 
 // Define a default UI for filtering
 export function DefaultColumnFilter({
-  column: { id, tableName, filterValue, preFilteredRows, setFilter },
-}) {
-  const count = preFilteredRows.length
+  pageCount, 
+  state: { pageSize },
+  column: { id, tableName, filterValue, setFilter },
+  }) {
+  // console.log(theHash)
+  // const id = theHash.column.id
+  // const tableName = theHash.column.tableName
+  // const filterValue = theHash.column.filterValue
+  // const preFilteredRows = theHash.column.preFilteredRows
+  // const setFilter = theHash.column.setFilter
+  // const pageSize = theHash.state.pageSize
+  // const pageCount = theHash.pageCount
+  // console.log('the pageSize is', pageSize)
+  // console.log('the pageCount is', pageCount)
+  //const count = preFilteredRows.length
+  const count = pageSize * pageCount
 
   return (
     <input
@@ -41,7 +54,7 @@ export function DefaultColumnFilter({
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         //alert(e.target.value + " " + id + " " + tableName)
-        if (tableName == "AffixTable") {
+        if (tableName === "AffixTable") {
           let filtered = []
           //if (filtered.contains)
           filtered.push({
@@ -51,7 +64,7 @@ export function DefaultColumnFilter({
           console.log(filtered)
         }
       }}
-      placeholder={`${count} records...`}
+      placeholder={`~ ${count} records...`}
       style={{
         fontSize: '1rem',
         border: '0',
