@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useTable, usePagination, useSortBy } from 'react-table'
+import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
+import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
 import { useQuery } from '@apollo/react-hooks'
 import { getAffixesQuery } from './../queries/queries'
@@ -52,12 +53,44 @@ function Table({
   pageCount: controlledPageCount,
   sortBy: controlledSortBy,
 }) {
+
+  const filterTypes = React.useMemo(
+    () => ({
+      fuzzyText: fuzzyTextFilterFn,
+      text: (rows, id, filterValue) => {
+        return rows.filter(row => {
+          const rowValue = row.values[id]
+          return rowValue !== undefined
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
+            : true
+        })
+      },
+    }),
+    []
+  )
+
+  const defaultColumn = React.useMemo(
+    () => ({
+      Filter: DefaultColumnFilter,       // Let's set up our default Filter UI
+      minWidth: 25, // minWidth is only used as a limit for resizing
+      width: 50, // width is used for both the flex-basis and flex-grow
+      maxWidth: 500, // maxWidth is only used as a limit for resizing
+    }),
+    []
+  )
+
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
     page,
+    state,
+    visibleColumns,
+    preGlobalFilteredRows,
+    setGlobalFilter,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -67,7 +100,7 @@ function Table({
     previousPage,
     setPageSize,
     // Get the state from the instance
-    state: { pageIndex, pageSize, sortBy },
+    state: { pageIndex, pageSize, sortBy, filters, globalFilter },
   } = useTable(
     {
       columns,
@@ -78,10 +111,18 @@ function Table({
       // This means we'll also have to provide our own
       // pageCount.
       pageCount: controlledPageCount,
-      manualSortBy: true
+      manualSortBy: true,
+      manualFilters: true,
+      manualGlobalFilter: true,
+      defaultColumn,
+      filterTypes,
+      hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
     },
+    useGlobalFilter,
+    useFilters,
     useSortBy,
-    usePagination
+    usePagination,
+    
   )
 
   // Listen for changes in pagination and use the state to fetch our new data
@@ -101,7 +142,9 @@ function Table({
               pageCount,
               canNextPage,
               canPreviousPage,
-              sortBy
+              sortBy,
+              filters,
+              globalFilter
             },
             null,
             2
@@ -122,10 +165,27 @@ function Table({
                         : ' 🔼'
                       : ''}
                   </span>
+                  <div>
+                    {column.canFilter ? column.render('Filter') : null}
+                  </div>
                 </th>
               ))}
             </tr>
           ))}
+          <tr>
+            <th
+              colSpan={visibleColumns.length}
+              style={{
+                textAlign: 'left',
+              }}
+            >
+              <GlobalFilter
+                preGlobalFilteredRows={preGlobalFilteredRows}
+                globalFilter={state.globalFilter}
+                setGlobalFilter={setGlobalFilter}
+              />
+            </th>
+          </tr>
         </thead>
         <tbody {...getTableBodyProps()}>
           {page.map((row, i) => {
@@ -227,7 +287,7 @@ function AffixTable() {
       {
         Header: 'Nicodemus',
         accessor: 'nicodemus',
-        //filter: 'fuzzyText',
+        // filter: 'fuzzyText',
         tableName: 'AffixTable',
         show: true,
         id: 'nicodemus'
@@ -235,7 +295,7 @@ function AffixTable() {
       {
         Header: 'English',
         accessor: 'english',
-        //filter: 'fuzzyText',
+        // filter: 'fuzzyText',
         tableName: 'AffixTable',
         show: true,
         id: 'english'
