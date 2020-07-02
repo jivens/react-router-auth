@@ -2,13 +2,17 @@ import React from 'react';
 import { Button } from 'semantic-ui-react'
 import matchSorter from 'match-sorter'
 
+// {
+//   preGlobalFilteredRows,
+//   globalFilter,
+//   setGlobalFilter,
+// }
+
 // Define a default UI for filtering
 export function GlobalFilter({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter,
-}) {
-  const count = preGlobalFilteredRows.length
+    globalFilter,
+    setGlobalFilter
+  }) {
 
   return (
     <span>
@@ -18,7 +22,7 @@ export function GlobalFilter({
         onChange={e => {
           setGlobalFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         }}
-        placeholder={`${count} records...`}
+        placeholder={`enter a search term`}
         style={{
           fontSize: '1.1rem',
           border: '0',

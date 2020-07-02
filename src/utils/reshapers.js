@@ -16,10 +16,15 @@ export function sortReshape(sortBy) {
 
 // "where": { "_and": [
 //                      {"active": {"_eq": "Y"}}, 
-//                      {"_or": [
-//                               {"english": {"_like": "%horse%"}}, 
-//                               {"nicodemus": {"_like": "%horse%"}}
-//                              ]
+//                      {"_and": [
+//                                  {"english": {"_like": "%pu"}}, 
+//                                  {"nicodemus": {"_like": "%ha%"}},
+//                                  {"_or": [
+//                                            {"english": {"_like": "%he%"}},
+//                                            {"nicodemus": {"_like": "%he%"}}
+//                                          ]
+//                                  }
+//                               ]
 //                      }
 //                    ]
 //           }
@@ -32,19 +37,42 @@ export function sortReshape(sortBy) {
 //     {
 //       "id": "english",
 //       "value": "pu"
-//     }
+//     },
 //   ]
+//
+//  "globalFilter": "he"
+//
+//  "globalFilterVariables": ["english", "nicodemus"]
 
 
-export function filterReshape(filters) {
+export function filterReshape(filters, globalFilter, globalFilterVariables) {
+    console.log('filters', filters)
+    console.log('globalFilter', globalFilter)
+    console.log('globalFilterVariables', globalFilterVariables)
     let res = {}
     let andCond = []
-    filters.forEach((item) => {
-        let h = {}
-        h = { [item.id]: { "_like": "%" + item.value + "%" } }     
-        andCond.push(h)
-    })
-    if (filters.length > 0) {
+    let globalOrCond = []
+
+    if (globalFilterVariables && globalFilter) {
+        globalFilterVariables.forEach((item) => {
+            let h = {}
+            h = { [item]: { "_like": "%" + globalFilter + "%" } }     
+            globalOrCond.push(h)        
+        })
+    }
+
+    if (filters) {
+        filters.forEach((item) => {
+            let h = {}
+            h = { [item.id]: { "_like": "%" + item.value + "%" } }     
+            andCond.push(h)
+        })
+    }
+    if (globalFilter && globalFilterVariables && globalFilterVariables.length > 0 && globalFilter.length > 0) {
+        andCond.push({"_or": globalOrCond})
+    }
+
+    if (andCond.length > 0) {
         res =  {"_and": [{"active": {"_eq": "Y"}}, {"_and": andCond}]} 
     } else {
         res = {"active": {"_eq": "Y"}}
