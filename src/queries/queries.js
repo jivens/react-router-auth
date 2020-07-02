@@ -57,13 +57,13 @@ export const getUsersQuery = gql`
 
 // need aggregate permission to get the total count
 export const getAffixesQuery = gql`
-query getAffixesQuery($active: String, $search_str: String, $limit: Int, $offset: Int, $affix_order: [affixes_order_by!]) {
-  affixes_aggregate(where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}) {
+query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by!], $where: affixes_bool_exp) {
+  affixes_aggregate(where: $where) {
     aggregate {
       count
     }
   }
-  affixes(limit: $limit, offset: $offset, order_by: $affix_order, where: {_and: [{active: {_eq: $active}}, {_or: [{english: {_like: $search_str}}, {nicodemus: {_like: $search_str}}]}]}) {
+  affixes(limit: $limit, offset: $offset, where: $where, order_by: $affix_order) {
     active
     english
     nicodemus
