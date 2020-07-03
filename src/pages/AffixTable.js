@@ -116,8 +116,8 @@ function Table({
 
   // Listen for changes in pagination and use the state to fetch our new data
   React.useEffect(() => {
-    fetchData({ pageIndex, pageSize, sortBy, filters })
-  }, [fetchData, pageIndex, pageSize, sortBy, filters])
+    fetchData({ pageIndex, pageSize, sortBy, filters, globalFilter })
+  }, [fetchData, pageIndex, pageSize, sortBy, filters, globalFilter])
 
   // Render the UI for your table
   return (
@@ -347,7 +347,7 @@ function AffixTable() {
         limit: limit,
         offset: offset,
         affix_order: sortBy,
-        where: filters
+        where: filters,
        }
     })
     return data
@@ -361,7 +361,7 @@ function AffixTable() {
     // })  
   }  
 
-  const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters }) => {
+  const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
     // This will get called when the table needs new data
     // You could fetch your data from literally anywhere,
     // even a server. But for this example, we'll just fake it.
@@ -377,7 +377,7 @@ function AffixTable() {
       // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) {
         const controlledSort = sortReshape(sortBy) 
-        const controlledFilter = filterReshape(filters)
+        const controlledFilter = filterReshape(filters, globalFilter, ["english", "nicodemus"])
         console.log(controlledFilter)
         // reset to first page when filters change
         // if (filters.length > 0) {
