@@ -16,7 +16,7 @@ export function GlobalFilter({
 
   return (
     <span>
-      Search:{' '}
+      <label style={{marginRight: '10px'}}> Search all:</label>
       <input
         value={globalFilter || ''}
         onChange={e => {
@@ -24,7 +24,7 @@ export function GlobalFilter({
         }}
         placeholder={`enter a search term`}
         style={{
-          fontSize: '1.1rem',
+          fontSize: '1rem',
           border: '0',
         }}
       />
@@ -68,7 +68,7 @@ export function DefaultColumnFilter({
           console.log(filtered)
         }
       }}
-      placeholder={`~ ${count} records...`}
+      placeholder={`~ ${count} items...`}
       style={{
         fontSize: '1rem',
         border: '0',
