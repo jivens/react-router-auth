@@ -12,7 +12,10 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
+  selectValues
 }) {
+
+  console.log("Inside table, I have select values: ", selectValues)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -60,7 +63,7 @@ function Table({
     previousPage,
     setPageSize,
     // Get the state from the instance
-    state: { pageIndex, pageSize, sortBy, filters, globalFilter },
+    state: { pageIndex, pageSize, sortBy, filters, globalFilter }
   } = useTable(
     {
       columns,
@@ -77,6 +80,7 @@ function Table({
       defaultColumn,
       filterTypes,
       hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
+      selectValues
     },
     useGlobalFilter,
     useFilters,
@@ -92,7 +96,7 @@ function Table({
   // Render the UI for your table
   return (
     <>
-      {/* <pre>
+      <pre>
         <code>
           {JSON.stringify(
             {
@@ -109,7 +113,7 @@ function Table({
             2
           )}
         </code>
-      </pre> */}
+      </pre>
       <table {...getTableProps()}>
         <thead>
           <tr>
@@ -217,7 +221,9 @@ function Table({
 }
 
 
-function AffixTable() {
+function AffixTable(props) {
+  console.log(props.selectValues)
+
   const columns = React.useMemo(
     () => [
       {
@@ -291,7 +297,7 @@ function AffixTable() {
         Filter: SelectColumnFilter,
         tableName: 'AffixTable',
         show: false,
-        id: 'username'
+        id: 'user.username'
       },
       {
         Header: 'Active',
@@ -327,7 +333,7 @@ function AffixTable() {
   const [data, setData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const [pageCount, setPageCount] = React.useState(0)
-  const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
+  //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
   const { client } = useAuth();
 
@@ -391,6 +397,7 @@ function AffixTable() {
         fetchData={fetchData}
         loading={loading}
         pageCount={pageCount}
+        selectValues={props.selectValues}
       />
     </TableStyles>
   )

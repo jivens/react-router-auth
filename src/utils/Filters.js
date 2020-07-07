@@ -58,15 +58,15 @@ export function DefaultColumnFilter({
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         //alert(e.target.value + " " + id + " " + tableName)
-        if (tableName === "AffixTable") {
-          let filtered = []
-          //if (filtered.contains)
-          filtered.push({
-            id: id,
-            value: e.target.value
-          })
-          console.log(filtered)
-        }
+        // if (tableName === "AffixTable") {
+        //   let filtered = []
+        //   //if (filtered.contains)
+        //   filtered.push({
+        //     id: id,
+        //     value: e.target.value
+        //   })
+        //   console.log(filtered)
+        // }
       }}
       placeholder={`~ ${count} items...`}
       style={{
@@ -80,17 +80,27 @@ export function DefaultColumnFilter({
 // This is a custom filter UI for selecting
 // a unique option from a list
 export function SelectColumnFilter({
-  column: { filterValue, setFilter, preFilteredRows, id },
+  selectValues,
+  column: { filterValue, setFilter, id },
 }) {
+  console.log(selectValues)
   // Calculate the options for filtering
   // using the preFilteredRows
   const options = React.useMemo(() => {
+    // const options = new Set()
+    // preFilteredRows.forEach(row => {
+    //   options.add(row.values[id])
+    // })
     const options = new Set()
-    preFilteredRows.forEach(row => {
-      options.add(row.values[id])
-    })
-    return [...options.values()]
-  }, [id, preFilteredRows])
+    if (selectValues[id]) {
+      return selectValues[id]
+    } else {
+      options.add("snarg")
+      options.add("blarf")
+      options.add("warp")
+      return [...options.values()]
+    }
+  }, [id])
 
   // Render a multi-select box
   return (
