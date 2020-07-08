@@ -55,6 +55,14 @@ export const getUsersQuery = gql`
     }
 `;
 
+export const getUsernamesQuery = gql`
+    query {
+      users {
+        username
+      }
+    }
+`;
+
 // need aggregate permission to get the total count
 export const getAffixesQuery = gql`
 query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by!], $where: affixes_bool_exp) {

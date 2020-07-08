@@ -10,6 +10,8 @@ export function sortReshape(sortBy) {
         }
         res.push(h)
     })
+
+    console.log("The result of the sort: ", res)
     
     return(res)
 }
@@ -46,9 +48,9 @@ export function sortReshape(sortBy) {
 
 
 export function filterReshape(filters, globalFilter, globalFilterVariables) {
-    console.log('filters', filters)
-    console.log('globalFilter', globalFilter)
-    console.log('globalFilterVariables', globalFilterVariables)
+    //console.log('filters', filters)
+    //console.log('globalFilter', globalFilter)
+    //console.log('globalFilterVariables', globalFilterVariables)
     let res = {}
     let andCond = []
     let globalOrCond = []
@@ -64,7 +66,13 @@ export function filterReshape(filters, globalFilter, globalFilterVariables) {
     if (filters) {
         filters.forEach((item) => {
             let h = {}
-            h = { [item.id]: { "_like": "%" + item.value + "%" } }     
+            if (item.id.includes(".")) {
+                // Make an assumption that there is only one '.' char in the string
+                let [outer, inner] = item.id.split(".")
+                h = { [outer]: { [inner]: { "_like": "%" + item.value + "%" } } }
+            } else {
+                h = { [item.id]: { "_like": "%" + item.value + "%" } }
+            }
             andCond.push(h)
         })
     }
@@ -77,6 +85,8 @@ export function filterReshape(filters, globalFilter, globalFilterVariables) {
     } else {
         res = {"active": {"_eq": "Y"}}
     }
+
+    console.log("The filter result: ", res)
 
     return(res)
 }
