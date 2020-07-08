@@ -92,7 +92,7 @@ function Table({
   // Render the UI for your table
   return (
     <>
-      {/* <pre>
+      <pre>
         <code>
           {JSON.stringify(
             {
@@ -109,7 +109,7 @@ function Table({
             2
           )}
         </code>
-      </pre> */}
+      </pre>
       <table {...getTableProps()}>
         <thead>
           <tr>
@@ -250,7 +250,6 @@ function AffixTable() {
       {
         Header: 'Type',
         accessor: 'type',
-        Filter: SelectColumnFilter,
         tableName: 'AffixTable',
         show: true,
         id: 'type'
@@ -288,15 +287,14 @@ function AffixTable() {
       {
         Header: 'Username',
         accessor: 'user.username',
-        Filter: SelectColumnFilter,
+        disableFilters: true,
         tableName: 'AffixTable',
         show: false,
-        id: 'username'
+        id: 'users.username'
       },
       {
         Header: 'Active',
         accessor: 'active',
-        Filter: SelectColumnFilter,
         width: 50,
         tableName: 'AffixTable',
         show: false,

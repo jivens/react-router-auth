@@ -58,15 +58,15 @@ export function DefaultColumnFilter({
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
         //alert(e.target.value + " " + id + " " + tableName)
-        if (tableName === "AffixTable") {
-          let filtered = []
-          //if (filtered.contains)
-          filtered.push({
-            id: id,
-            value: e.target.value
-          })
-          console.log(filtered)
-        }
+        // if (tableName === "AffixTable") {
+        //   let filtered = []
+        //   //if (filtered.contains)
+        //   filtered.push({
+        //     id: id,
+        //     value: e.target.value
+        //   })
+        //   console.log('filtered is', filtered)
+        // }
       }}
       placeholder={`~ ${count} items...`}
       style={{
@@ -84,15 +84,18 @@ export function SelectColumnFilter({
 }) {
   // Calculate the options for filtering
   // using the preFilteredRows
-  const options = React.useMemo(() => {
-    const options = new Set()
-    preFilteredRows.forEach(row => {
-      options.add(row.values[id])
-    })
-    return [...options.values()]
-  }, [id, preFilteredRows])
+  // const options = React.useMemo(() => {
+  //   const options = new Set()
+  //   preFilteredRows.forEach(row => {
+  //     options.add(row.values[id])
+  //   })
+  //   return [...options.values()]
+  // }, [id, preFilteredRows])
 
   // Render a multi-select box
+  const options = React.useMemo(() => {
+    return ["original"]
+  }, [id])
   return (
     <select
       value={filterValue}
@@ -102,7 +105,7 @@ export function SelectColumnFilter({
     >
       <option value="">All</option>
       {options.map((option, i) => (
-        <option key={i} value={option}>
+        <option key={i + 1} value={option}>
           {option}
         </option>
       ))}

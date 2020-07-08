@@ -1,7 +1,7 @@
 import React from "react";
 import { useTable, useSortBy, useGlobalFilter, useFilters } from 'react-table';
 import TableStyles from "../components/table-styles";
-import { DefaultColumnFilter, fuzzyTextFilterFn, GlobalFilter } from "../components/Filters"
+import { DefaultColumnFilter, fuzzyTextFilterFn, GlobalFilter } from "../utils/Filters"
 import { Grid , Segment } from 'semantic-ui-react';
 
   
