@@ -55,6 +55,10 @@ const NavBarMobile = ({
     <Icon name="leaf" />
       Admin
     </Menu.Item>
+    <Menu.Item as={NavLink} to="/affixes" name="Affixes" size='mini' key="miniaffixes">
+     <Icon name="book" />
+      Affixes
+    </Menu.Item>
     </Sidebar>
     <Sidebar.Pusher
       dimmed={visible}
