@@ -40,6 +40,10 @@ const TableStyles = styled.div`
     margin-bottom: 20px;
   }
 
+  .buttons {
+    display: flex;
+  }
+
   ul {
     list-style: none;
     display: flex;

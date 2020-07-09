@@ -5,6 +5,7 @@ import { useAuth } from "../context/auth";
 import { getAffixesQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
+import { Icon } from "semantic-ui-react";
 
 function Table({
   columns,
@@ -235,12 +236,12 @@ function AffixTable(props) {
         id: 'editDelete',
         tableName: 'AffixTable',
         Cell: ({row, original}) => (
-          <div>
-            <button>
-                !E
+          <div className="buttons">
+            <button class="ui icon button">
+              <Icon name="edit" />
             </button>
-            <button>
-                !X
+            <button class='ui icon button'>
+              <Icon name='close icon' />
             </button>
           </div>
         )
