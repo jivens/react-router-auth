@@ -237,11 +237,11 @@ function AffixTable(props) {
         tableName: 'AffixTable',
         Cell: ({row, original}) => (
           <div className="buttons">
-            <button class="ui icon button">
+            <button className="ui icon button">
               <Icon name="edit" />
             </button>
-            <button class='ui icon button'>
-              <Icon name='close icon' />
+            <button className='ui icon button'>
+              <Icon name='close' />
             </button>
           </div>
         )
