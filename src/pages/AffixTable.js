@@ -255,10 +255,11 @@ function AffixTable(props) {
       // },
       {
         Header: 'Type',
-        accessor: 'type',
+        accessor: 'affix_type.value',
+        Filter: SelectColumnFilter,
         tableName: 'AffixTable',
         show: true,
-        id: 'type'
+        id: 'affix_type.value'
       },
       {
         Header: 'Nicodemus',
@@ -293,18 +294,19 @@ function AffixTable(props) {
       {
         Header: 'Username',
         accessor: 'user.username',
-        disableFilters: true,
+        Filter: SelectColumnFilter,
         tableName: 'AffixTable',
         show: false,
         id: 'user.username'
       },
       {
         Header: 'Active',
-        accessor: 'active',
+        accessor: 'activeByActive.value',
+        Filter: SelectColumnFilter,
         width: 50,
         tableName: 'AffixTable',
         show: false,
-        id: 'active'
+        id: 'activeByActive.value'
       },
       {
         Header: 'Prev. ID',

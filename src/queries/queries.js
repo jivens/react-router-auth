@@ -63,6 +63,22 @@ export const getUsernamesQuery = gql`
     }
 `;
 
+export const getActiveValuesQuery = gql`
+    query {
+      actives {
+        value
+      }
+    }
+`;
+
+export const getAffixTypesQuery = gql`
+    query {
+      affix_types {
+        value
+      }
+    }
+`;
+
 // need aggregate permission to get the total count
 export const getAffixesQuery = gql`
 query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by!], $where: affixes_bool_exp) {
@@ -72,7 +88,9 @@ query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by
     }
   }
   affixes(limit: $limit, offset: $offset, where: $where, order_by: $affix_order) {
-    active
+    activeByActive {
+      value
+    }
     english
     nicodemus
     createdAt
@@ -81,7 +99,9 @@ query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by
     page
     prevId
     salish
-    type
+    affix_type {
+      value
+    }
     updatedAt
     id
     user {

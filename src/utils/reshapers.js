@@ -81,9 +81,9 @@ export function filterReshape(filters, globalFilter, globalFilterVariables) {
     }
 
     if (andCond.length > 0) {
-        res =  {"_and": [{"active": {"_eq": "Y"}}, {"_and": andCond}]} 
+        res =  {"_and": [{"activeByActive": {"value": {"_eq": "Y"}}}, {"_and": andCond}]} 
     } else {
-        res = {"active": {"_eq": "Y"}}
+        res = {"activeByActive": {"value": {"_eq": "Y"}}}
     }
 
     console.log("The filter result: ", res)

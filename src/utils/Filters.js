@@ -103,9 +103,6 @@ export function SelectColumnFilter({
   }, [id])
 
   // Render a multi-select box
-  const options = React.useMemo(() => {
-    return ["original"]
-  }, [id])
   return (
     <select
       value={filterValue}
@@ -115,7 +112,7 @@ export function SelectColumnFilter({
     >
       <option value="">All</option>
       {options.map((option, i) => (
-        <option key={i + 1} value={option}>
+        <option key={i} value={option}>
           {option}
         </option>
       ))}
