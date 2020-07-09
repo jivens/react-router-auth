@@ -13,6 +13,7 @@ import { handleErrors } from '../utils/messages';
 
 
 function Login(props) {
+  const abortController = new AbortController();
   const [isLoggedIn, setLoggedIn] = useState(false);
   const [isError, setIsError] = useState(false);
   const { authClient, setAuthTokens } = useAuth();
@@ -39,8 +40,8 @@ function Login(props) {
         console.log('the token is ', token)
         //localStorage.setItem("tokens", JSON.stringify(token));
         setAuthTokens(token)
-        setLoggedIn(true)
         setSubmitting(false)
+        setLoggedIn(true)
       }
     } 
     catch(e) {
