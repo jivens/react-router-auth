@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
@@ -237,11 +238,17 @@ function AffixTable(props) {
         tableName: 'AffixTable',
         Cell: ({row, original}) => (
           <div className="buttons">
-            <button class="ui icon button">
-              <Icon name="edit" />
-            </button>
-            <button class='ui icon button'>
-              <Icon name='close icon' />
+            <Link 
+              to={{
+                pathname: "/editaffix",
+                search: "?id=" + row.original.id,
+              }}>
+              <button className="ui icon button">
+                <Icon name="edit" />
+              </button>              
+            </Link>
+            <button className='ui icon button'>
+              <Icon name='close' />
             </button>
           </div>
         )
