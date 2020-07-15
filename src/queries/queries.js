@@ -97,6 +97,29 @@ export const updateAffixMutation = gql`
   }
 `;
 
+export const deleteAffixMutation = gql`
+  mutation delete_an_affix($id: Int!, $editnote: String!){
+    update_affixes_by_pk (
+      pk_columns: {id: $id}
+      _set: { active: 2, editnote: $editnote }
+    ) {
+        createdAt
+        active
+        editnote
+        english
+        id
+        link
+        nicodemus
+        page
+        prevId
+        salish
+        type
+        updatedAt
+        userId
+    }
+  }
+`;
+
 export const updateUserMutation = gql`
   mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
     updateUser_M(first: $first, last: $last, username: $username, email: $email, password: $password) {

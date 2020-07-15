@@ -1,27 +1,22 @@
 import React, { useState } from "react";
 import { Redirect, useLocation, useHistory } from 'react-router-dom';
-import { getAffixByIdQuery, updateAffixMutation, getAffixTypesQuery } from './../queries/queries'
+import { getAffixByIdQuery, deleteAffixMutation, getAffixTypesQuery } from './../queries/queries'
 import { Button, Input, Dropdown, Label, Grid, Header, Message } from 'semantic-ui-react';
-import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
 import { useAuth } from "../context/auth";
 import { useQuery } from '@apollo/react-hooks'
 import { handleErrors, broadCastSuccess } from '../utils/messages';
 
+let deleteAffixSchema = Yup.object().shape({
+    editnote: Yup.string()
+      .required('an edit note is required'), 
+    });
 
-let updateAffixSchema = Yup.object().shape({
-  editnote: Yup.string()
-    .required('an edit note is required'),
-  type: Yup.string()
-    .required('you must select a type'),   
-  });
-
-
-function EditAffix() {
+function DeleteAffix() {
   const { client } = useAuth();
-  const [ hasUpdated, setHasUpdated] = useState(false)
+  const [ hasUpdated, setHasUpdated ] = useState(false)
   const search = new URLSearchParams(useLocation().search)
-  //console.log(search.get("id"))
   const id = search.get("id")
   const history = useHistory()
 
@@ -30,33 +25,27 @@ function EditAffix() {
   let { loading: typeLoading, error: typeError, data: typeData } = useQuery(getAffixTypesQuery, {client: client }) 
    
   if (affixLoading || typeLoading) {
-      return <div>loading...</div>
+    return <div>loading...</div>
   }
   if (affixError || typeError) {
-      return <div>Something went wrong</div>
+    return <div>Something went wrong</div>
   }
 
   async function onFormSubmit (values, setSubmitting) {
     try {
       console.log('my values.type is ', values.type)
       const result = await client.mutate({
-        mutation: updateAffixMutation,
+        mutation: deleteAffixMutation,
         variables: {
           id: values.id,
-          type: parseInt(values.type),
-          nicodemus: values.nicodemus,
-          salish: values.salish,
-          english: values.english,
-          editnote: values.editnote,
-          link: values.link,
-          page: values.page
+          editnote: values.editnote
         }
       })
       if (result.error) {
         handleErrors(result.error)
         setSubmitting(false)
       } else {
-        broadCastSuccess(`affix ${values.nicodemus} successfully edited!`)
+        broadCastSuccess(`affix ${values.nicodemus} successfully removed!`)
         setSubmitting(false)
         setHasUpdated(true)
       }
@@ -89,14 +78,13 @@ function EditAffix() {
     history.push(path);
   }
 
-
   return (
     <>
     <Grid centered>
         <Grid.Row>
             <Grid.Column textAlign="center" width={12}>
-                <Header as="h2">Edit an Affix</Header>
-                <Message>The elements whose labels are solid blue are required for all affixes.  The elements whose labels are outlined may be blank.</Message>
+                <Header as="h2">Remove an Affix</Header>
+                <Message>Submitting this form marks the affix as inactive. You must enter a note to proceed.</Message>
             </Grid.Column>
         </Grid.Row>
     </Grid>
@@ -112,7 +100,7 @@ function EditAffix() {
         page: affixData.affixes_by_pk.page ? affixData.affixes_by_pk.page : "" ,
         editnote: affixData.affixes_by_pk.editnote ? affixData.affixes_by_pk.editnote : "" 
         }}
-        validationSchema={updateAffixSchema}
+        validationSchema={deleteAffixSchema}
         onSubmit={(values, { setSubmitting }) => {
         onFormSubmit(values, setSubmitting);
         }}
@@ -121,9 +109,10 @@ function EditAffix() {
         <Form>
             <Grid centered>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Affix Type</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label basic pointing="right" color="blue">Affix Type</Label></Grid.Column>
                     <Grid.Column width={10}>
                     <Dropdown
+                        disabled
                         id="type"
                         placeholder='Select a Type'
                         fluid
@@ -136,9 +125,10 @@ function EditAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Nicodemus</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label basic pointing="right" color="blue">Nicodemus</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="nicodemus"
@@ -157,6 +147,7 @@ function EditAffix() {
                     <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Salish</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="salish"
@@ -172,9 +163,10 @@ function EditAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">English</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label basic pointing="right" color="blue">English</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="english"
@@ -193,6 +185,7 @@ function EditAffix() {
                     <Grid.Column width={2} textAlign="right"><Label basic pointing="right" color="blue">Link</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="link"
@@ -208,9 +201,10 @@ function EditAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label basic pointing="right" color="blue">Link Text</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label basic pointing="right" basic color="blue">Link Text</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="page"
@@ -270,4 +264,4 @@ function EditAffix() {
   );
 }
 
-export default EditAffix;
+export default DeleteAffix;

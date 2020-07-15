@@ -247,9 +247,15 @@ function AffixTable(props) {
                 <Icon name="edit" />
               </button>              
             </Link>
-            <button className='ui icon button'>
-              <Icon name='close' />
-            </button>
+            <Link 
+              to={{
+                pathname: "/deleteaffix",
+                search: "?id=" + row.original.id,
+              }}>
+              <button className="ui icon button">
+                <Icon name="close" />
+              </button>              
+            </Link>
           </div>
         )
       }, 

@@ -11,6 +11,7 @@ import Users from './pages/Users';
 import UserProfile from './pages/UserProfile';
 import AddAffix from './pages/AddAffix';
 import EditAffix from './pages/EditAffix';
+import DeleteAffix from './pages/DeleteAffix';
 import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
@@ -132,6 +133,7 @@ function App(props) {
               <Route path="/addaffix" component={AddAffix} key="AddAffix" />
               <Route path="/affixes" component={Affixes} key="Affixes" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
+              <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
