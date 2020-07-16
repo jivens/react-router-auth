@@ -23,9 +23,11 @@ export const addUserMutation = gql`
 `;
 
 export const insertAffixMutation = gql`
-  mutation AddAffix {
-    insert_affixes_one(object: { editnote: "editnote", english: "english", link: "link",  nicodemus: "nicodemus", page: "page", salish: "salish", type: "type"} ){
-      active
+  mutation insert_an_affix($editnote: String, $english: String!, $link: String, $nicodemus: String!, $page: String, $salish: String, $type: Int!) {
+    insert_affixes_one(object: {prevId: null, editnote: $editnote, english: $english, link: $link, nicodemus: $nicodemus, page: $page, salish: $salish, type: $type}) {
+      activeByActive {
+        value
+      }
       createdAt
       editnote
       english
@@ -35,7 +37,9 @@ export const insertAffixMutation = gql`
       page
       prevId
       salish
-      type
+      affix_type {
+        value
+      }
       updatedAt
       userId
     }

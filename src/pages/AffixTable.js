@@ -6,7 +6,7 @@ import { useAuth } from "../context/auth";
 import { getAffixesQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
-import { Icon } from "semantic-ui-react";
+import { Icon, Popup, Button } from "semantic-ui-react";
 
 function Table({
   columns,
@@ -122,6 +122,17 @@ function Table({
             <th
               colSpan={visibleColumns.length}
             >
+              <Link 
+              to={{
+                pathname: "/addaffix",
+              }}>
+              <Button animated='vertical' color='basic blue'>
+                <Button.Content hidden>Add Affix</Button.Content>
+                <Button.Content visible>
+                  <Icon name='plus' />
+                </Button.Content>
+              </Button> 
+            </Link> 
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
@@ -243,7 +254,7 @@ function AffixTable(props) {
                 pathname: "/editaffix",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui icon button">
+              <button className="basic blue ui icon button">
                 <Icon name="edit" />
               </button>              
             </Link>
@@ -252,7 +263,7 @@ function AffixTable(props) {
                 pathname: "/deleteaffix",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui icon button">
+              <button className="basic blue ui icon button">
                 <Icon name="close" />
               </button>              
             </Link>
