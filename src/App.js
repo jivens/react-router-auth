@@ -32,12 +32,14 @@ function App(props) {
   const client = new ApolloClient({
     link: new ApolloLink((operation, forward) => {
       const token = JSON.parse(localStorage.getItem('tokens'))
-      console.log("My token is:", token ? `Bearer ${token}` : '')
-      operation.setContext({
+      console.log("Client--My token is:", token ? `Bearer ${token}` : '')
+      operation.setContext(
+        token ? {
         headers: {
-          authorization: token ? `Bearer ${token}` : '', 
-        }
-      });
+          authorization: `Bearer ${token}`, 
+        }} : {
+          headers: {}
+        });
       return forward(operation);
     }).concat(
       new HttpLink({
@@ -55,7 +57,7 @@ function App(props) {
   const authClient = new ApolloClient({
     link: new ApolloLink((operation, forward) => {
       const token = JSON.parse(localStorage.getItem('tokens'))
-      console.log("My token is:", token ? `Bearer ${token}` : '')
+      console.log("Auth--My token is:", token ? `Bearer ${token}` : '')
       operation.setContext({
         headers: {
           authorization: token ? `Bearer ${token}` : '', 
