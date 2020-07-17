@@ -116,8 +116,8 @@ function App(props) {
               <Route exact path="/" component={Home} key="HomePage" />
               <Route path="/login" component={Login} key="LoginPage" />
               <Route path="/signup" component={Signup} key="SignupPage" />
-              <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <Route path="/affixes" component={Affixes} key="Affixes" />
+              <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />
               <PrivateRoute path="/users" component={Users} key="Users" />
