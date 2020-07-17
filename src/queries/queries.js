@@ -8,6 +8,22 @@ query($email: String!, $password: String!) {
 }
 `;
 
+export const getUserFromToken = gql`
+  query {
+    getUserFromToken_Q {
+      id
+      username
+      first
+      last
+      email
+      password
+      roles {
+        role_code
+      }
+    }
+  }
+`;
+
 export const addUserMutation = gql`
   mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
     addUser_M(first: $first, last: $last, username: $username, email: $email, password: $password) {
@@ -207,4 +223,30 @@ query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by
     }
   }
 }
+  `;
+
+export const getAnonAffixesQuery = gql`
+  query getAnonAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by!], $where: affixes_bool_exp) {
+    affixes_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    affixes(limit: $limit, offset: $offset, where: $where, order_by: $affix_order) {
+      activeByActive {
+        value
+      }
+      english
+      nicodemus
+      createdAt
+      link
+      page
+      salish
+      affix_type {
+        value
+      }
+      updatedAt
+      id
+    }
+  }
   `;

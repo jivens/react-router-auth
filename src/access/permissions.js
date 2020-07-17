@@ -5,6 +5,7 @@ export const path_role_permissions = {
     '/userprofile': ['manager', 'update', 'view'],
     '/editaffix': ['manager','update'],
     '/deleteaffix': ['manager', 'update'],
+    '/addaffix': ['manager', 'update'],
     '/home' : ['*'],
 }
 

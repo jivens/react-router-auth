@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { getAffixesQuery } from './../queries/queries'
+import { getAffixesQuery, getAnonAffixesQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
-import { Icon, Popup, Button } from "semantic-ui-react";
+import { Icon, Button } from "semantic-ui-react";
 
 function Table({
   columns,
@@ -17,7 +18,8 @@ function Table({
   selectValues
 }) {
 
-  console.log("Inside table, I have select values: ", selectValues)
+  const { user } = useAuth();
+  //console.log("Inside table, I have select values: ", selectValues)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -122,17 +124,21 @@ function Table({
             <th
               colSpan={visibleColumns.length}
             >
-              <Link 
-              to={{
-                pathname: "/addaffix",
-              }}>
-              <Button animated='vertical' color='basic blue'>
-                <Button.Content hidden>Add Affix</Button.Content>
-                <Button.Content visible>
-                  <Icon name='plus' />
-                </Button.Content>
-              </Button> 
-            </Link> 
+            { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
+              (
+                <Link 
+                  to={{
+                    pathname: "/addaffix",
+                  }}>
+                  <Button animated='vertical' basic color='blue'>
+                    <Button.Content hidden>Add Affix</Button.Content>
+                    <Button.Content visible>
+                      <Icon name='plus' />
+                    </Button.Content>
+                  </Button> 
+                </Link> 
+              )
+            }
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
@@ -237,7 +243,7 @@ function Table({
 function AffixTable(props) {
   console.log(props.selectValues)
 
-  const columns = React.useMemo(
+  const updateColumns = React.useMemo(
     () => [
       {
         Header: 'Edit/Delete',
@@ -354,26 +360,86 @@ function AffixTable(props) {
     ], []
   )
 
+  const anonColumns = React.useMemo(
+    () => [
+      {
+        Header: 'Type',
+        accessor: 'affix_type.value',
+        Filter: SelectColumnFilter,
+        tableName: 'AffixTable',
+        show: true,
+        id: 'affix_type.value'
+      },
+      {
+        Header: 'Nicodemus',
+        accessor: 'nicodemus',
+        tableName: 'AffixTable',
+        show: true,
+        id: 'nicodemus'
+      },
+      {
+        Header: 'Salish',
+        accessor: 'salish',
+        filter: 'fuzzyText',
+        tableName: 'AffixTable',
+        show: true,
+        id: 'salish'
+      },
+      {
+        Header: 'English',
+        accessor: 'english',
+        tableName: 'AffixTable',
+        show: true,
+        id: 'english'
+      },
+      {
+        Header: 'Link',
+        accessor: 'page',
+        Cell: ({ row }) => <a href={row.original.link} target="_blank" rel="noopener noreferrer">{row.original.page}</a>,
+        tableName: 'AffixTable',
+        show: true,
+        id: 'page'
+      },
+    ], []
+  )
+
+
   // We'll start our table without any data
   const [data, setData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const [pageCount, setPageCount] = React.useState(0)
   //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
-  const { client } = useAuth();
+  const { client, user } = useAuth();
 
+  
   async function getAffixes(limit, offset, sortBy, filters) {
-    const { data } = await client.query({
-      query: getAffixesQuery,
-      variables: { 
-        limit: limit,
-        offset: offset,
-        affix_order: sortBy,
-        where: filters,
-       }
-    })
-    return data
+    let res = {}
+    if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
+      res = await client.query({
+        query: getAffixesQuery,
+        variables: { 
+          limit: limit,
+          offset: offset,
+          affix_order: sortBy,
+          where: filters,
+         }
+      })
+    }
+    else {
+      res = await client.query({
+        query: getAnonAffixesQuery,
+        variables: { 
+          limit: limit,
+          offset: offset,
+          affix_order: sortBy,
+          where: filters,
+        }
+      })
+    }
+    return res.data
   }  
+
 
   const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
     // This will get called when the table needs new data
@@ -413,6 +479,13 @@ function AffixTable(props) {
       }
     }, 1000)
   }, [])
+
+  let columns = {}
+  if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) {
+    columns = updateColumns
+  } else {
+    columns = anonColumns
+  }
 
   return (
     <TableStyles>
