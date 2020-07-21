@@ -7,6 +7,8 @@ import * as Yup from 'yup';
 import { useAuth } from "../context/auth";
 import { useQuery } from '@apollo/react-hooks'
 import { handleErrors, broadCastSuccess } from '../utils/messages';
+import { confirmAlert } from 'react-confirm-alert';
+import '../stylesheets/react-confirm-alert.css';
 
 let deleteAffixSchema = Yup.object().shape({
     editnote: Yup.string()
@@ -102,7 +104,21 @@ function DeleteAffix() {
         }}
         validationSchema={deleteAffixSchema}
         onSubmit={(values, { setSubmitting }) => {
-        onFormSubmit(values, setSubmitting);
+            confirmAlert({
+                title: 'Confirm to submit',
+                message: 'Are you sure you want to delete the affix?',
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => onFormSubmit(values, setSubmitting)
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => {values = values
+                                    setSubmitting(false)}
+                  }
+                ]
+              });
         }}
         >
         {({ isSubmitting, values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
