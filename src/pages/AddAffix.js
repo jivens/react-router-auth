@@ -8,6 +8,8 @@ import { useAuth } from "../context/auth";
 import { useQuery } from '@apollo/react-hooks'
 import { handleErrors, broadCastSuccess } from '../utils/messages';
 import { set } from "lodash";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 let updateAffixSchema = Yup.object().shape({
   editnote: Yup.string()
@@ -90,7 +92,6 @@ function AddAffix() {
     history.push(path);
   }
 
-
   return (
     <>
     <Grid centered>
@@ -115,14 +116,21 @@ function AddAffix() {
         }}
         validationSchema={updateAffixSchema}
         onSubmit={(values, { setSubmitting }) => {
-        if (window.confirm('Are you sure you want to edit the affix?')) {
-            console.log('Here?')
-            onFormSubmit(values, setSubmitting)
-        }
-        else {
-            values = values
-            setSubmitting(false)
-        }
+            confirmAlert({
+                title: 'Confirm to submit',
+                message: 'Are you sure you want to add the affix?',
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => onFormSubmit(values, setSubmitting)
+                  },
+                  {
+                    label: 'No',
+                    onClick: () => {values = values
+                                    setSubmitting(false)}
+                  }
+                ]
+              });
         }}>
         
         {({ isSubmitting, values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
