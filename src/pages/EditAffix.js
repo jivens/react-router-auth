@@ -12,12 +12,15 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 let updateAffixSchema = Yup.object().shape({
+  nicodemus: Yup.string()
+    .required('a Nicodemus spelling is required'),
+  english: Yup.string()
+    .required('an English gloss is required'),
   editnote: Yup.string()
     .required('an edit note is required'),
   type: Yup.string()
     .required('you must select a type'),   
   });
-
 
 function EditAffix() {
   const { client } = useAuth();

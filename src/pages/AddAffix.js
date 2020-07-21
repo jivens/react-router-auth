@@ -9,9 +9,13 @@ import { useQuery } from '@apollo/react-hooks'
 import { handleErrors, broadCastSuccess } from '../utils/messages';
 import { set } from "lodash";
 import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
+//import 'react-confirm-alert/src/react-confirm-alert.css';
 
-let updateAffixSchema = Yup.object().shape({
+let addAffixSchema = Yup.object().shape({
+  nicodemus: Yup.string()
+    .required('a Nicodemus spelling is required'),
+  english: Yup.string()
+    .required('an English gloss is required'),
   editnote: Yup.string()
     .required('an edit note is required'),
   type: Yup.string()
@@ -59,7 +63,7 @@ function AddAffix() {
         handleErrors(result.error)
         setSubmitting(false)
       } else {
-        broadCastSuccess(`affix ${values.nicodemus} successfully edited!`)
+        broadCastSuccess(`affix ${values.nicodemus} successfully added!`)
         setSubmitting(false)
         setHasUpdated(true)
       }
@@ -114,7 +118,7 @@ function AddAffix() {
         page: '' ,
         editnote: '' 
         }}
-        validationSchema={updateAffixSchema}
+        validationSchema={addAffixSchema}
         onSubmit={(values, { setSubmitting }) => {
             confirmAlert({
                 title: 'Confirm to submit',
