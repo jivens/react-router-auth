@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { gql } from 'apollo-boost';
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
+import { getUserFromToken } from './queries/queries'
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
@@ -71,23 +72,6 @@ function App(props) {
     ),
     cache: new InMemoryCache(),
   });
-
-
-  const getUserFromToken = gql`
-    query {
-      getUserFromToken_Q {
-        id
-        username
-        first
-        last
-        email
-        password
-        roles {
-          role_code
-        }
-      }
-    }
-`;
 
   const setTokens = async (data) => {
     if (!data) {

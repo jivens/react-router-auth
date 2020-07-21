@@ -5,10 +5,9 @@ const TableStyles = styled.div`
     overflow: auto;
     display: block;
     width: 100%;
-    border: 1px solid #ddd;
     tr {
       :nth-child(even) {
-        background-color: #f8f8f8;
+        background-color: #f5f5f5;
       }
       :nth-child(odd) {
         background-color: #dae5f4;
@@ -30,7 +29,6 @@ const TableStyles = styled.div`
       margin: 0;
       padding: 0.5rem;
       word-wrap: break-word;
-      border-left: 1px solid #ddd;
       }
     }
   }
@@ -44,17 +42,15 @@ const TableStyles = styled.div`
     display: flex;
   }
 
-  ul {
-    list-style: none;
+  .columnToggle {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    line-height: -1em;
-    margin: 0px;
-    padding: 0px;
+    margin: .5rem;
   }
-  li {
-    padding: 1rem;
+
+  .toggle {
+    margin: 1rem;
   }
 `
 

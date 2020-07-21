@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { getAffixesQuery } from './../queries/queries'
+import { getAffixesQuery, getAnonAffixesQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
-import { Icon, Popup, Button } from "semantic-ui-react";
+import { Icon, Button } from "semantic-ui-react";
 
 function Table({
   columns,
@@ -17,7 +18,8 @@ function Table({
   selectValues
 }) {
 
-  console.log("Inside table, I have select values: ", selectValues)
+  const { user } = useAuth();
+  //console.log("Inside table, I have select values: ", selectValues)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -53,6 +55,9 @@ function Table({
     prepareRow,
     page,
     state,
+    allColumns,
+    getToggleHideAllColumnsProps,
+    setHiddenColumns,
     visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
@@ -81,7 +86,7 @@ function Table({
       manualGlobalFilter: true,
       defaultColumn,
       filterTypes,
-      hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
+      //hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
       selectValues
     },
     useGlobalFilter,
@@ -90,15 +95,25 @@ function Table({
     usePagination,   
   )
 
+
   // Listen for changes in pagination and use the state to fetch our new data
   React.useEffect(() => {
     fetchData({ pageIndex, pageSize, sortBy, filters, globalFilter })
   }, [fetchData, pageIndex, pageSize, sortBy, filters, globalFilter])
 
+  React.useEffect(
+    () => {
+      setHiddenColumns(
+        columns.filter(column => !column.show).map(column => column.id)
+      );
+    },
+    [columns]
+  );
+
   // Render the UI for your table
   return (
     <>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -115,24 +130,38 @@ function Table({
             2
           )}
         </code>
-      </pre>
+      </pre> */}
+      <div className="columnToggle">
+        {allColumns.map(column => (
+          <div key={column.id} className="columnToggle">
+            <label>
+              <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
+              {column.label}
+            </label>
+          </div>
+        ))}
+      </div>
       <table {...getTableProps()}>
         <thead>
           <tr>
             <th
               colSpan={visibleColumns.length}
             >
-              <Link 
-              to={{
-                pathname: "/addaffix",
-              }}>
-              <Button animated='vertical' color='basic blue'>
-                <Button.Content hidden>Add Affix</Button.Content>
-                <Button.Content visible>
-                  <Icon name='plus' />
-                </Button.Content>
-              </Button> 
-            </Link> 
+            { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
+              (
+                <Link 
+                  to={{
+                    pathname: "/addaffix",
+                  }}>
+                  <Button animated='vertical' basic color='blue'>
+                    <Button.Content hidden>Add Affix</Button.Content>
+                    <Button.Content visible>
+                      <Icon name='plus' />
+                    </Button.Content>
+                  </Button> 
+                </Link> 
+              )
+            }
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
@@ -148,8 +177,8 @@ function Table({
                     {column.render('Header')}                 
                     {column.isSorted
                       ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
+                        ? ' ▼'
+                        : ' ▲'
                       : ''}
                   </span>
                   <div>
@@ -237,15 +266,16 @@ function Table({
 function AffixTable(props) {
   console.log(props.selectValues)
 
-  const columns = React.useMemo(
+  const updateColumns = React.useMemo(
     () => [
       {
         Header: 'Edit/Delete',
         disableFilters: true,
         sortable: false,
         width: 100,
-        show: false,
+        show: true,
         id: 'editDelete',
+        label: 'Edit/Delete',
         tableName: 'AffixTable',
         Cell: ({row, original}) => (
           <div className="buttons">
@@ -284,29 +314,34 @@ function AffixTable(props) {
         Filter: SelectColumnFilter,
         tableName: 'AffixTable',
         show: true,
-        id: 'affix_type.value'
+        disableSortBy: true,
+        id: 'affix_type.value',
+        label: 'Type'
       },
       {
         Header: 'Nicodemus',
         accessor: 'nicodemus',
         tableName: 'AffixTable',
         show: true,
-        id: 'nicodemus'
+        id: 'nicodemus',
+        label: 'Nicodemus'
       },
       {
         Header: 'Salish',
         accessor: 'salish',
         filter: 'fuzzyText',
         tableName: 'AffixTable',
-        show: true,
-        id: 'salish'
+        show: false,
+        id: 'salish',
+        label: 'Salish'
       },
       {
         Header: 'English',
         accessor: 'english',
         tableName: 'AffixTable',
         show: true,
-        id: 'english'
+        id: 'english',
+        label: 'English'
       },
       {
         Header: 'Link',
@@ -314,15 +349,18 @@ function AffixTable(props) {
         Cell: ({ row }) => <a href={row.original.link} target="_blank" rel="noopener noreferrer">{row.original.page}</a>,
         tableName: 'AffixTable',
         show: true,
-        id: 'page'
+        id: 'page',
+        label: 'Link'
       },
       {
         Header: 'Username',
         accessor: 'user.username',
         Filter: SelectColumnFilter,
         tableName: 'AffixTable',
+        disableSortBy: true,
         show: false,
-        id: 'user.username'
+        id: 'user.username',
+        label: 'Username'
       },
       {
         Header: 'Active',
@@ -331,7 +369,8 @@ function AffixTable(props) {
         width: 50,
         tableName: 'AffixTable',
         show: false,
-        id: 'activeByActive.value'
+        id: 'activeByActive.value',
+        label: 'Active'
       },
       {
         Header: 'Prev. ID',
@@ -340,19 +379,70 @@ function AffixTable(props) {
         disableFilters: true,
         tableName: 'AffixTable',
         show: false,
-        id: 'prevId'
+        id: 'prevId',
+        label: 'Prev. ID'
       },
       {
         Header: 'Edit Note',
         accessor: 'editnote',
         tableName: 'AffixTable',
         disableFilters: true,
-        sortable: false,
         show: false,
-        id: 'editnote'
+        id: 'editnote',
+        label: 'Edit Note'
       },
     ], []
   )
+
+  const anonColumns = React.useMemo(
+    () => [
+      {
+        Header: 'Type',
+        accessor: 'affix_type.value',
+        Filter: SelectColumnFilter,
+        disableSortBy: true,
+        tableName: 'AffixTable',
+        show: true,
+        id: 'affix_type.value',
+        label: 'Type'
+      },
+      {
+        Header: 'Nicodemus',
+        accessor: 'nicodemus',
+        tableName: 'AffixTable',
+        show: true,
+        id: 'nicodemus',
+        label: 'Nicodemus'
+      },
+      {
+        Header: 'Salish',
+        accessor: 'salish',
+        filter: 'fuzzyText',
+        tableName: 'AffixTable',
+        show: false,
+        id: 'salish',
+        label: 'Salish'
+      },
+      {
+        Header: 'English',
+        accessor: 'english',
+        tableName: 'AffixTable',
+        show: true,
+        id: 'english',
+        label: 'English'
+      },
+      {
+        Header: 'Link',
+        accessor: 'page',
+        Cell: ({ row }) => <a href={row.original.link} target="_blank" rel="noopener noreferrer">{row.original.page}</a>,
+        tableName: 'AffixTable',
+        show: true,
+        id: 'page',
+        label: 'Link'
+      },
+    ], []
+  )
+
 
   // We'll start our table without any data
   const [data, setData] = React.useState([])
@@ -360,20 +450,36 @@ function AffixTable(props) {
   const [pageCount, setPageCount] = React.useState(0)
   //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
-  const { client } = useAuth();
+  const { client, user } = useAuth();
 
+  
   async function getAffixes(limit, offset, sortBy, filters) {
-    const { data } = await client.query({
-      query: getAffixesQuery,
-      variables: { 
-        limit: limit,
-        offset: offset,
-        affix_order: sortBy,
-        where: filters,
-       }
-    })
-    return data
+    let res = {}
+    if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
+      res = await client.query({
+        query: getAffixesQuery,
+        variables: { 
+          limit: limit,
+          offset: offset,
+          affix_order: sortBy,
+          where: filters,
+         }
+      })
+    }
+    else {
+      res = await client.query({
+        query: getAnonAffixesQuery,
+        variables: { 
+          limit: limit,
+          offset: offset,
+          affix_order: sortBy,
+          where: filters,
+        }
+      })
+    }
+    return res.data
   }  
+
 
   const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
     // This will get called when the table needs new data
@@ -413,6 +519,13 @@ function AffixTable(props) {
       }
     }, 1000)
   }, [])
+
+  let columns = {}
+  if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) {
+    columns = updateColumns
+  } else {
+    columns = anonColumns
+  }
 
   return (
     <TableStyles>
