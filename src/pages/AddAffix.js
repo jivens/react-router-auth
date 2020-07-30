@@ -9,7 +9,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { handleErrors, broadCastSuccess } from '../utils/messages';
 import { set } from "lodash";
 import { confirmAlert } from 'react-confirm-alert';
-//import 'react-confirm-alert/src/react-confirm-alert.css';
+import '../stylesheets/react-confirm-alert.css';
 
 let addAffixSchema = Yup.object().shape({
   nicodemus: Yup.string()
