@@ -118,24 +118,9 @@ export const updateAffixMutation = gql`
 `;
 
 export const deleteAffixMutation = gql`
-  mutation delete_an_affix($id: Int!, $editnote: String!){
-    update_affixes_by_pk (
-      pk_columns: {id: $id}
-      _set: { active: 2, editnote: $editnote }
-    ) {
-        createdAt
-        active
-        editnote
-        english
-        id
-        link
-        nicodemus
-        page
-        prevId
-        salish
-        type
-        updatedAt
-        userId
+  mutation($id: Int!) {
+    delete_affixes_by_pk(id: $id) {
+      id
     }
   }
 `;
@@ -175,13 +160,6 @@ export const getUsernamesQuery = gql`
     }
 `;
 
-export const getActiveValuesQuery = gql`
-    query {
-      actives {
-        value
-      }
-    }
-`;
 
 export const getAffixTypesQuery = gql`
     query {
@@ -195,34 +173,30 @@ export const getAffixTypesQuery = gql`
 
 // need aggregate permission to get the total count
 export const getAffixesQuery = gql`
-query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by!], $where: affixes_bool_exp) {
-  affixes_aggregate(where: $where) {
-    aggregate {
-      count
+  query getAffixesQuery($limit: Int, $offset: Int, $affix_order: [affixes_order_by!], $where: affixes_bool_exp) {
+    affixes_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    affixes(limit: $limit, offset: $offset, where: $where, order_by: $affix_order) {
+      english
+      nicodemus
+      createdAt
+      editnote
+      link
+      page
+      salish
+      affix_type {
+        value
+      }
+      updatedAt
+      id
+      user {
+        username
+      }
     }
   }
-  affixes(limit: $limit, offset: $offset, where: $where, order_by: $affix_order) {
-    activeByActive {
-      value
-    }
-    english
-    nicodemus
-    createdAt
-    editnote
-    link
-    page
-    prevId
-    salish
-    affix_type {
-      value
-    }
-    updatedAt
-    id
-    user {
-      username
-    }
-  }
-}
   `;
 
 export const getAnonAffixesQuery = gql`
@@ -233,9 +207,6 @@ export const getAnonAffixesQuery = gql`
       }
     }
     affixes(limit: $limit, offset: $offset, where: $where, order_by: $affix_order) {
-      activeByActive {
-        value
-      }
       english
       nicodemus
       createdAt
@@ -249,4 +220,29 @@ export const getAnonAffixesQuery = gql`
       id
     }
   }
+  `;
+
+  export const getAffixHistoryByIdQuery = gql`
+    query affixHistoryByIdQuery($original: jsonb!, $table_name: String!) {
+      audit_log(where: {table_name: {_eq: $table_name}, original: {_contains: $original}}, order_by: {action_tstamp_clk: asc}) {
+        action
+        action_tstamp_clk
+        action_tstamp_stm
+        action_tstamp_tx
+        application_name
+        diff
+        id
+        original
+        schema_name
+        session_user
+        table_name
+        application_user
+        client_addr
+        client_port
+        client_query
+        relid
+        statement_only
+        transaction_id
+      }
+    }
   `;
