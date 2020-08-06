@@ -13,15 +13,18 @@ import UserProfile from './pages/UserProfile';
 import AddAffix from './pages/AddAffix';
 import EditAffix from './pages/EditAffix';
 import DeleteAffix from './pages/DeleteAffix';
+import AddRoot from './pages/AddRoot';
+import EditRoot from './pages/EditRoot';
+import DeleteRoot from './pages/DeleteRoot';
 import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
+import Roots from './pages/Roots';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
 import NavBar from './components/NavBar';
 import 'react-toastify/dist/ReactToastify.css';
-import { ApolloProvider } from '@apollo/react-hooks';
 
 function App(props) {
 
@@ -117,9 +120,13 @@ function App(props) {
               <Route path="/login" component={Login} key="LoginPage" />
               <Route path="/signup" component={Signup} key="SignupPage" />
               <Route path="/affixes" component={Affixes} key="Affixes" />
+              <Route path="/roots" component={Roots} key="Roots" />
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />
+              <PrivateRoute path="/addroot" component={AddRoot} key="AddRoot" />
+              <PrivateRoute path="/editroot" component={EditRoot} key="EditRoot" />
+              <PrivateRoute path="/deleteroot" component={DeleteRoot} key="DeleteRoot" /> 
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
