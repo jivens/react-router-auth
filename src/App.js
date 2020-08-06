@@ -16,6 +16,7 @@ import DeleteAffix from './pages/DeleteAffix';
 import AddRoot from './pages/AddRoot';
 import EditRoot from './pages/EditRoot';
 import DeleteRoot from './pages/DeleteRoot';
+import AffixHistory from './pages/AffixHistory';
 import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
@@ -124,9 +125,13 @@ function App(props) {
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />
+<<<<<<< HEAD
               <PrivateRoute path="/addroot" component={AddRoot} key="AddRoot" />
               <PrivateRoute path="/editroot" component={EditRoot} key="EditRoot" />
               <PrivateRoute path="/deleteroot" component={DeleteRoot} key="DeleteRoot" /> 
+=======
+              <PrivateRoute path="/affixhistory" component={AffixHistory} key="AffixHistory" />
+>>>>>>> 54ccdafd4b3960237b11a76bff0f0b0a69f93dfb
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />

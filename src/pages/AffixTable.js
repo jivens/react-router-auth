@@ -269,16 +269,25 @@ function AffixTable(props) {
   const updateColumns = React.useMemo(
     () => [
       {
-        Header: 'Edit/Delete',
+        Header: 'History/Edit/Delete',
         disableFilters: true,
         sortable: false,
         width: 100,
         show: true,
-        id: 'editDelete',
-        label: 'Edit/Delete',
+        id: 'historyEditDelete',
+        label: 'History/Edit/Delete',
         tableName: 'AffixTable',
         Cell: ({row, original}) => (
           <div className="buttons">
+            <Link 
+              to={{
+                pathname: "/affixhistory",
+                search: "?id=" + row.original.id,
+              }}>
+              <button className="basic blue ui icon button">
+                <Icon name="history" />
+              </button>              
+            </Link>
             <Link 
               to={{
                 pathname: "/editaffix",
@@ -361,26 +370,6 @@ function AffixTable(props) {
         show: false,
         id: 'user.username',
         label: 'Username'
-      },
-      {
-        Header: 'Active',
-        accessor: 'activeByActive.value',
-        Filter: SelectColumnFilter,
-        width: 50,
-        tableName: 'AffixTable',
-        show: false,
-        id: 'activeByActive.value',
-        label: 'Active'
-      },
-      {
-        Header: 'Prev. ID',
-        accessor: 'prevId',
-        width: 50,
-        disableFilters: true,
-        tableName: 'AffixTable',
-        show: false,
-        id: 'prevId',
-        label: 'Prev. ID'
       },
       {
         Header: 'Edit Note',
