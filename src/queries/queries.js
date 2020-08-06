@@ -278,22 +278,12 @@ export const getAffixesQuery = gql`
       }
     }
     affixes(limit: $limit, offset: $offset, where: $where, order_by: $affix_order) {
-<<<<<<< HEAD
-      activeByActive {
-        value
-      }
-=======
->>>>>>> 54ccdafd4b3960237b11a76bff0f0b0a69f93dfb
       english
       nicodemus
       createdAt
       editnote
       link
       page
-<<<<<<< HEAD
-      prevId
-=======
->>>>>>> 54ccdafd4b3960237b11a76bff0f0b0a69f93dfb
       salish
       affix_type {
         value
@@ -338,9 +328,6 @@ export const getRootsQuery = gql`
       }
     }
     roots(where: $where, limit: $limit, offset: $offset, order_by: $root_order) {
-      activeByActive {
-        value
-      }
       cognate
       createdAt
       crossref
@@ -350,7 +337,6 @@ export const getRootsQuery = gql`
       id
       nicodemus
       number
-      prevId
       root
       salish
       sense
@@ -372,9 +358,6 @@ export const getAnonRootsQuery = gql`
       }
     }
     roots(where: $where, limit: $limit, offset: $offset, order_by: $root_order) {
-      activeByActive {
-        value
-      }
       cognate
       createdAt
       crossref
