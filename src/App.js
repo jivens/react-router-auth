@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
 import { gql } from 'apollo-boost';
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
-import { getUserFromToken } from './queries/queries'
+import { getUserFromToken } from './queries/queries';
+import { useQuery } from '@apollo/react-hooks';
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
 import Admin from './pages/Admin';
@@ -56,6 +57,7 @@ function App(props) {
     },
   });
 
+ 
   const authClient = new ApolloClient({
     link: new ApolloLink((operation, forward) => {
       const token = JSON.parse(localStorage.getItem('tokens'))
@@ -73,6 +75,8 @@ function App(props) {
     ),
     cache: new InMemoryCache(),
   });
+
+
 
   const setTokens = async (data) => {
     if (!data) {

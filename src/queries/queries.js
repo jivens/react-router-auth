@@ -72,7 +72,6 @@ query GetAffixById($id: Int!) {
     link
     nicodemus
     page
-    prevId
     salish
     updatedAt
     user {
@@ -82,23 +81,24 @@ query GetAffixById($id: Int!) {
       value
       id
     }
-    activeByActive {
-      value
-      id
-    }
   }
 }
 `;
 
 export const updateAffixMutation = gql`
-  mutation update_an_affix($id: Int!, $editnote: String, $english: String, $link: String, $nicodemus: String, $page: String, $salish: String, $type: Int) {
-    update_affixes_by_pk(pk_columns: {id: $id}, _set: {active: 2}) {
-      active
-    }
-    insert_affixes_one(object: {prevId: $id, editnote: $editnote, english: $english, link: $link, nicodemus: $nicodemus, page: $page, salish: $salish, type: $type}) {
-      activeByActive {
-        value
+  mutation updateAnAffix($id: Int!, $editnote: String!, $english: String!, $salish: String!, $nicodemus: String!, $link: String!, $page: String!, $type: Int!){
+    update_affixes_by_pk(pk_columns: {id: $id},
+    _set: {
+        english: $english,
+        nicodemus: $nicodemus,
+        editnote: $editnote,
+        salish: $salish,
+        link: $link,
+        page: $page,
+        type: $type
       }
+    )
+    {
       createdAt
       editnote
       english
@@ -106,11 +106,8 @@ export const updateAffixMutation = gql`
       link
       nicodemus
       page
-      prevId
       salish
-      affix_type {
-        value
-      }
+      type
       updatedAt
       userId
     }

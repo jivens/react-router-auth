@@ -27,7 +27,7 @@ function AffixHistory() {
       return <div>Something went wrong</div>
     }
 
-    return(JSON.stringify(affixHistoryData))
+    return(JSON.stringify(affixHistoryData.audit_log))
 
 }
 
