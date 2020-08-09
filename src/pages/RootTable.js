@@ -56,7 +56,7 @@ function Table({
     page,
     state,
     allColumns,
-    getToggleHideAllColumnsProps,
+    //getToggleHideAllColumnsProps,
     setHiddenColumns,
     visibleColumns,
     preGlobalFilteredRows,
@@ -113,7 +113,7 @@ React.useEffect(
   // Render the UI for your table
   return (
     <>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -130,7 +130,7 @@ React.useEffect(
             2
           )}
         </code>
-      </pre>
+      </pre> */}
       <div className="columnToggle">
         {allColumns.map(column => (
           <div key={column.id} className="columnToggle">
@@ -321,6 +321,7 @@ function RootTable(props) {
         accessor: 'sense',
         tableName: 'RootTable',
         id: 'sense',
+        show: false,
         width: 50,
         label: 'Sense',
       },
@@ -341,6 +342,14 @@ function RootTable(props) {
         label: 'Nicodemus',
       },
       {
+        Header: 'English',
+        accessor: 'english',
+        tableName: 'RootTable',
+        id: 'english',
+        show: true,
+        label: 'English',
+      },
+      {
         Header: 'Symbol',
         accessor: 'symbol',
         tableName: 'RootTable',
@@ -348,14 +357,6 @@ function RootTable(props) {
         show: false,
         width: 50,
         label: 'Symbol',
-      },
-      {
-        Header: 'English',
-        accessor: 'english',
-        tableName: 'RootTable',
-        id: 'english',
-        show: true,
-        label: 'English',
       },
       {
         Header: 'Grammar',
@@ -386,6 +387,7 @@ function RootTable(props) {
         Header: 'Cognate',
         accessor: 'cognate',
         tableName: 'RootTable',
+        id: 'cognate',
         show: false,
         label: 'Cognate',
       },
@@ -398,26 +400,6 @@ function RootTable(props) {
         show: false,
         id: 'user.username',
         label: 'Username'
-      },
-      {
-        Header: 'Active',
-        accessor: 'activeByActive.value',
-        Filter: SelectColumnFilter,
-        width: 50,
-        tableName: 'RootTable',
-        show: false,
-        id: 'activeByActive.value',
-        label: 'Active'
-      },
-      {
-        Header: 'Prev. ID',
-        accessor: 'prevId',
-        width: 50,
-        disableFilters: true,
-        tableName: 'RootTable',
-        show: false,
-        id: 'prevId',
-        label: 'Prev. ID'
       },
     ], []
   )
@@ -447,6 +429,7 @@ function RootTable(props) {
         accessor: 'sense',
         tableName: 'RootTable',
         id: 'sense',
+        show: false,
         width: 50,
         label: 'Sense',
       },
@@ -467,6 +450,14 @@ function RootTable(props) {
         label: 'Nicodemus',
       },
       {
+        Header: 'English',
+        accessor: 'english',
+        tableName: 'RootTable',
+        id: 'english',
+        show: true,
+        label: 'English',
+      },
+      {
         Header: 'Symbol',
         accessor: 'symbol',
         tableName: 'RootTable',
@@ -474,14 +465,6 @@ function RootTable(props) {
         show: false,
         width: 50,
         label: 'Symbol',
-      },
-      {
-        Header: 'English',
-        accessor: 'english',
-        tableName: 'RootTable',
-        id: 'english',
-        show: true,
-        label: 'English',
       },
       {
         Header: 'Grammar',
@@ -512,6 +495,7 @@ function RootTable(props) {
         Header: 'Cognate',
         accessor: 'cognate',
         tableName: 'RootTable',
+        id: 'cognate',
         show: false,
         label: 'Cognate',
       },

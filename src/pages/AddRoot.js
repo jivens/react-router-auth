@@ -35,13 +35,18 @@ function AddRoot() {
       const result = await client.mutate({
         mutation: insertRootMutation,
         variables: {
-          // id: values.id,
-          // TODO: change to roots field
-          root: values.root,
-          nicodemus: values.nicodemus,
-          english: values.english,
-          cognate: values.cognate,
-          editnote: values.editnote,
+            root: values.root,
+            nicodemus: values.nicodemus,
+            english: values.english,
+            salish: values.salish,
+            cognate: values.cognate,
+            editnote: values.editnote,
+            number: parseInt(values.number),
+            sense: values.sense,
+            crossref: values.crossref,
+            grammar: values.grammar,
+            variant: values.variant,
+            symbol: values.symbol,
         }
       })
       if (result.error) {
@@ -83,10 +88,16 @@ function AddRoot() {
         id: null,
         root: '',
         nicodemus: '',
+        english: '',
+        salish: '',
         cognate: '',
-        salish: '' ,
-        english: '', 
-        editnote: '' 
+        editnote: '',
+        number: '',
+        sense: '',
+        crossref: '',
+        grammar: '',
+        variant: '',
+        symbol: '',
         }}
         validationSchema={addRootSchema}
         onSubmit={(values, { setSubmitting }) => {
@@ -124,7 +135,43 @@ function AddRoot() {
                             onBlur={ handleBlur }
                             className={ errors.root && touched.root ? 'text-input error' : 'text-input' }
                         />
-                        {errors.nicodemus && touched.nicodemus && ( <div className="input-feedback">{errors.nicodemus}</div>
+                        {errors.root && touched.root && ( <div className="input-feedback">{errors.root}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Number</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="number"
+                            placeholder="Number"
+                            type="text"
+                            value={ values.number }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.number && touched.number ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.number && touched.number && ( <div className="input-feedback">{errors.number}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Sense</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="salish"
+                            placeholder="Sense"
+                            type="text"
+                            value={ values.sense }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.sense && touched.sense ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.sense && touched.sense && ( <div className="input-feedback">{errors.sense}</div>
                         )}
                     </Grid.Column>
                 </Grid.Row>
@@ -183,6 +230,78 @@ function AddRoot() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Symbol</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="symbol"
+                            placeholder="Symbol"
+                            type="text"
+                            value={ values.symbol }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.symbol && touched.symbol ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.symbol && touched.symbol && ( <div className="input-feedback">{errors.symbol}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Grammar</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="grammar"
+                            placeholder="Grammar"
+                            type="text"
+                            value={ values.grammar }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.grammar && touched.grammar ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.grammar && touched.grammar && ( <div className="input-feedback">{errors.grammar}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Variant</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="variant"
+                            placeholder="Variant"
+                            type="text"
+                            value={ values.variant }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.variant && touched.variant ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.variant && touched.variant && ( <div className="input-feedback">{errors.variant}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Cross-Reference</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="crossref"
+                            placeholder="Cross-reference"
+                            type="text"
+                            value={ values.crossref }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.crossref && touched.crossref ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.crossref && touched.crossref && ( <div className="input-feedback">{errors.crossref}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
                     <Grid.Column width={2} textAlign="right"><Label basic pointing="right" color="blue">Cognate</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
@@ -207,14 +326,14 @@ function AddRoot() {
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="editnote"
-                            placeholder="editnote"
+                            placeholder="An edit note is required"
                             type="text"
                             value={ values.editnote }
                             onChange={ handleChange }
                             onBlur={ handleBlur }
-                            className={ errors.nicodemus && touched.nicodemus ? 'text-input error' : 'text-input' }
+                            className={ errors.editnote && touched.editnote ? 'text-input error' : 'text-input' }
                         />
-                        {errors.nicodemus && touched.nicodemus && ( <div className="input-feedback">{errors.nicodemus}</div>
+                        {errors.editnote && touched.editnote && ( <div className="input-feedback">{errors.editnote}</div>
                         )}
                     </Grid.Column>
                 </Grid.Row>

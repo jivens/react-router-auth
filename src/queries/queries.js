@@ -38,12 +38,32 @@ export const addUserMutation = gql`
   }
 `;
 
+export const insertRootMutation = gql`
+  mutation insert_a_root($editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $root: String!, $number: Int, $sense: String, $symbol: String, $grammar: String, $crossref: String, $variant: String, $cognate: String) {
+    insert_roots_one(object: {editnote: $editnote, english: $english, salish: $salish, nicodemus: $nicodemus, root: $root, number: $number, sense: $sense, symbol: $symbol, grammar: $grammar, crossref: $crossref, variant: $variant, cognate: $cognate}) {
+      createdAt
+      editnote
+      english
+      id
+      nicodemus
+      salish
+      root
+      number
+      sense
+      symbol
+      grammar
+      crossref
+      variant
+      cognate
+      updatedAt
+      userId
+    }
+  }
+`;
+
 export const insertAffixMutation = gql`
   mutation insert_an_affix($editnote: String, $english: String!, $link: String, $nicodemus: String!, $page: String, $salish: String, $type: Int!) {
-    insert_affixes_one(object: {prevId: null, editnote: $editnote, english: $english, link: $link, nicodemus: $nicodemus, page: $page, salish: $salish, type: $type}) {
-      activeByActive {
-        value
-      }
+    insert_affixes_one(object: {editnote: $editnote, english: $english, link: $link, nicodemus: $nicodemus, page: $page, salish: $salish, type: $type}) {
       createdAt
       editnote
       english
@@ -51,7 +71,6 @@ export const insertAffixMutation = gql`
       link
       nicodemus
       page
-      prevId
       salish
       affix_type {
         value
@@ -63,32 +82,23 @@ export const insertAffixMutation = gql`
 `;
 
 export const getAffixByIdQuery = gql`
-query GetAffixById($id: Int!) {
-  affixes_by_pk(id: $id) {
-    editnote
-    createdAt
-    id
-    english
-    link
-    nicodemus
-    page
-    salish
-    updatedAt
-    user {
-      username
-    }
-    affix_type {
-      value
+  query GetAffixById($id: Int!) {
+    affixes_by_pk(id: $id) {
+      editnote
+      createdAt
       id
+      english
+      link
       nicodemus
-      number
-      prevId
+      page
       salish
-      sense
-      symbol
       updatedAt
-      variant
-      root
+      user {
+        username
+      }
+      affix_type {
+        value
+      }
     }
   }
 `;
@@ -114,11 +124,6 @@ export const getRootByIdQuery = gql`
       user {
         username
       }
-      activeByActive {
-        value
-        id
-      }
-      prevId
     }
   }
 `
@@ -153,26 +158,40 @@ export const updateAffixMutation = gql`
 `;
 
 export const updateRootMutation = gql`
-  mutation update_a_root($id: Int!, $root: String = "", $salish: String = "", $editnote: String = "", $english: String = "", $cognate: String = "", $nicodemus: String = "") {
-    update_roots_by_pk(pk_columns: {id: $id}, _set: {active: 2}) {
-      active
+mutation updateARoot($id: Int!, $editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $root: String!, $number: Int, $sense: String, $symbol: String, $grammar: String, $crossref: String, $variant: String, $cognate: String){
+  update_roots_by_pk(pk_columns: {id: $id},
+  _set: {
+      editnote: $editnote,
+      english: $english,
+      nicodemus: $nicodemus,
+      salish: $salish,
+      root: $root,
+      number: $number,
+      sense: $sense,
+      symbol: $symbol,
+      grammar: $grammar,
+      crossref: $crossref,
+      variant: $variant
     }
-    insert_roots_one(object: {prevId: $id, root: $root, salish: $salish, editnote: $editnote, english: $english, cognate: $cognate, nicodemus: $nicodemus}) {
-      activeByActive {
-        value
-      }
-      createdAt
-      updatedAt
-      editnote
-      english
-      id
-      nicodemus
-      prevId
-      root
-      salish
-      cognate
-    }
+  )
+  {
+    createdAt
+    editnote
+    english
+    id
+    nicodemus
+    salish
+    root
+    number
+    sense
+    symbol
+    grammar
+    crossref
+    variant
+    updatedAt
+    userId
   }
+}
 `
 
 export const deleteAffixMutation = gql`
@@ -184,23 +203,13 @@ export const deleteAffixMutation = gql`
 `;
 
 export const deleteRootMutation = gql`
-  mutation delete_a_root($id: Int!, $editnote: String!) {
-    update_roots_by_pk(pk_columns: {id: $id}, _set: {active: 2, editnote: $editnote}) {
-      createdAt
-      root
-      updatedAt
-      prevId
-      english
-      salish
-      nicodemus
+  mutation($id: Int!) {
+    delete_roots_by_pk(id: $id) {
       id
-      editnote
-      active
-      cognate
-      userId
     }
   }
-`
+`;
+
 
 export const updateUserMutation = gql`
   mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
@@ -354,7 +363,7 @@ export const getAnonRootsQuery = gql`
       variant
     }
   }
-    `;
+`;
     
   export const getAffixHistoryByIdQuery = gql`
     query affixHistoryByIdQuery($original: jsonb!, $table_name: String!) {

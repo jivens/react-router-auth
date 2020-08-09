@@ -47,12 +47,18 @@ function EditRoot() {
         mutation: updateRootMutation,
         variables: {
             id: values.id,
-            // TODO: change to roots field
             root: values.root,
             nicodemus: values.nicodemus,
             english: values.english,
+            salish: values.salish,
             cognate: values.cognate,
             editnote: values.editnote,
+            number: parseInt(values.number),
+            sense: values.sense,
+            crossref: values.crossref,
+            grammar: values.grammar,
+            variant: values.variant,
+            symbol: values.symbol,
           }
       })
       if (result.error) {
@@ -98,7 +104,7 @@ function EditRoot() {
     <Grid centered>
         <Grid.Row>
             <Grid.Column textAlign="center" width={12}>
-                <Header as="h2">Edit an Root</Header>
+                <Header as="h2">Edit a Root</Header>
                 <Message>The elements whose labels are solid blue are required for all roots.  The elements whose labels are outlined may be blank.</Message>
             </Grid.Column>
         </Grid.Row>
@@ -107,10 +113,16 @@ function EditRoot() {
         initialValues={{ 
         id: rootData.roots_by_pk.id,
         root: rootData.roots_by_pk.root,
+        number: rootData.roots_by_pk.number.toString() ? rootData.roots_by_pk.number.toString() : "",
+        sense: rootData.roots_by_pk.sense ? rootData.roots_by_pk.sense : "",
         nicodemus: rootData.roots_by_pk.nicodemus,
         salish: rootData.roots_by_pk.salish ? rootData.roots_by_pk.salish : "" ,
         english: rootData.roots_by_pk.english, 
         cognate: rootData.roots_by_pk.cognate ? rootData.roots_by_pk.salish : "",
+        grammar: rootData.roots_by_pk.grammar ? rootData.roots_by_pk.grammar : "",
+        symbol: rootData.roots_by_pk.symbol ? rootData.roots_by_pk.symbol : "",
+        variant: rootData.roots_by_pk.variant ? rootData.roots_by_pk.variant : "",
+        crossref: rootData.roots_by_pk.crossref ? rootData.roots_by_pk.crossref : "",
         editnote: rootData.roots_by_pk.editnote ? rootData.roots_by_pk.editnote : "" 
         }}
         validationSchema={updateRootSchema}
@@ -150,6 +162,42 @@ function EditRoot() {
                             className={ errors.root && touched.root ? 'text-input error' : 'text-input' }
                         />
                         {errors.root && touched.root && ( <div className="input-feedback">{errors.root}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Number</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="number"
+                            placeholder="Number"
+                            type="text"
+                            value={ values.number }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.number && touched.number ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.number && touched.number && ( <div className="input-feedback">{errors.number}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Sense</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="salish"
+                            placeholder="Sense"
+                            type="text"
+                            value={ values.sense }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.sense && touched.sense ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.sense && touched.sense && ( <div className="input-feedback">{errors.sense}</div>
                         )}
                     </Grid.Column>
                 </Grid.Row>
@@ -204,6 +252,78 @@ function EditRoot() {
                             className={ errors.english && touched.english ? 'text-input error' : 'text-input'}
                         />
                         {errors.english && touched.english && ( <div className="input-feedback">{errors.english}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Symbol</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="symbol"
+                            placeholder="Symbol"
+                            type="text"
+                            value={ values.symbol }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.symbol && touched.symbol ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.symbol && touched.symbol && ( <div className="input-feedback">{errors.symbol}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Grammar</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="grammar"
+                            placeholder="Grammar"
+                            type="text"
+                            value={ values.grammar }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.grammar && touched.grammar ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.grammar && touched.grammar && ( <div className="input-feedback">{errors.grammar}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Variant</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="variant"
+                            placeholder="Variant"
+                            type="text"
+                            value={ values.variant }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.variant && touched.variant ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.variant && touched.variant && ( <div className="input-feedback">{errors.variant}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Cross-Reference</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="crossref"
+                            placeholder="Cross-reference"
+                            type="text"
+                            value={ values.crossref }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.crossref && touched.crossref ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.crossref && touched.crossref && ( <div className="input-feedback">{errors.crossref}</div>
                         )}
                     </Grid.Column>
                 </Grid.Row>
