@@ -1,11 +1,11 @@
 import { gql } from 'apollo-boost';
 
 export const getUserToken = gql`
-query($email: String!, $password: String!) {
-  loginUser_Q(email: $email, password: $password) {
-    password
+  query($email: String!, $password: String!) {
+    loginUser_Q(email: $email, password: $password) {
+      password
+    }
   }
-}
 `;
 
 export const getUserFromToken = gql`
@@ -80,10 +80,48 @@ query GetAffixById($id: Int!) {
     affix_type {
       value
       id
+      nicodemus
+      number
+      prevId
+      salish
+      sense
+      symbol
+      updatedAt
+      variant
+      root
     }
   }
-}
 `;
+
+export const getRootByIdQuery = gql`
+  query GetRootById($id: Int!) {
+    roots_by_pk(id: $id) {
+      editnote
+      createdAt
+      updatedAt
+      id
+      english
+      grammar
+      nicodemus
+      number
+      root
+      salish
+      sense
+      symbol
+      crossref
+      cognate
+      variant
+      user {
+        username
+      }
+      activeByActive {
+        value
+        id
+      }
+      prevId
+    }
+  }
+`
 
 export const updateAffixMutation = gql`
   mutation updateAnAffix($id: Int!, $editnote: String!, $english: String!, $salish: String!, $nicodemus: String!, $link: String!, $page: String!, $type: Int!){
@@ -114,6 +152,29 @@ export const updateAffixMutation = gql`
   }
 `;
 
+export const updateRootMutation = gql`
+  mutation update_a_root($id: Int!, $root: String = "", $salish: String = "", $editnote: String = "", $english: String = "", $cognate: String = "", $nicodemus: String = "") {
+    update_roots_by_pk(pk_columns: {id: $id}, _set: {active: 2}) {
+      active
+    }
+    insert_roots_one(object: {prevId: $id, root: $root, salish: $salish, editnote: $editnote, english: $english, cognate: $cognate, nicodemus: $nicodemus}) {
+      activeByActive {
+        value
+      }
+      createdAt
+      updatedAt
+      editnote
+      english
+      id
+      nicodemus
+      prevId
+      root
+      salish
+      cognate
+    }
+  }
+`
+
 export const deleteAffixMutation = gql`
   mutation($id: Int!) {
     delete_affixes_by_pk(id: $id) {
@@ -121,6 +182,25 @@ export const deleteAffixMutation = gql`
     }
   }
 `;
+
+export const deleteRootMutation = gql`
+  mutation delete_a_root($id: Int!, $editnote: String!) {
+    update_roots_by_pk(pk_columns: {id: $id}, _set: {active: 2, editnote: $editnote}) {
+      createdAt
+      root
+      updatedAt
+      prevId
+      english
+      salish
+      nicodemus
+      id
+      editnote
+      active
+      cognate
+      userId
+    }
+  }
+`
 
 export const updateUserMutation = gql`
   mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
@@ -219,6 +299,63 @@ export const getAnonAffixesQuery = gql`
   }
   `;
 
+export const getRootsQuery = gql`
+  query getRootsQuery($where: roots_bool_exp = {}, $limit: Int = 10, $offset: Int = 10, $root_order: [roots_order_by!] = {}) {
+    roots_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    roots(where: $where, limit: $limit, offset: $offset, order_by: $root_order) {
+      cognate
+      createdAt
+      crossref
+      editnote
+      english
+      grammar
+      id
+      nicodemus
+      number
+      root
+      salish
+      sense
+      symbol
+      updatedAt
+      variant
+      user {
+        username
+      }
+    }
+  }
+  `;
+  
+export const getAnonRootsQuery = gql`
+  query getAnonRootsQuery($where: roots_bool_exp = {}, $limit: Int = 10, $offset: Int = 10, $root_order: [roots_order_by!] = {}) {
+    roots_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    roots(where: $where, limit: $limit, offset: $offset, order_by: $root_order) {
+      cognate
+      createdAt
+      crossref
+      editnote
+      english
+      grammar
+      id
+      nicodemus
+      number
+      root
+      salish
+      sense
+      symbol
+      updatedAt
+      variant
+    }
+  }
+    `;
+    
   export const getAffixHistoryByIdQuery = gql`
     query affixHistoryByIdQuery($original: jsonb!, $table_name: String!) {
       audit_log(where: {table_name: {_eq: $table_name}, original: {_contains: $original}}, order_by: {action_tstamp_clk: asc}) {
