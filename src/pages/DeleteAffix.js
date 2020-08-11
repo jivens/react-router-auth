@@ -39,8 +39,7 @@ function DeleteAffix() {
       const result = await client.mutate({
         mutation: deleteAffixMutation,
         variables: {
-          id: values.id,
-          editnote: values.editnote
+          id: values.id
         }
       })
       if (result.error) {
@@ -86,7 +85,7 @@ function DeleteAffix() {
         <Grid.Row>
             <Grid.Column textAlign="center" width={12}>
                 <Header as="h2">Remove an Affix</Header>
-                <Message>Submitting this form marks the affix as inactive. You must enter a note to proceed.</Message>
+                <Message>Submitting this form removes the affix from this application. Removed elements can only be re-instated by a manager.</Message>
             </Grid.Column>
         </Grid.Row>
     </Grid>
@@ -130,7 +129,6 @@ function DeleteAffix() {
                     <Dropdown
                         disabled
                         id="type"
-                        placeholder='Select a Type'
                         fluid
                         selection
                         options = { dropDownOptions(typeData.affix_types) }
@@ -148,7 +146,6 @@ function DeleteAffix() {
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="nicodemus"
-                            placeholder="Nicodemus"
                             type="text"
                             value={ values.nicodemus }
                             onChange={ handleChange }
@@ -167,7 +164,6 @@ function DeleteAffix() {
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="salish"
-                            placeholder="Salish"
                             type="text"
                             value={ values.salish }
                             onChange={ handleChange }
@@ -186,7 +182,6 @@ function DeleteAffix() {
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="english"
-                            placeholder="english"
                             type="text"
                             value={ values.english }
                             onChange={ handleChange }
@@ -205,7 +200,6 @@ function DeleteAffix() {
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="link"
-                            placeholder="URL"
                             type="text"
                             value={ values.link }
                             onChange={ handleChange }
@@ -224,7 +218,6 @@ function DeleteAffix() {
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="page"
-                            placeholder="Link text"
                             type="text"
                             value={ values.page }
                             onChange={ handleChange }
@@ -236,13 +229,13 @@ function DeleteAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Note</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Note</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="editnote"
-                            placeholder="An edit note is required"
                             type="text"
                             value={ values.editnote }
                             onChange={ handleChange }

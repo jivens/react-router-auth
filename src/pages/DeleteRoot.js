@@ -37,8 +37,7 @@ function DeleteAffix() {
       const result = await client.mutate({
         mutation: deleteRootMutation,
         variables: {
-          id: values.id,
-          editnote: values.editnote
+          id: values.id
         }
       })
       if (result.error) {
@@ -56,7 +55,7 @@ function DeleteAffix() {
   }
 
   if (hasUpdated) {
-    return <Redirect to="/affixes" />;
+    return <Redirect to="/roots" />;
   }
 
 //   function dropDownOptions(options) {
@@ -74,7 +73,7 @@ function DeleteAffix() {
 //   }
 
   const routeChange=()=> {
-    let path = `/affixes`;
+    let path = `/roots`;
     history.push(path);
   }
 
@@ -83,8 +82,8 @@ function DeleteAffix() {
     <Grid centered>
         <Grid.Row>
             <Grid.Column textAlign="center" width={12}>
-                <Header as="h2">Remove an Affix</Header>
-                <Message>Submitting this form marks the affix as inactive. You must enter a note to proceed.</Message>
+                <Header as="h2">Remove a Root</Header>
+                <Message>Submitting this form removes the root from this application. Removed roots can only be re-instated by a manager.</Message>
             </Grid.Column>
         </Grid.Row>
     </Grid>
@@ -121,13 +120,13 @@ function DeleteAffix() {
         <Form>
             <Grid centered>
             <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Root</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Root</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="root"
-                            placeholder="Root"
                             type="text"
                             value={ values.root }
                             onChange={ handleChange }
@@ -139,13 +138,49 @@ function DeleteAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Nicodemus</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Number</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="number"
+                            type="text"
+                            value={ values.number }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.number && touched.number ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.number && touched.number && ( <div className="input-feedback">{errors.number}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Sense</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            disabled
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="salish"
+                            type="text"
+                            value={ values.sense }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.sense && touched.sense ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.sense && touched.sense && ( <div className="input-feedback">{errors.sense}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Nicodemus</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="nicodemus"
-                            placeholder="Nicodemus"
                             type="text"
                             value={ values.nicodemus }
                             onChange={ handleChange }
@@ -160,10 +195,10 @@ function DeleteAffix() {
                     <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Salish</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="salish"
-                            placeholder="Salish"
                             type="text"
                             value={ values.salish }
                             onChange={ handleChange }
@@ -175,13 +210,13 @@ function DeleteAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">English</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">English</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="english"
-                            placeholder="english"
                             type="text"
                             value={ values.english }
                             onChange={ handleChange }
@@ -193,13 +228,85 @@ function DeleteAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Symbol</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            disabled
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="symbol"
+                            type="text"
+                            value={ values.symbol }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.symbol && touched.symbol ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.symbol && touched.symbol && ( <div className="input-feedback">{errors.symbol}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Grammar</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            disabled
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="grammar"
+                            type="text"
+                            value={ values.grammar }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.grammar && touched.grammar ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.grammar && touched.grammar && ( <div className="input-feedback">{errors.grammar}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Variant</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            disabled
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="variant"
+                            type="text"
+                            value={ values.variant }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.variant && touched.variant ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.variant && touched.variant && ( <div className="input-feedback">{errors.variant}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Cross-Reference</Label></Grid.Column>
+                    <Grid.Column width={10}>
+                        <Input
+                            disabled
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            id="crossref"
+                            type="text"
+                            value={ values.crossref }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.crossref && touched.crossref ? 'text-input error' : 'text-input' }
+                        />
+                        {errors.crossref && touched.crossref && ( <div className="input-feedback">{errors.crossref}</div>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
                     <Grid.Column width={2} textAlign="right"><Label basic pointing="right" color="blue">Cognate</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="cognate"
-                            placeholder="cognate"
                             type="text"
                             value={ values.cognate }
                             onChange={ handleChange }
@@ -211,13 +318,13 @@ function DeleteAffix() {
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Edit Note</Label></Grid.Column>
+                    <Grid.Column width={2} textAlign="right"><Label pointing="right" basic color="blue">Edit Note</Label></Grid.Column>
                     <Grid.Column width={10}>
                         <Input
+                            disabled
                             fluid
                             style={{ paddingBottom: '5px' }}
                             id="editnote"
-                            placeholder="An edit note is required"
                             type="text"
                             value={ values.editnote }
                             onChange={ handleChange }

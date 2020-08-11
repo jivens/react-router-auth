@@ -97,6 +97,7 @@ export const getAffixByIdQuery = gql`
         username
       }
       affix_type {
+        id
         value
       }
     }

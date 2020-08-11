@@ -100,7 +100,7 @@ export function SelectColumnFilter({
       options.add("warp")
       return [...options.values()]
     }
-  }, [id])
+  }, [id, selectValues])
 
   // Render a multi-select box
   return (
