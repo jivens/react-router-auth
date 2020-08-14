@@ -18,7 +18,7 @@ function AffixHistory() {
     const history = useHistory()
   
     let { loading: affixHistoryLoading, error: affixHistoryError, data: affixHistoryData } = useQuery(getAffixHistoryByIdQuery, 
-        {client: client, variables: {"table_name": "affixes", "original": {"id": parseInt(id)}} }) 
+        {client: client, variables: {"table_name": "affixes", "row_data": {"id": parseInt(id)}} }) 
      
     if (affixHistoryLoading) {
       return <div>loading...</div>
@@ -27,7 +27,9 @@ function AffixHistory() {
       return <div>Something went wrong</div>
     }
 
-    return(JSON.stringify(affixHistoryData.audit_log))
+    return(JSON.stringify(affixHistoryData.audit_logged_actions.map(elem => {
+      return { action: elem.action, userId: elem.hasura_user["x-hasura-user-id"], english: elem.row_data.english}
+    })))
 
 }
 

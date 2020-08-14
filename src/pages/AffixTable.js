@@ -113,7 +113,7 @@ function Table({
   // Render the UI for your table
   return (
     <>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -130,7 +130,7 @@ function Table({
             2
           )}
         </code>
-      </pre>
+      </pre> */}
       <div className="columnToggle">
         {allColumns.map(column => (
           <div key={column.id} className="columnToggle">
@@ -153,7 +153,7 @@ function Table({
                   to={{
                     pathname: "/addaffix",
                   }}>
-                  <Button animated='vertical' basic color='blue'>
+                  <Button animated='vertical' color='blue'>
                     <Button.Content hidden>Add Affix</Button.Content>
                     <Button.Content visible>
                       <Icon name='plus' />

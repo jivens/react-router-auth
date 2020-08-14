@@ -390,17 +390,7 @@ function RootTable(props) {
         id: 'cognate',
         show: false,
         label: 'Cognate',
-      },
-      {
-        Header: 'Username',
-        accessor: 'user.username',
-        Filter: SelectColumnFilter,
-        tableName: 'RootTable',
-        disableSortBy: true,
-        show: false,
-        id: 'user.username',
-        label: 'Username'
-      },
+      }
     ], []
   )
 

@@ -53,7 +53,7 @@ function EditRoot() {
             salish: values.salish,
             cognate: values.cognate,
             editnote: values.editnote,
-            number: parseInt(values.number),
+            number: values.number ? parseInt(values.number) : null,  
             sense: values.sense,
             crossref: values.crossref,
             grammar: values.grammar,
@@ -113,7 +113,7 @@ function EditRoot() {
         initialValues={{ 
         id: rootData.roots_by_pk.id,
         root: rootData.roots_by_pk.root,
-        number: rootData.roots_by_pk.number.toString() ? rootData.roots_by_pk.number.toString() : "",
+        number: (rootData.roots_by_pk.number && rootData.roots_by_pk.number.toString()) ? rootData.roots_by_pk.number.toString() : "",
         sense: rootData.roots_by_pk.sense ? rootData.roots_by_pk.sense : "",
         nicodemus: rootData.roots_by_pk.nicodemus,
         salish: rootData.roots_by_pk.salish ? rootData.roots_by_pk.salish : "" ,

@@ -19,6 +19,7 @@ export const getUserFromToken = gql`
       password
       roles {
         role_code
+        id
       }
     }
   }
@@ -74,6 +75,7 @@ export const insertAffixMutation = gql`
       salish
       affix_type {
         value
+        id
       }
       updatedAt
       userId
@@ -95,6 +97,7 @@ export const getAffixByIdQuery = gql`
       updatedAt
       user {
         username
+        id
       }
       affix_type {
         id
@@ -124,6 +127,7 @@ export const getRootByIdQuery = gql`
       variant
       user {
         username
+        id
       }
     }
   }
@@ -243,6 +247,7 @@ export const getUsernamesQuery = gql`
     query {
       users {
         username
+        id
       }
     }
 `;
@@ -276,11 +281,13 @@ export const getAffixesQuery = gql`
       salish
       affix_type {
         value
+        id
       }
       updatedAt
       id
       user {
         username
+        id
       }
     }
   }
@@ -302,6 +309,7 @@ export const getAnonAffixesQuery = gql`
       salish
       affix_type {
         value
+        id
       }
       updatedAt
       id
@@ -334,6 +342,7 @@ export const getRootsQuery = gql`
       variant
       user {
         username
+        id
       }
     }
   }
@@ -367,26 +376,26 @@ export const getAnonRootsQuery = gql`
 `;
     
   export const getAffixHistoryByIdQuery = gql`
-    query affixHistoryByIdQuery($original: jsonb!, $table_name: String!) {
-      audit_log(where: {table_name: {_eq: $table_name}, original: {_contains: $original}}, order_by: {action_tstamp_clk: asc}) {
+    query getAffixHistoryById($row_data: jsonb!, $table_name: String!) {
+      audit_logged_actions(where: {table_name: {_eq: $table_name}, row_data: {_contains: $row_data}}, order_by: {action_tstamp_clk: asc})  {
         action
         action_tstamp_clk
         action_tstamp_stm
         action_tstamp_tx
         application_name
-        diff
-        id
-        original
-        schema_name
-        session_user
-        table_name
-        application_user
+        changed_fields
         client_addr
         client_port
         client_query
+        event_id
+        hasura_user
         relid
+        row_data
+        schema_name
+        session_user_name
         statement_only
+        table_name
         transaction_id
       }
-    }
+    } 
   `;
