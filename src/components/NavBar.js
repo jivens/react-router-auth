@@ -63,6 +63,10 @@ const NavBarMobile = ({
      <Icon name="book" />
       Roots
     </Menu.Item>
+    <Menu.Item as={NavLink} to="/log" name="Log" size='mini' key="minilog">
+     <Icon name="history" />
+      Log
+    </Menu.Item>
     </Sidebar>
     <Sidebar.Pusher
       dimmed={visible}
@@ -95,6 +99,9 @@ const NavBarDesktop = ({ rightItems }) => (
     </Menu.Item>
     <Menu.Item as={NavLink} to="/roots" name="Roots" key="mroots">
        Roots
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/log" name="Log" key="mlog">
+       Log
     </Menu.Item>
     <Menu.Menu position="right">
       {map(rightItems, item  => <Popup key={item.key} content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}

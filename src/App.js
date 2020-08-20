@@ -22,6 +22,7 @@ import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
 import Roots from './pages/Roots';
+import Log from './pages/Log';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
@@ -133,6 +134,7 @@ function App(props) {
               <PrivateRoute path="/editroot" component={EditRoot} key="EditRoot" />
               <PrivateRoute path="/deleteroot" component={DeleteRoot} key="DeleteRoot" /> 
               <PrivateRoute path="/affixhistory" component={AffixHistory} key="AffixHistory" />
+              <PrivateRoute path="/log" component={Log} key="Log" />
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />

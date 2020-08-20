@@ -252,6 +252,23 @@ export const getUsernamesQuery = gql`
     }
 `;
 
+export const getLogQuery = gql`
+  query getLogQuery($limit: Int, $offset: Int, $log_order: [audit_logged_actions_order_by!], $where: audit_logged_actions_bool_exp) {
+    audit_logged_actions_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    audit_logged_actions(limit: $limit, offset: $offset, where: $where, order_by: $log_order) {
+      action
+      changed_fields
+      hasura_user
+      row_data
+      schema_name
+      table_name
+    }
+  }
+  `;
 
 export const getAffixTypesQuery = gql`
     query {
