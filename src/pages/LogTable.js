@@ -282,14 +282,14 @@ function LogTable(props) {
         label: 'Changed_fields'
       },
       {
-        Header: 'Hasura_user',
-        accessor: 'hasura_user',
+        Header: 'User',
+        accessor: 'audit_user[0].username',
         filter: 'fuzzyText',
         tableName: 'LogTable',
-        Cell: ({ row }) => <span>{JSON.stringify(row.original.hasura_user)}</span>,
+        //Cell: ({ row }) => <span>{JSON.stringify(row.original.hasura_user)}</span>,
         show: true,
-        id: 'hasura_user',
-        label: 'Hasura_user'
+        id: 'user',
+        label: 'user'
       },
       {
         Header: 'Row_data',

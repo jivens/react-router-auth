@@ -266,6 +266,13 @@ export const getLogQuery = gql`
       row_data
       schema_name
       table_name
+      audit_user {
+        id
+        email
+        first
+        last
+        username
+      }
     }
   }
   `;
