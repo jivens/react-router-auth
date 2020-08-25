@@ -22,6 +22,7 @@ import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
 import Roots from './pages/Roots';
+import Texts from './pages/Texts';
 import Log from './pages/Log';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
@@ -127,6 +128,7 @@ function App(props) {
               <Route path="/signup" component={Signup} key="SignupPage" />
               <Route path="/affixes" component={Affixes} key="Affixes" />
               <Route path="/roots" component={Roots} key="Roots" />
+              <Route path="/texts" component={Texts} key="Texts" />
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />

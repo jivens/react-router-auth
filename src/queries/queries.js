@@ -286,6 +286,53 @@ export const getAffixTypesQuery = gql`
     }
 `;
 
+export const getTextsById = gql`
+  query getTextByIdQuery($id: Int) {
+    texts(where: {id: {_eq: $id}}) {
+      id
+      title
+      speaker
+      cycle
+      rnumber
+      tnumber
+      audiosets {
+        id
+        speaker
+        title
+        textId
+        audiosets_audiofiles {
+          audiosetId
+          direct
+          id
+          src
+          subdir
+          type
+        }
+      }
+      texts_textfiles {
+        fileType
+        id
+        msType
+        resType
+        src
+        subdir
+        textId
+        textimages {
+          id
+          src
+          subdir
+          textFileId
+        }
+      }
+      user {
+        id
+        last
+        first
+        username
+      }
+    }
+  }
+`;
 
 // need aggregate permission to get the total count
 export const getAffixesQuery = gql`
@@ -420,6 +467,59 @@ export const getAnonRootsQuery = gql`
         statement_only
         table_name
         transaction_id
+      }
+    } 
+  `;
+
+  export const getTextsQuery = gql`
+    query getTextsQuery($limit: Int, $offset: Int, $order: [texts_order_by!], $where: texts_bool_exp) {
+      texts_aggregate(where: $where) {
+        aggregate {
+          count
+        }
+      }
+      texts(limit: $limit, offset: $offset, order_by: $order, where: $where) {
+        id
+        title
+        speaker
+        cycle
+        rnumber
+        tnumber
+        audiosets {
+          id
+          speaker
+          title
+          textId
+          audiosets_audiofiles {
+            audiosetId
+            direct
+            id
+            src
+            subdir
+            type
+          }
+        }
+        texts_textfiles {
+          fileType
+          id
+          msType
+          resType
+          src
+          subdir
+          textId
+          textimages {
+            id
+            src
+            subdir
+            textFileId
+          }
+        }
+        user {
+          id
+          last
+          first
+          username
+        }
       }
     } 
   `;

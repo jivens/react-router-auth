@@ -4,7 +4,7 @@ import { intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { getLogQuery } from './../queries/queries'
+import { getTextsQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
@@ -15,7 +15,7 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
-//   selectValues
+  selectValues
 }) {
 
   const { user } = useAuth();
@@ -87,7 +87,7 @@ function Table({
       defaultColumn,
       filterTypes,
       //hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
-    //   selectValues
+      selectValues
     },
     useGlobalFilter,
     useFilters,
@@ -147,7 +147,20 @@ function Table({
             <th
               colSpan={visibleColumns.length}
             >
-            { (user && (user.roles.includes('update') || user.roles.includes('manager')))
+            { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
+              (
+                <Link 
+                  to={{
+                    pathname: "/addtext",
+                  }}>
+                  <Button animated='vertical' color='blue'>
+                    <Button.Content hidden>Add Text</Button.Content>
+                    <Button.Content visible>
+                      <Icon name='plus' />
+                    </Button.Content>
+                  </Button> 
+                </Link> 
+              )
             }
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
@@ -250,74 +263,93 @@ function Table({
 }
 
 
-function LogTable(props) {
+function TextTable(props) {
+  console.log(props.selectValues)
 
-  const updateColumns = React.useMemo(
+  const columns = React.useMemo(
     () => [
-      // {
-      //   Header: 'ID',
-      //   accessor: 'id',
-      //   tableName: 'LogTable',
-      //   show: false,
-      //   disableFilters: true,
-      //   id: 'id'
-      // },
       {
-        Header: 'Action',
-        accessor: 'action',
-        Filter: DefaultColumnFilter,
-        tableName: 'LogTable',
+        Header: 'History/Edit/Delete',
+        disableFilters: true,
+        sortable: false,
+        width: 100,
         show: true,
-        disableSortBy: true,
-        id: 'action',
-        label: 'action'
+        id: 'historyEditDelete',
+        label: 'History/Edit/Delete',
+        tableName: 'TextTable',
+        Cell: ({row, original}) => (
+          <div className="buttons">
+            <Link 
+              to={{
+                pathname: "/texthistory",
+                search: "?id=" + row.original.id,
+              }}>
+              <button className="basic blue ui icon button">
+                <Icon name="history" />
+              </button>              
+            </Link>
+            <Link 
+              to={{
+                pathname: "/edittext",
+                search: "?id=" + row.original.id,
+              }}>
+              <button className="basic blue ui icon button">
+                <Icon name="edit" />
+              </button>              
+            </Link>
+            <Link 
+              to={{
+                pathname: "/deletetext",
+                search: "?id=" + row.original.id,
+              }}>
+              <button className="basic blue ui icon button">
+                <Icon name="close" />
+              </button>              
+            </Link>
+          </div>
+        )
+      },     
+      {
+        Header: 'Title',
+        accessor: 'title',
+        tableName: 'TextTable',
+        show: true,
+        id: 'title',
+        label: 'Title'
       },
       {
-        Header: 'Changed_fields',
-        accessor: 'changed_fields',
-        tableName: 'LogTable',
-        Cell: ({ row }) => <span>{JSON.stringify(row.original.changed_fields)}</span>,
-        show: true,
-        id: 'changed_fields',
-        label: 'Changed_fields'
-      },
-      {
-        Header: 'User',
-        accessor: 'audit_user[0].first',
+        Header: 'Speaker',
+        accessor: 'speaker',
         filter: 'fuzzyText',
-        tableName: 'LogTable',
-        //Cell: ({ row }) => <span>{JSON.stringify(row.original.hasura_user)}</span>,
-        show: true,
-        id: 'user',
-        label: 'user'
+        tableName: 'TextTable',
+        show: false,
+        id: 'speaker',
+        label: 'speaker'
       },
       {
-        Header: 'Row_data',
-        accessor: 'row_data',
-        tableName: 'LogTable',
-        Cell: ({ row }) => <span>{JSON.stringify(row.original.row_data)}</span>,
+        Header: 'Cycle',
+        accessor: 'cycle',
+        tableName: 'TextTable',
         show: true,
-        id: 'row_data',
-        label: 'Row_data'
+        id: 'cycle',
+        label: 'cycle'
       },
       {
-        Header: 'schema_name',
-        accessor: 'schema_name',
-        Filter: DefaultColumnFilter,
-        tableName: 'LogTable',
+        Header: 'R Number',
+        accessor: 'rnumber',
+        tableName: 'TextTable',
+        show: true,
+        id: 'rnumber',
+        label: 'rnumber'
+      },
+      {
+        Header: 'T number',
+        accessor: 'tnumber',
+        tableName: 'TextTable',
         disableSortBy: true,
         show: false,
-        id: 'schema_name',
-        label: 'schema_name'
-      },
-      {
-        Header: 'table_name',
-        accessor: 'table_name',
-        tableName: 'LogTable',
-        disableFilters: true,
-        show: true,
-        id: 'table_name',
-        label: 'table_name'
+        id: 'tnumber',
+        label: 'tnumber'
       },
     ], []
   )
@@ -333,30 +365,17 @@ function LogTable(props) {
   const { client, user } = useAuth();
 
   
-  async function getLog(limit, offset, sortBy, filters) {
+  async function getTexts(limit, offset, sortBy, filters) {
     let res = {}
-    if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
-      res = await client.query({
-        query: getLogQuery,
-        variables: { 
-          limit: limit,
-          offset: offset,
-          log_order: sortBy,
-          where: filters,
-         }
-      })
-    }
-    // else {
-    //   res = await client.query({
-    //     query: getAnonAffixesQuery,
-    //     variables: { 
-    //       limit: limit,
-    //       offset: offset,
-    //       affix_order: sortBy,
-    //       where: filters,
-    //     }
-    //   })
-    // }
+    res = await client.query({
+      query: getTextsQuery,
+      variables: { 
+        limit: limit,
+        offset: offset,
+        order: sortBy,
+        where: filters,
+        }
+    })
     return res.data
   }  
 
@@ -377,17 +396,16 @@ function LogTable(props) {
       // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) {
         const controlledSort = sortReshape(sortBy) 
-        const controlledFilter = filterReshape(filters, globalFilter, ['action', 'table_name'])
+        const controlledFilter = filterReshape(filters, globalFilter, [])
         console.log(controlledFilter)
         // reset to first page when filters change
         // if (filters.length > 0) {
         //   pageIndex = 0
         // }
-        getLog(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
+        getTexts(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
         .then((data) => {
-          console.log(data)  
-          let totalCount = data.audit_logged_actions_aggregate.aggregate.count
-          setData(data.audit_logged_actions)
+          let totalCount = data.texts_aggregate.aggregate.count
+          setData(data.texts)
           setPageCount(Math.ceil(totalCount / pageSize))
           setLoading(false)
         })
@@ -401,8 +419,6 @@ function LogTable(props) {
     }, 1000)
   }, [])
 
-  let columns = updateColumns
-  
 
   return (
     <TableStyles>
@@ -412,10 +428,9 @@ function LogTable(props) {
         fetchData={fetchData}
         loading={loading}
         pageCount={pageCount}
-        // selectValues={props.selectValues}
       />
     </TableStyles>
   )
 }
 
-export default LogTable
+export default TextTable

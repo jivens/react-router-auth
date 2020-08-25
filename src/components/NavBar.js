@@ -63,6 +63,10 @@ const NavBarMobile = ({
      <Icon name="book" />
       Roots
     </Menu.Item>
+    <Menu.Item as={NavLink} to="/texts" name="Texts" size='mini' key="minitextts">
+     <Icon name="book" />
+      Roots
+    </Menu.Item>
     <Menu.Item as={NavLink} to="/log" name="Log" size='mini' key="minilog">
      <Icon name="history" />
       Log
@@ -99,6 +103,9 @@ const NavBarDesktop = ({ rightItems }) => (
     </Menu.Item>
     <Menu.Item as={NavLink} to="/roots" name="Roots" key="mroots">
        Roots
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/texts" name="Texts" key="mtexts">
+       Texts
     </Menu.Item>
     <Menu.Item as={NavLink} to="/log" name="Log" key="mlog">
        Log
