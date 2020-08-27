@@ -95,3 +95,101 @@ export function filterReshape(filters, globalFilter, globalFilterVariables) {
 
     return(res)
 }
+
+export function textReshape(jsonData) {
+    let json = JSON.parse(JSON.stringify(jsonData))
+    console.log("our json is ", json)
+    //you have the data from getTextsQuery, call it json.
+    //Now reformulate it so that the ReactTable display can handle it.
+      let i = 0;
+      let k = 0;
+      //set an empty string to hold handImages, and one to hold typedImages.
+      //These are needed for the SplitView utility that displays handwritten and
+      //typed fieldnotes side-by-side.
+      while (i < json.length) {
+        let handImages = '';
+        let typedImages = '';
+        //set an empty array to hold 'sourcefiles'.
+        json[i]["sourcefiles"] = [];
+        let j=0;
+        //for each text, provide the data fields 'src', 'title', 'fileType'
+        //'msType'.  Set the entry type as 'text', and give it a key.
+        while (j < json[i]["texts_textfiles"].length) {
+          json[i]["sourcefiles"].push(
+            {
+              src: json[i]["texts_textfiles"][j].src,
+              title: json[i]["texts_textfiles"][j].resType + " pdf",
+              fileType: json[i]["texts_textfiles"][j].fileType,
+              msType: json[i]["texts_textfiles"][j].msType,
+              type: "text",
+              key: k
+            }
+          );
+          if (json[i]["texts_textfiles"][j]["textimages"].length > 0) {
+            k++;
+            // for each textfile, build the query string so that imageviewer can derive the images from it.
+            let l = 0;
+            json[i]["texts_textfiles"][j]["imagequerystring"]='';
+            while (l < json[i]["texts_textfiles"][j]["textimages"].length) {
+              json[i]["texts_textfiles"][j]["imagequerystring"] = json[i]["texts_textfiles"][j]["imagequerystring"] + '&images=' + json[i]["texts_textfiles"][j]["textimages"][l]["src"];
+              l++;
+            }
+            //console.log(json[i]["texts_textfiles"][j]["imagequerystring"]);
+          json[i]["sourcefiles"].push(
+              {
+                src: json[i]["texts_textfiles"][j]["imagequerystring"],
+                title: json[i]["texts_textfiles"][j].resType + " image files",
+                fileType: json[i]["texts_textfiles"][j].fileType,
+                type: "textimages",
+                key: k
+              }
+            );
+            //SplitView needs to know if the imagefiles are for handwritten
+            //or typed fieldnotes.  Here's where we tell it.
+            if (json[i]["texts_textfiles"][j].msType === "Handwritten") {
+              handImages = json[i]["texts_textfiles"][j]["imagequerystring"];
+            }
+              if (json[i]["texts_textfiles"][j].msType === "Typed") {
+              typedImages = json[i]["texts_textfiles"][j]["imagequerystring"];
+            }
+          }
+          j++; k++;
+        }
+        j=0;
+        while (j < json[i]["audiosets"].length) {
+          //here we create the data that is needed to pass to the AudioPlayer
+          json[i]["sourcefiles"].push(
+            {
+              speaker: json[i]["audiosets"][j].speaker,
+              title: json[i]["audiosets"][j].title,
+              sources: json[i]["audiosets"][j].audiosets_audiofiles,
+              type: "audio",
+              key: k
+            }
+          );
+          j++; k++;
+        }
+        //SplitView should only appear if a text has both a set of handwritten
+        //fieldnots and a corresponding set of typed manuscripts.
+        //For SplitView to read in the imagefiles into the, correct gallery
+        //we need to modify the query string to replace every instance of
+        //'images' with either 'handimages' or 'typedimages'.  We use unshift
+        //instead of push to put the SplitView at the top of the versions list,
+        //iff a text has a SplitView.
+        if ( handImages.length >0 && typedImages.length >0){
+          handImages=handImages.replace(/images/g, "handimages");
+        typedImages=typedImages.replace(/images/g, "typedimages");
+        json[i]["sourcefiles"].unshift(
+          {
+            src: handImages + typedImages,
+            title: "Dual view of typed and handwritten notes",
+            fileType: "images",
+            type: "splitview",
+            key: k
+          }
+        );
+        }
+        i++;
+      }
+      return json;
+   }

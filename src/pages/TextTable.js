@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
-import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
+import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useExpanded } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
 import { getTextsQuery } from './../queries/queries'
-import { sortReshape, filterReshape } from "./../utils/reshapers"
+import { sortReshape, filterReshape, textReshape } from "./../utils/reshapers"
+import SubTable from "./SubTable";
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
 
@@ -15,11 +16,13 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
-  selectValues
+  selectValues, 
+  renderRowSubComponent
 }) {
 
   const { user } = useAuth();
   //console.log("Inside table, I have select values: ", selectValues)
+  console.log("my user is: ", user)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -52,25 +55,27 @@ function Table({
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    prepareRow,
     page,
+    rows,
     state,
+    flatColumns,
     allColumns,
     getToggleHideAllColumnsProps,
     setHiddenColumns,
-    visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
     canPreviousPage,
     canNextPage,
     pageOptions,
     pageCount,
+    visibleColumns,
+    prepareRow,
     gotoPage,
     nextPage,
     previousPage,
     setPageSize,
     // Get the state from the instance
-    state: { pageIndex, pageSize, sortBy, filters, globalFilter }
+    state: { pageIndex, pageSize, sortBy, filters, globalFilter, expanded }
   } = useTable(
     {
       columns,
@@ -92,6 +97,7 @@ function Table({
     useGlobalFilter,
     useFilters,
     useSortBy,
+    useExpanded,
     usePagination,   
   )
 
@@ -189,25 +195,36 @@ function Table({
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row)
+        <tbody {...getTableBodyProps()}>          
+          {rows.map((row, i) => {
+            prepareRow(row);
             return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map(cell => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                })}
-              </tr>
-            )
+              <React.Fragment {...row.getRowProps()}>
+                <tr>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    )
+                  })}
+                </tr>
+                {row.isExpanded ? (
+                  <tr>
+                    <td colSpan={visibleColumns.length}>
+                      {renderRowSubComponent({ row })}
+                    </td>
+                  </tr>
+                ) : null}
+              </React.Fragment>            
+            );
           })}
           <tr>
+            
             {loading ? (
               // Use our custom loading state to show a loading indicator
-              <td colSpan="10000">Loading...</td>
+              <td colSpan="10"> Loading... </td>
             ) : (
-              <td colSpan="10000">
-                Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
-                results
+              <td colSpan="10">
+                Showing {page.length} of ~{pageCount * pageSize} results
               </td>
             )}
           </tr>
@@ -268,6 +285,16 @@ function TextTable(props) {
 
   const columns = React.useMemo(
     () => [
+      {
+        Header: () => null, // No header
+        id: 'expander', // It needs an ID
+        show: true,
+        Cell: ({ row }) => (
+          <span {...row.getToggleRowExpandedProps()}>
+            {row.isExpanded ? '👇' : '👉'}
+          </span>
+        ),
+      },
       {
         Header: 'History/Edit/Delete',
         disableFilters: true,
@@ -351,10 +378,31 @@ function TextTable(props) {
         id: 'tnumber',
         label: 'tnumber'
       },
+      {
+        Header: 'Sourcefiles',
+        accessor: 'sourcefiles',
+        tableName: 'TextTable',
+        disableSortBy: true,
+        show: false,
+        id: 'sourcefiles',
+        label: 'sourcefiles'
+      },
     ], []
   )
 
 
+
+  const renderRowSubComponent = React.useCallback(
+    ({ row }) => (
+      // <pre>
+      //   <code>{JSON.stringify({ values: row.values }, null, 2)}</code>
+      // </pre>
+      <div>
+        <SubTable subData={row.values.sourcefiles}/>
+      </div>    
+    ),
+    []
+  ) 
 
   // We'll start our table without any data
   const [data, setData] = React.useState([])
@@ -376,6 +424,13 @@ function TextTable(props) {
         where: filters,
         }
     })
+    let texts = textReshape(res.data.texts)
+    let i = 0
+    for ( i = 0; i < texts.length; i++ ) {
+      res.data.texts[i].sourcefiles = texts[i].sourcefiles
+    }
+    console.log("this is res.data ", res.data)
+    console.log("this is texts ", texts)
     return res.data
   }  
 
@@ -425,6 +480,7 @@ function TextTable(props) {
       <Table
         columns={columns}
         data={data}
+        renderRowSubComponent={renderRowSubComponent}
         fetchData={fetchData}
         loading={loading}
         pageCount={pageCount}
