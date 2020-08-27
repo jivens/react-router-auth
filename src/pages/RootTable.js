@@ -267,16 +267,25 @@ function RootTable(props) {
   const updateColumns = React.useMemo(
     () => [
       {
-        Header: 'Edit/Delete',
+        Header: 'History/Edit/Delete',
         disableFilters: true,
         sortable: false,
         width: 100,
         show: true,
-        id: 'editDelete',
-        label: 'Edit/Delete',
+        id: 'historyEditDelete',
+        label: 'History/Edit/Delete',
         tableName: 'RootTable',
         Cell: ({row, original}) => (
           <div className="buttons">
+            <Link 
+              to={{
+                pathname: "/roothistory",
+                search: "?id=" + row.original.id,
+              }}>
+              <button className="basic blue ui icon button">
+                <Icon name="history" />
+              </button>              
+            </Link>
             <Link 
               to={{
                 pathname: "/editroot",

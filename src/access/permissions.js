@@ -10,6 +10,7 @@ export const path_role_permissions = {
     '/editroot': ['manager', 'update'],
     '/deleteroot': ['manager', 'update'],
     '/affixhistory': ['manager', 'update'],
+    '/roothistory': ['manager', 'update'],
     '/log': ['manager', 'update'],
     '/home' : ['*'],
 }
