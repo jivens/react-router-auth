@@ -5,13 +5,14 @@ class AudioPlayer extends Component {
   createAudioSources = (sources) => {
 
      let children = [];
+     console.log('the sources are ', sources)
      //Inner loop to create children
      let directLink = "";
      for (let i = 0; i < sources.length; i++)
      {
-         children.push(<source src={sources[i].src} type={sources[i].type} key={sources[i].key}></source>);
+         children.push(<source src={sources[i].audio_with_path} type={sources[i].type} key={sources[i].key}></source>);
          if (sources[i].direct) {
-           directLink = <a href={sources[i].src}>Access the files</a>;
+           directLink = <a href={sources[i].audio_with_path}>Access the files</a>;
          }
      }
      if (directLink !== "") {

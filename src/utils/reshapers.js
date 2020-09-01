@@ -158,6 +158,7 @@ export function textReshape(jsonData) {
         j=0;
         while (j < json[i]["audiosets"].length) {
           //here we create the data that is needed to pass to the AudioPlayer
+          console.log('the audiosets_audiofiles are ', json[i]["audiosets"][j].audiosets_audiofiles)
           json[i]["sourcefiles"].push(
             {
               speaker: json[i]["audiosets"][j].speaker,

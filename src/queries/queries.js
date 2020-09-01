@@ -307,6 +307,7 @@ export const getTextsById = gql`
           src
           subdir
           type
+          audio_with_path
         }
       }
       texts_textfiles {
@@ -522,6 +523,7 @@ export const getAnonRootsQuery = gql`
             src
             subdir
             type
+            audio_with_path
           }
         }
         texts_textfiles {
