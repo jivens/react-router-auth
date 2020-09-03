@@ -121,6 +121,7 @@ export function textReshape(jsonData) {
               title: json[i]["texts_textfiles"][j].resType + " pdf",
               fileType: json[i]["texts_textfiles"][j].fileType,
               msType: json[i]["texts_textfiles"][j].msType,
+              path: json[i]["texts_textfiles"][j].textfile_with_path,
               type: "text",
               key: k
             }

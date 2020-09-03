@@ -318,10 +318,12 @@ export const getTextsById = gql`
         src
         subdir
         textId
+        textfile_with_path
         textimages {
           id
           src
           subdir
+          textimage_with_path
           textFileId
         }
       }
@@ -534,10 +536,12 @@ export const getAnonRootsQuery = gql`
           src
           subdir
           textId
+          textfile_with_path
           textimages {
             id
             src
             subdir
+            textimage_with_path
             textFileId
           }
         }
