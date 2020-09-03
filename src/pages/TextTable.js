@@ -196,29 +196,29 @@ function Table({
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>          
-          {rows.map((row, i) => {
+          {rows.map((row) => {
             prepareRow(row);
             return (
-              <React.Fragment {...row.getRowProps()}>
+              <React.Fragment key={row.getRowProps().key}>
                 <tr>
-                  {row.cells.map(cell => {
+                  {row.cells.map((cell) => {
                     return (
-                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                    )
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    );
                   })}
                 </tr>
-                {row.isExpanded ? (
+                {row.isExpanded && (
                   <tr>
                     <td colSpan={visibleColumns.length}>
-                      {renderRowSubComponent({ row })}
+                      {renderRowSubComponent({row})}
                     </td>
                   </tr>
-                ) : null}
-              </React.Fragment>            
+                )}
+              </React.Fragment>
             );
           })}
-          <tr>
-            
+
+          <tr>  
             {loading ? (
               // Use our custom loading state to show a loading indicator
               <td colSpan="10"> Loading... </td>
@@ -228,6 +228,7 @@ function Table({
               </td>
             )}
           </tr>
+
         </tbody>
       </table>
 

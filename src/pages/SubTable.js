@@ -92,12 +92,10 @@ function SubTable({ subData }) {
 
   
   return (
-    <TableStyles>
       <Table 
         columns={columns} 
         data={data}
       />
-    </TableStyles>
   );
 }
 
