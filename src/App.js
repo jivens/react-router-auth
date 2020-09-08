@@ -28,6 +28,8 @@ import Log from './pages/Log';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
+import ImageViewer from './utils/ImageViewer';
+import SplitView from './utils/SplitView';
 import NavBar from './components/NavBar';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -130,6 +132,8 @@ function App(props) {
               <Route path="/affixes" component={Affixes} key="Affixes" />
               <Route path="/roots" component={Roots} key="Roots" />
               <Route path="/texts" component={Texts} key="Texts" />
+              <Route path="/imageviewer" component={ImageViewer} />
+              <Route path="/splitview" component={SplitView} />
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />

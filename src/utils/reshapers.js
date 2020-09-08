@@ -132,7 +132,7 @@ export function textReshape(jsonData) {
             let l = 0;
             json[i]["texts_textfiles"][j]["imagequerystring"]='';
             while (l < json[i]["texts_textfiles"][j]["textimages"].length) {
-              json[i]["texts_textfiles"][j]["imagequerystring"] = json[i]["texts_textfiles"][j]["imagequerystring"] + '&images=' + json[i]["texts_textfiles"][j]["textimages"][l]["src"];
+              json[i]["texts_textfiles"][j]["imagequerystring"] = json[i]["texts_textfiles"][j]["imagequerystring"] + '&images=' + json[i]["texts_textfiles"][j]["textimages"][l]["textimage_with_path"];
               l++;
             }
             //console.log(json[i]["texts_textfiles"][j]["imagequerystring"]);
