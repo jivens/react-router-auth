@@ -139,12 +139,14 @@ function Table({
       </pre> */}
       <div className="columnToggle">
         {allColumns.map(column => (
-          <div key={column.id} className="columnToggle">
+           column.label !== "sourcefiles" ? 
+          (<div key={column.id} className="columnToggle">
             <label>
               <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
               {column.label}
             </label>
-          </div>
+          </div>) : (null)
+          // condition ? (operation) : (operation) 
         ))}
       </div>
       <table {...getTableProps()}>
