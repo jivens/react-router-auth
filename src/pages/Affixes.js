@@ -4,6 +4,8 @@ import { useAuth } from "../context/auth"
 import { broadCastSuccess } from '../utils/messages'
 import { useQuery } from '@apollo/react-hooks'
 import { getUsernamesQuery, getAffixTypesQuery } from './../queries/queries'
+import AffixesAccordion from "./accordions/AffixesAccordion";
+//import SimpleKeyboard from "./../utils/SimpleKeyboard";
 import AffixTable from "./AffixTable"
 
 function Affixes(props) {
@@ -43,8 +45,12 @@ function Affixes(props) {
   }
 
   //return <AffixTable setLimit={setLimit} setOffset={setTheOffset} affixes={data.affixes} />;
-  return <AffixTable selectValues={selectValues} />
-  
+  return (
+    <React.Fragment>
+      <AffixesAccordion />
+      <AffixTable selectValues={selectValues} />
+    </React.Fragment>
+  )
 }
 
 export default Affixes;

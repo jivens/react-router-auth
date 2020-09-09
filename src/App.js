@@ -31,6 +31,7 @@ import { broadCastSuccess } from './utils/messages';
 import ImageViewer from './utils/ImageViewer';
 import SplitView from './utils/SplitView';
 import NavBar from './components/NavBar';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 function App(props) {
@@ -153,6 +154,7 @@ function App(props) {
             </Switch>
           </NavBar>
         </div>
+
       </Router>
       {/* </ApolloProvider> */}
     </AuthContext.Provider>
