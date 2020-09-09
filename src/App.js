@@ -15,6 +15,7 @@ import AddAffix from './pages/AddAffix';
 import EditAffix from './pages/EditAffix';
 import DeleteAffix from './pages/DeleteAffix';
 import AddRoot from './pages/AddRoot';
+import AddStem from './pages/AddStem';
 import EditRoot from './pages/EditRoot';
 import DeleteRoot from './pages/DeleteRoot';
 import AffixHistory from './pages/AffixHistory';
@@ -23,6 +24,7 @@ import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
 import Roots from './pages/Roots';
+import Stems from './pages/Stems';
 import Texts from './pages/Texts';
 import Log from './pages/Log';
 import { AuthContext } from "./context/auth";
@@ -131,12 +133,16 @@ function App(props) {
               <Route path="/signup" component={Signup} key="SignupPage" />
               <Route path="/affixes" component={Affixes} key="Affixes" />
               <Route path="/roots" component={Roots} key="Roots" />
+              <Route path="/stems" component={Stems} key="Stems" />
               <Route path="/texts" component={Texts} key="Texts" />
               <Route path="/imageviewer" component={ImageViewer} />
               <Route path="/splitview" component={SplitView} />
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />
+              <PrivateRoute path="/addstem" component={AddStem} key="AddStem" />
+              {/* <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
+              <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" /> */}
               <PrivateRoute path="/addroot" component={AddRoot} key="AddRoot" />
               <PrivateRoute path="/editroot" component={EditRoot} key="EditRoot" />
               <PrivateRoute path="/deleteroot" component={DeleteRoot} key="DeleteRoot" /> 
