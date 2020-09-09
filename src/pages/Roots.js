@@ -2,6 +2,7 @@ import React from "react"
 import { useAuth } from "../context/auth"
 import { useQuery } from '@apollo/react-hooks'
 import { getUsernamesQuery } from './../queries/queries'
+import RootsAccordion from "./accordions/RootsAccordion";
 import RootTable from "./RootTable"
 
 function Roots(props) {
@@ -28,8 +29,12 @@ function Roots(props) {
   }
 
   //return <AffixTable setLimit={setLimit} setOffset={setTheOffset} affixes={data.affixes} />;
-  return <RootTable selectValues={selectValues} />
-  
+  return (
+    <React.Fragment>
+      <RootsAccordion />
+      <RootTable selectValues={selectValues} />
+    </React.Fragment>
+  )
 }
 
 export default Roots;
