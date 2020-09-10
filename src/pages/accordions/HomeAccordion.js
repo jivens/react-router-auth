@@ -38,7 +38,7 @@ export default function HomeAccordion() {
           <AccordionItem>
               <AccordionItemHeading>
                   <AccordionItemButton>
-				  External Link
+				  External Links
                   </AccordionItemButton>
               </AccordionItemHeading>
               <AccordionItemPanel>
