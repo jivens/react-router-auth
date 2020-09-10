@@ -83,6 +83,26 @@ export const insertAffixMutation = gql`
   }
 `;
 
+export const insertStemMutation = gql`
+  mutation insert_a_stem($editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $doak: String = "", $note: String = "", $reichard: String = "", $category: String = "") {
+    insert_stems_one(object: {editnote: $editnote, english: $english, salish: $salish, nicodemus: $nicodemus, doak: $doak, note: $note, reichard: $reichard, category: $category}) {
+      editnote
+      english
+      id
+      nicodemus
+      salish
+      userId
+      doak
+      category
+      note
+      reichard
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+
 export const getAffixByIdQuery = gql`
   query GetAffixById($id: Int!) {
     affixes_by_pk(id: $id) {
@@ -445,6 +465,56 @@ export const getAnonRootsQuery = gql`
       symbol
       updatedAt
       variant
+    }
+  }
+`;
+
+export const getStemsQuery = gql`
+query getStemsQuery($where: stems_bool_exp = {}, $limit: Int = 10, $offset: Int = 10, $stem_order: [stems_order_by!] = {}) {
+  stems_aggregate(where: $where) {
+    aggregate {
+      count
+    }
+  }
+  stems(where: $where, limit: $limit, offset: $offset, order_by: $stem_order) {
+    createdAt
+    editnote
+    english
+    id
+    nicodemus
+    salish
+    updatedAt
+    user {
+      username
+      id
+    }
+    reichard
+    note
+    doak
+    category
+  }
+}
+  `;
+  
+export const getAnonStemsQuery = gql`
+  query getAnonStemsQuery($where: stems_bool_exp = {}, $limit: Int = 10, $offset: Int = 10, $stem_order: [stems_order_by!] = {}) {
+    stems_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    stems(where: $where, limit: $limit, offset: $offset, order_by: $stem_order) {
+      createdAt
+      editnote
+      english
+      id
+      nicodemus
+      salish
+      updatedAt
+      reichard
+      note
+      doak
+      category
     }
   }
 `;
