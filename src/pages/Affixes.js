@@ -5,7 +5,7 @@ import { broadCastSuccess } from '../utils/messages'
 import { useQuery } from '@apollo/react-hooks'
 import { getUsernamesQuery, getAffixTypesQuery } from './../queries/queries'
 import AffixesAccordion from "./accordions/AffixesAccordion";
-//import SimpleKeyboard from "./../utils/SimpleKeyboard";
+import SimpleKeyboard from "./../utils/SimpleKeyboard";
 import AffixTable from "./AffixTable"
 
 function Affixes(props) {

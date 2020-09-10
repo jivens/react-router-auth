@@ -6,6 +6,7 @@ import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilte
 import { useAuth } from "../context/auth";
 import { getAffixesQuery, getAnonAffixesQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
+import SimpleKeyboard from "./../utils/SimpleKeyboard";
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
 
@@ -19,6 +20,7 @@ function Table({
 }) {
 
   const { user } = useAuth();
+
   //console.log("Inside table, I have select values: ", selectValues)
 
   const filterTypes = React.useMemo(
@@ -95,6 +97,13 @@ function Table({
     usePagination,   
   )
 
+  console.log('filters ', filters.map(f => {
+    if (f.id === "salish") {
+      return f.value
+    } else {
+      return null
+    }
+  }))
 
   // Listen for changes in pagination and use the state to fetch our new data
   React.useEffect(() => {
@@ -113,7 +122,8 @@ function Table({
   // Render the UI for your table
   return (
     <>
-      {/* <pre>
+
+      <pre>
         <code>
           {JSON.stringify(
             {
@@ -130,7 +140,8 @@ function Table({
             2
           )}
         </code>
-      </pre> */}
+      </pre>
+      {/* <SimpleKeyboard /> */}
       <div className="columnToggle">
         {allColumns.map(column => (
           <div key={column.id} className="columnToggle">
@@ -338,7 +349,6 @@ function AffixTable(props) {
       {
         Header: 'Salish',
         accessor: 'salish',
-        filter: 'fuzzyText',
         tableName: 'AffixTable',
         show: false,
         id: 'salish',
