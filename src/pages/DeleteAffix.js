@@ -62,6 +62,7 @@ function DeleteAffix() {
 
   function dropDownOptions(options) {
       let res = []
+      // eslint-disable-next-line array-callback-return
       options.map((item) => {
           let h = {}
           h = { 

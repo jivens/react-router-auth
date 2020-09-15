@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import SimpleKeyboard from "../../utils/SimpleKeyboard";
 import {
   Accordion,
   AccordionItem,
@@ -90,6 +91,16 @@ export default function RootsAccordion() {
                   <li>xref — Cross-reference</li>
                 </ul>
               </div>
+              </AccordionItemPanel>
+          </AccordionItem>
+          <AccordionItem>
+              <AccordionItemHeading>
+                  <AccordionItemButton>
+                    Keyboard
+                  </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel>
+                <SimpleKeyboard />
               </AccordionItemPanel>
           </AccordionItem>
       </Accordion>

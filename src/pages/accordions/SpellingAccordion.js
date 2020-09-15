@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import SimpleKeyboard from "../../utils/SimpleKeyboard";
 import {
   Accordion,
   AccordionItem,
@@ -33,6 +34,16 @@ export default function SpellingAccordion() {
               <AccordionItemPanel>
 			  	<span>Coeur d'Alene uses some sounds that will be unfamiliar to English speakers. In this resource, we provide information about how the sounds are pronounced, using the terminology that linguists have developed to describe these processes.  For those who don't (yet) have training in "articulatory phonetics", we recommend working with a teacher who can help you learn to pronounce the sounds.</span>
 				<span>Linguists use the term "phoneme" to refer to a sound that is used to distinguish words in a particular language. The charts below, adapted from Doak 1997 and Barthmaier 1996, show the consonant and vowel phonemes of Coeur d'Alene, based on the ways in which each is pronounced. We have used the Salishan Orthography to represent these sounds, as we anticipate this resource to be of most use to scholars in linguistics. Students interested in learning how to pronounce Coeur d'Alene might also find these charts useful if they have some background in the study of "articulatory phonetics".</span>
+              </AccordionItemPanel>
+          </AccordionItem>
+          <AccordionItem>
+              <AccordionItemHeading>
+                  <AccordionItemButton>
+                    Keyboard
+                  </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel>
+                <SimpleKeyboard />
               </AccordionItemPanel>
           </AccordionItem>
       </Accordion>

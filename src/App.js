@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch, Redirect } from "react-router-dom";
-import { gql } from 'apollo-boost';
 import { ApolloClient, ApolloLink, InMemoryCache, HttpLink } from 'apollo-boost';
 import { getUserFromToken } from './queries/queries';
-import { useQuery } from '@apollo/react-hooks';
 import PrivateRoute from './PrivateRoute';
 import Home from './pages/Home';
-import Admin from './pages/Admin';
 import Login from "./pages/Login";
 import Signup from './pages/Signup';
 import Users from './pages/Users';
@@ -19,7 +16,6 @@ import AddStem from './pages/AddStem';
 import EditRoot from './pages/EditRoot';
 import DeleteRoot from './pages/DeleteRoot';
 import AffixHistory from './pages/AffixHistory';
-import RootHistory from './pages/RootHistory';
 import UserListContainer from './pages/UserListContainer';
 import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
@@ -123,7 +119,6 @@ function App(props) {
 
   return (
     <AuthContext.Provider value={{ client: client, authClient: authClient, user, setUser, authTokens, setAuthTokens: setTokens}}>
-      {/* <ApolloProvider client = {client}> */}
       <Router>
         <div>
           <NavBar>
@@ -151,7 +146,6 @@ function App(props) {
               <PrivateRoute path="/roothistory" component={AffixHistory} key="RootHistory" />
               <PrivateRoute path="/log" component={Log} key="Log" />
               <PrivateRoute path="/users" component={Users} key="Users" />
-              <PrivateRoute path="/admin" component={Admin} key="AdminPage" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
               <PrivateRoute path="/userlist" component={UserListContainer} key="UserListContainer" />
               <Route path="/testmutation" component={Testmutation} key="TestmutationPage" />
@@ -162,7 +156,6 @@ function App(props) {
         </div>
 
       </Router>
-      {/* </ApolloProvider> */}
     </AuthContext.Provider>
   );
 }

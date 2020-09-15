@@ -2,7 +2,7 @@ import React from "react";
 import {
   useTable,
 } from "react-table";
-import TableStyles from "../stylesheets/table-styles";
+import SubTableStyles from "../stylesheets/sub-table-styles";
 import AudioPlayer from '../utils/AudioPlayer';
 import { Link } from 'react-router-dom';
 
@@ -92,10 +92,12 @@ function SubTable({ subData }) {
 
   
   return (
-      <Table 
+    <SubTableStyles>
+    <Table 
         columns={columns} 
         data={data}
       />
+    </SubTableStyles>
   );
 }
 

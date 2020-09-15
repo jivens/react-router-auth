@@ -75,12 +75,15 @@ function Table({
     previousPage,
     setPageSize,
     // Get the state from the instance
-    state: { pageIndex, pageSize, sortBy, filters, globalFilter, expanded }
+    state: { pageIndex, pageSize, sortBy, filters, globalFilter }
   } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 0 }, // Pass our hoisted table state
+      initialState: { 
+        pageIndex: 0,
+        sortBy: [{ id: 'cycle' }]
+       }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
       // This means we'll also have to provide our own
@@ -155,7 +158,7 @@ function Table({
             <th
               colSpan={visibleColumns.length}
             >
-            { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
+            {/* { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
               (
                 <Link 
                   to={{
@@ -169,7 +172,7 @@ function Table({
                   </Button> 
                 </Link> 
               )
-            }
+            } */}
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
@@ -185,8 +188,8 @@ function Table({
                     {column.render('Header')}                 
                     {column.isSorted
                       ? column.isSortedDesc
-                        ? ' ▼'
-                        : ' ▲'
+                        ? '▲'
+                        : '▼'
                       : ''}
                   </span>
                   <div>
@@ -294,51 +297,51 @@ function TextTable(props) {
         show: true,
         Cell: ({ row }) => (
           <span {...row.getToggleRowExpandedProps()}>
-            {row.isExpanded ? '👇' : '👉'}
+            {row.isExpanded ? '▼' : '▶'}
           </span>
         ),
       },
-      {
-        Header: 'History/Edit/Delete',
-        disableFilters: true,
-        sortable: false,
-        width: 100,
-        show: true,
-        id: 'historyEditDelete',
-        label: 'History/Edit/Delete',
-        tableName: 'TextTable',
-        Cell: ({row, original}) => (
-          <div className="buttons">
-            <Link 
-              to={{
-                pathname: "/texthistory",
-                search: "?id=" + row.original.id,
-              }}>
-              <button className="basic blue ui icon button">
-                <Icon name="history" />
-              </button>              
-            </Link>
-            <Link 
-              to={{
-                pathname: "/edittext",
-                search: "?id=" + row.original.id,
-              }}>
-              <button className="basic blue ui icon button">
-                <Icon name="edit" />
-              </button>              
-            </Link>
-            <Link 
-              to={{
-                pathname: "/deletetext",
-                search: "?id=" + row.original.id,
-              }}>
-              <button className="basic blue ui icon button">
-                <Icon name="close" />
-              </button>              
-            </Link>
-          </div>
-        )
-      },     
+      // {
+      //   Header: 'History/Edit/Delete',
+      //   disableFilters: true,
+      //   sortable: false,
+      //   width: 100,
+      //   show: true,
+      //   id: 'historyEditDelete',
+      //   label: 'History/Edit/Delete',
+      //   tableName: 'TextTable',
+      //   Cell: ({row, original}) => (
+      //     <div className="buttons">
+      //       <Link 
+      //         to={{
+      //           pathname: "/texthistory",
+      //           search: "?id=" + row.original.id,
+      //         }}>
+      //         <button className="basic blue ui icon button">
+      //           <Icon name="history" />
+      //         </button>              
+      //       </Link>
+      //       <Link 
+      //         to={{
+      //           pathname: "/edittext",
+      //           search: "?id=" + row.original.id,
+      //         }}>
+      //         <button className="basic blue ui icon button">
+      //           <Icon name="edit" />
+      //         </button>              
+      //       </Link>
+      //       <Link 
+      //         to={{
+      //           pathname: "/deletetext",
+      //           search: "?id=" + row.original.id,
+      //         }}>
+      //         <button className="basic blue ui icon button">
+      //           <Icon name="close" />
+      //         </button>              
+      //       </Link>
+      //     </div>
+      //   )
+      // },     
       {
         Header: 'Title',
         accessor: 'title',
@@ -348,13 +351,22 @@ function TextTable(props) {
         label: 'Title'
       },
       {
-        Header: 'Speaker',
-        accessor: 'speaker',
-        filter: 'fuzzyText',
+        Header: 'Pub.#',
+        accessor: 'rnumber',
         tableName: 'TextTable',
+        disableFilters: true,
         show: false,
-        id: 'speaker',
-        label: 'speaker'
+        id: 'rnumber',
+        label: 'rnumber'
+      },
+      {
+        Header: 'Text #',
+        accessor: 'tnumber',
+        tableName: 'TextTable',
+        disableFilters: true,
+        show: false,
+        id: 'tnumber',
+        label: 'tnumber'
       },
       {
         Header: 'Cycle',
@@ -365,21 +377,13 @@ function TextTable(props) {
         label: 'cycle'
       },
       {
-        Header: 'R Number',
-        accessor: 'rnumber',
+        Header: 'Speaker',
+        accessor: 'speaker',
+        filter: 'fuzzyText',
         tableName: 'TextTable',
         show: true,
-        id: 'rnumber',
-        label: 'rnumber'
-      },
-      {
-        Header: 'T number',
-        accessor: 'tnumber',
-        tableName: 'TextTable',
-        disableSortBy: true,
-        show: false,
-        id: 'tnumber',
-        label: 'tnumber'
+        id: 'speaker',
+        label: 'speaker'
       },
       {
         Header: 'Sourcefiles',
