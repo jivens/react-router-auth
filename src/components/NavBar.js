@@ -51,10 +51,6 @@ const NavBarMobile = ({
      <Icon name="home" />
       Home
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/admin" name="admin" size='mini' key="miniadmin">
-    <Icon name="leaf" />
-      Admin
-    </Menu.Item>
     <Menu.Item as={NavLink} to="/affixes" name="Affixes" size='mini' key="miniaffixes">
      <Icon name="book" />
       Affixes
@@ -98,9 +94,6 @@ const NavBarDesktop = ({ rightItems }) => (
   <Menu fixed="top" inverted>
     <Menu.Item as={NavLink} to="/" name="home" key="mhome">
        <Icon name="home" />
-    </Menu.Item>
-    <Menu.Item as={NavLink} to="/admin" name="Admin" key="madmin">
-       Admin
     </Menu.Item>
     <Menu.Item as={NavLink} to="/affixes" name="Affixes" key="maffixes">
        Affixes

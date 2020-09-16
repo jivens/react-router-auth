@@ -6,7 +6,6 @@ import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilte
 import { useAuth } from "../context/auth";
 import { getAffixesQuery, getAnonAffixesQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
-import SimpleKeyboard from "./../utils/SimpleKeyboard";
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
 
@@ -58,7 +57,6 @@ function Table({
     page,
     state,
     allColumns,
-    getToggleHideAllColumnsProps,
     setHiddenColumns,
     visibleColumns,
     preGlobalFilteredRows,
@@ -116,14 +114,13 @@ function Table({
         columns.filter(column => !column.show).map(column => column.id)
       );
     },
-    [columns]
+    [columns, setHiddenColumns]
   );
 
   // Render the UI for your table
   return (
     <>
-
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -140,7 +137,7 @@ function Table({
             2
           )}
         </code>
-      </pre>
+      </pre> */}
       {/* <SimpleKeyboard /> */}
       <div className="columnToggle">
         {allColumns.map(column => (

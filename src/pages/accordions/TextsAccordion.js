@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import SimpleKeyboard from "../../utils/SimpleKeyboard";
 import {
   Accordion,
   AccordionItem,
@@ -39,6 +40,16 @@ export default function TextsAccordion() {
 			  		<span>The texts provided here were collected from photo-copies of Reichard's original manuscripts and quality varies from text to text. To accommodate different viewers' environments, these files are available for download in PDF form or as a corresponding set of image (PNG) files.</span>
         			<p></p>
         			<span>For those texts for which we have both hand-written and typed versions of the original field notes, we provide a view that allows you to see those versions side by side. This combined view provides insights into the complex process that this group of scholars navigated as they 'collected' the narrative and then worked to translate it.  The typed manuscripts represent an intermediate version of each text, in which the original hand-written notes are modified and corrected by the team, and interlinear glosses are settled on.  The collaborative nature of the original work is made visible to some extent in these documents.</span>
+              </AccordionItemPanel>
+          </AccordionItem>
+          <AccordionItem>
+              <AccordionItemHeading>
+                  <AccordionItemButton>
+                    Keyboard
+                  </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel>
+                <SimpleKeyboard />
               </AccordionItemPanel>
           </AccordionItem>
       </Accordion>

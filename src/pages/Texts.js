@@ -1,14 +1,22 @@
 import React from "react"
-import { useAuth } from "../context/auth"
 import TextTable from "./TextTable"
+import { Grid } from "semantic-ui-react"
 import TextsAccordion from "./accordions/TextsAccordion";
 
 function Texts(props) {
-  const { client } = useAuth()
+  //const { client } = useAuth()
   return (
     <React.Fragment>
-      <TextsAccordion />
-      <TextTable />
+      <Grid>
+        <Grid.Column width="16">
+          <Grid.Row>
+            <TextsAccordion />
+          </Grid.Row>
+          <Grid.Row>
+            <TextTable />
+          </Grid.Row>
+        </Grid.Column>
+      </Grid>
     </React.Fragment>
   )
   

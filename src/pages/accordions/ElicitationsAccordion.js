@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import SimpleKeyboard from "../../utils/SimpleKeyboard";
 import {
   Accordion,
   AccordionItem,
@@ -21,6 +22,16 @@ export default function ElicitationsAccordion() {
               </AccordionItemHeading>
               <AccordionItemPanel>
               <span>The recordings and transcriptions here are taken from word list elicitation sessions involving Clarence Sloat and Lawrence Nicodemus.  Sloat's 1966 dissertation was based in part on these sessions.  Transcriptions of the words are provided by the Coeur d'Alene Language Programs.</span>
+              </AccordionItemPanel>
+          </AccordionItem>
+          <AccordionItem>
+              <AccordionItemHeading>
+                  <AccordionItemButton>
+                    Keyboard
+                  </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel>
+                <SimpleKeyboard />
               </AccordionItemPanel>
           </AccordionItem>
       </Accordion>

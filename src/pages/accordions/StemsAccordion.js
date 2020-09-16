@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import SimpleKeyboard from "../../utils/SimpleKeyboard";
 import {
   Accordion,
   AccordionItem,
@@ -31,6 +32,16 @@ export default function AffixesAccordion() {
               </AccordionItemHeading>
               <AccordionItemPanel>
 			  	<span>The stems are presented in several groups, following Reichard 1939. The groups are given as 'verbs',  'adverbs, interjections, and conjunctions', and 'nouns'. Where we are missing information about a particular transcriptions of the Coeur d'Alene stem, you will find " -- "; forms for which we have no English translation are noted.</span>
+              </AccordionItemPanel>
+          </AccordionItem>
+          <AccordionItem>
+              <AccordionItemHeading>
+                  <AccordionItemButton>
+                    Keyboard
+                  </AccordionItemButton>
+              </AccordionItemHeading>
+              <AccordionItemPanel>
+                <SimpleKeyboard />
               </AccordionItemPanel>
           </AccordionItem>
       </Accordion>
