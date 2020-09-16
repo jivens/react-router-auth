@@ -34,7 +34,8 @@ const NavBarMobile = ({
   onPusherClick,
   onToggle,
   rightItems,
-  visible
+  visible,
+  currentUser
 }) => (
   <Sidebar.Pushable>
     <Sidebar
@@ -67,10 +68,14 @@ const NavBarMobile = ({
      <Icon name="book" />
       Stems
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/log" name="Log" size='mini' key="minilog">
-     <Icon name="history" />
-      Log
-    </Menu.Item>
+    {currentUser && (
+      currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
+        (<Menu.Item as={NavLink} to="/log" name="Log" size='mini' key="minilog">
+          <Icon name="history" />
+            Log
+         </Menu.Item>
+        )
+    )}
     </Sidebar>
     <Sidebar.Pusher
       dimmed={visible}
@@ -90,7 +95,7 @@ const NavBarMobile = ({
   </Sidebar.Pushable>
 );
 
-const NavBarDesktop = ({ rightItems }) => (
+const NavBarDesktop = ({ rightItems, currentUser }) => (
   <Menu fixed="top" inverted>
     <Menu.Item as={NavLink} to="/" name="home" key="mhome">
        <Icon name="home" />
@@ -107,9 +112,12 @@ const NavBarDesktop = ({ rightItems }) => (
     <Menu.Item as={NavLink} to="/stems" name="Stems" key="mstems">
        Stems
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/log" name="Log" key="mlog">
+    { currentUser && (
+      currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
+      (<Menu.Item as={NavLink} to="/log" name="Log" key="mlog">
        Log
-    </Menu.Item>
+    </Menu.Item>) )
+    }
     <Menu.Menu position="right">
       {map(rightItems, item  => <Popup key={item.key} content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}
     </Menu.Menu>
@@ -131,8 +139,8 @@ function NavBar(props) {
   const handleToggle = () => setVisible(!visible)
 
   const { children } = props;
-
   return (
+    
     <div>
       <Responsive {...Responsive.onlyMobile}>
         <NavBarMobile
@@ -140,12 +148,13 @@ function NavBar(props) {
           onToggle={handleToggle}
           rightItems={rightMenuItems(user)}
           visible={visible}
+          currentUser={user}
         >
           <NavBarChildren>{children}</NavBarChildren>
         </NavBarMobile>
       </Responsive>
       <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-        <NavBarDesktop rightItems={rightMenuItems(user)} />
+        <NavBarDesktop rightItems={rightMenuItems(user)} currentUser={user} />
         <NavBarChildren>{children}</NavBarChildren>
       </Responsive>
     </div>
