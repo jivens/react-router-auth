@@ -44,7 +44,7 @@ function AddAffix() {
 
   async function onFormSubmit (values, setSubmitting) {
     try {
-      console.log('my values.type is ', values.type)
+    //   console.log('my values.type is ', values.type)
       const result = await client.mutate({
         mutation: insertAffixMutation,
         variables: {

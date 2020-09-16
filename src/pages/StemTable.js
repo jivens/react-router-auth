@@ -309,10 +309,11 @@ function StemTable(props) {
       }, 
     {
         Header: 'Category',
-        accessor: 'category',
+        accessor: 'stem_category.value',
+        Filter: SelectColumnFilter,
         tableName: 'StemTable',
         show: true,
-        id: 'category',
+        id: 'stem_category.value',
         label: 'Category'
       },
     {
@@ -382,10 +383,11 @@ function StemTable(props) {
     () => [         
         {
             Header: 'Category',
-            accessor: 'category',
+            accessor: 'stem_category.value',
+            Filter: SelectColumnFilter,
             tableName: 'StemTable',
             show: true,
-            id: 'category',
+            id: 'stem_category.value',
             label: 'Category'
           },
         {

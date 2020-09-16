@@ -84,7 +84,7 @@ export const insertAffixMutation = gql`
 `;
 
 export const insertStemMutation = gql`
-  mutation insert_a_stem($editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $doak: String = "", $note: String = "", $reichard: String = "", $category: String = "") {
+  mutation insert_a_stem($editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $doak: String = "", $note: String = "", $reichard: String = "", $category: Int!) {
     insert_stems_one(object: {editnote: $editnote, english: $english, salish: $salish, nicodemus: $nicodemus, doak: $doak, note: $note, reichard: $reichard, category: $category}) {
       editnote
       english
@@ -93,11 +93,14 @@ export const insertStemMutation = gql`
       salish
       userId
       doak
-      category
       note
       reichard
       createdAt
       updatedAt
+      stem_category {
+        value
+        id
+      }
     }
   }
 `;
@@ -120,6 +123,29 @@ export const getAffixByIdQuery = gql`
         id
       }
       affix_type {
+        id
+        value
+      }
+    }
+  }
+`;
+
+export const getStemByIdQuery = gql`
+  query GetStemById($id: Int!) {
+    stems_by_pk(id: $id) {
+      editnote
+      createdAt
+      id
+      english
+      doak
+      nicodemus
+      salish
+      updatedAt
+      user {
+        username
+        id
+      }
+      stem_category {
         id
         value
       }
@@ -300,6 +326,15 @@ export const getLogQuery = gql`
 export const getAffixTypesQuery = gql`
     query {
       affix_types {
+        value
+        id
+      }
+    }
+`;
+
+export const getStemCategoriesQuery = gql`
+    query {
+      stem_categories {
         value
         id
       }
@@ -491,7 +526,10 @@ query getStemsQuery($where: stems_bool_exp = {}, $limit: Int = 10, $offset: Int 
     reichard
     note
     doak
-    category
+    stem_category {
+      id
+      value
+    }
   }
 }
   `;
@@ -514,7 +552,10 @@ export const getAnonStemsQuery = gql`
       reichard
       note
       doak
-      category
+      stem_category {
+        id
+        value
+      }
     }
   }
 `;

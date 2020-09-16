@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Redirect, useHistory } from 'react-router-dom';
-import { insertStemMutation } from './../queries/queries'
+import { insertStemMutation, getStemByIdQuery, getStemCategoriesQuery } from './../queries/queries'
 import { Button, Input, Dropdown, Label, Grid, Header, Message } from 'semantic-ui-react';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
@@ -33,21 +33,22 @@ function AddStem() {
 
 // Save for stem category if needed
   // let { loading: stemLoading, error: stemError, data: stemData } = useQuery(getStemByIdQuery, {client: client, variables: {id: id} }) 
-//   let { loading: typeLoading, error: typeError, data: typeData } = useQuery(getStemTypesQuery, {client: client }) 
+  let { loading: categoryLoading, error: categoryError, data: categoryData } = useQuery(getStemCategoriesQuery, {client: client }) 
    
-//   if (typeLoading) {
-//       return <div>loading...</div>
-//   }
-//   if (typeError) {
-//       return <div>Something went wrong</div>
-//   }
+  if (categoryLoading) {
+      return <div>loading...</div>
+  }
+  if (categoryError) {
+      return <div>Something went wrong</div>
+  }
 
   async function onFormSubmit (values, setSubmitting) {
     try {
+      console.log('my values.category is ', parseInt(values.category))
       const result = await client.mutate({
         mutation: insertStemMutation,
         variables: {
-          category: values.category,
+          category: parseInt(values.category),
           nicodemus: values.nicodemus,
           salish: values.salish,
           reichard: values.reichard,
@@ -137,37 +138,19 @@ function AddStem() {
         {({ isSubmitting, values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
         <Form>
             <Grid centered>
-                {/* <Grid.Row>
-                    <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Stem Type</Label></Grid.Column>
-                    <Grid.Column width={10}>
-                    <Dropdown
-                        id="type"
-                        placeholder='Select a Type'
-                        fluid
-                        selection
-                        options = { dropDownOptions(typeData.stem_types) }
-                        onChange = {(e, data) => setFieldValue(data.id, data.value)}
-                        value= { values.type }
-                    />
-                    {errors.type && touched.type && <div className="input-feedback"> {errors.type} </div>}
-                    </Grid.Column>
-                </Grid.Row> */}
                 <Grid.Row>
                     <Grid.Column width={2} textAlign="right"><Label pointing="right" color="blue">Category</Label></Grid.Column>
                     <Grid.Column width={10}>
-                        <Input
-                            fluid
-                            style={{ paddingBottom: '5px' }}
-                            id="category"
-                            placeholder="Category"
-                            type="text"
-                            value={ values.category }
-                            onChange={ handleChange }
-                            onBlur={ handleBlur }
-                            className={ errors.category && touched.category ? 'text-input error' : 'text-input' }
-                        />
-                        {errors.category && touched.category && ( <div className="input-feedback">{errors.category}</div>
-                        )}
+                    <Dropdown
+                        id="category"
+                        placeholder='Select a Category'
+                        fluid
+                        selection
+                        options = { dropDownOptions(categoryData.stem_categories) }
+                        onChange = {(e, data) => setFieldValue(data.id, data.value)}
+                        value= { values.category }
+                    />
+                    {errors.category && touched.category && <div className="input-feedback"> {errors.category} </div>}
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
