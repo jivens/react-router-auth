@@ -5,6 +5,7 @@ import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
 import { sortReshape, filterReshape } from "./../utils/reshapers"
+import DecoratedTextSpan from "./../utils/DecoratedTextSpan"
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
 import { getStemsQuery, getAnonStemsQuery } from './../queries/queries'
@@ -320,6 +321,7 @@ function StemTable(props) {
         Header: 'Reichard',
         accessor: 'reichard',
         tableName: 'StemTable',
+        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
         show: true,
         id: 'reichard',
         label: 'Reichard'
@@ -328,7 +330,7 @@ function StemTable(props) {
         Header: 'Doak',
         accessor: 'doak',
         tableName: 'StemTable',
-        show: true,
+        show: false,
         id: 'doak',
         label: 'Doak'
       },
@@ -336,6 +338,7 @@ function StemTable(props) {
         Header: 'Nicodemus',
         accessor: 'nicodemus',
         tableName: 'StemTable',
+        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
         show: true,
         id: 'nicodemus',
         label: 'Nicodemus'
@@ -394,6 +397,7 @@ function StemTable(props) {
             Header: 'Reichard',
             accessor: 'reichard',
             tableName: 'StemTable',
+            Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
             show: true,
             id: 'reichard',
             label: 'Reichard'
@@ -402,7 +406,7 @@ function StemTable(props) {
             Header: 'Doak',
             accessor: 'doak',
             tableName: 'StemTable',
-            show: true,
+            show: false,
             id: 'doak',
             label: 'Doak'
           },
@@ -410,6 +414,7 @@ function StemTable(props) {
             Header: 'Nicodemus',
             accessor: 'nicodemus',
             tableName: 'StemTable',
+            Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
             show: true,
             id: 'nicodemus',
             label: 'Nicodemus'
