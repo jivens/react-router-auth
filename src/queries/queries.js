@@ -665,3 +665,60 @@ export const getAnonStemsQuery = gql`
       }
     } 
   `;
+
+  export const getAudioSetsQuery = gql`
+    query getAudioSetsQuery($limit: Int, $offset: Int, $order: [audiosets_order_by!], $where: audiosets_bool_exp) {
+      audiosets_aggregate(where: $where) {
+        aggregate {
+          count
+        }
+      }
+      audiosets(limit: $limit, offset: $offset, order_by: $order, where: $where) {
+        id
+        speaker
+        title
+        textId
+        audiosets_audiofiles {
+          audiosetId
+          direct
+          id
+          src
+          subdir
+          type
+          audio_with_path
+        }
+        user {
+          id
+          last
+          first
+          username
+        }
+      }
+    }
+  `;
+
+  export const getAudioSetsById = gql`
+    query getAudioSetsByIdQuery($id: Int) {
+      audiosets(where: {id: {_eq: $id}}) {
+          id
+          speaker
+          title
+          textId
+          audiosets_audiofiles {
+            audiosetId
+            direct
+            id
+            src
+            subdir
+            type
+            audio_with_path
+          }
+        user {
+          id
+          last
+          first
+          username
+        }
+      }
+    }
+`;

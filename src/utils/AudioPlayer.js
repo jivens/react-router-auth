@@ -33,7 +33,7 @@ class AudioPlayer extends Component {
         : '')
 
     return (
-      <div key="audioPlayer">
+      <div key={this.props.id}>
       {title}
         <audio controls="controls" preload="none">
           {this.createAudioSources(this.props.sources)}

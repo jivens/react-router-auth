@@ -23,6 +23,7 @@ import Roots from './pages/Roots';
 import Stems from './pages/Stems';
 import Texts from './pages/Texts';
 import Log from './pages/Log';
+import Audios from './pages/Audios';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
@@ -131,6 +132,7 @@ function App(props) {
               <Route path="/roots" component={Roots} key="Roots" />
               <Route path="/stems" component={Stems} key="Stems" />
               <Route path="/texts" component={Texts} key="Texts" />
+              <Route path="/audios" component={Audios} key="Audios" />
               <Route path="/imageviewer" component={ImageViewer} />
               <Route path="/splitview" component={SplitView} />
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />

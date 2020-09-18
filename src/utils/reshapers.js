@@ -1,3 +1,6 @@
+import { isJsonValue } from "apollo-utilities"
+import { isValidJSValue } from "graphql"
+
 export function sortReshape(sortBy) {
     let res = []
     sortBy.forEach((item) => {
@@ -199,4 +202,27 @@ export function textReshape(jsonData) {
         i++;
       }
       return json;
+   }
+
+   export function audioReshape(jsonData) {
+    let json = JSON.parse(JSON.stringify(jsonData))
+    while (json.length) {
+      let i = 0
+      let j = 0
+      while (i < json["audiosets"][i].audiosets_audiofiles.length) { 
+        json["audiosets"][i].audiosets_audiofiles[j].key = i.toString() + '_' + j.toString() 
+        i++
+      }
+      json[i]["sourcefiles"].push(
+        {
+          speaker: json[i]["audiosets"][j].speaker,
+          title: json[i]["audiosets"][j].title,
+          sources: json[i]["audiosets"][j].audiosets_audiofiles,
+          type: "audio",
+          key: i
+        }
+      );
+      i++; 
+    }
+    return json;
    }
