@@ -68,6 +68,10 @@ const NavBarMobile = ({
      <Icon name="book" />
       Stems
     </Menu.Item>
+    <Menu.Item as={NavLink} to="/audios" name="Audios" size='mini' key="miniaudios">
+     <Icon name="file audio outline" />
+      Audios
+    </Menu.Item>
     {currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
         (<Menu.Item as={NavLink} to="/log" name="Log" size='mini' key="minilog">
@@ -111,6 +115,9 @@ const NavBarDesktop = ({ rightItems, currentUser }) => (
     </Menu.Item>
     <Menu.Item as={NavLink} to="/stems" name="Stems" key="mstems">
        Stems
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/audios" name="Audios" key="maudios">
+       Audios
     </Menu.Item>
     { currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&

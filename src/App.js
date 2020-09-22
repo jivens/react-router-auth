@@ -24,6 +24,7 @@ import Stems from './pages/Stems';
 import Texts from './pages/Texts';
 import Log from './pages/Log';
 import Audios from './pages/Audios';
+import Search from './pages/Search';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
@@ -150,7 +151,7 @@ function App(props) {
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
               <PrivateRoute path="/userlist" component={UserListContainer} key="UserListContainer" />
-              <Route path="/testmutation" component={Testmutation} key="TestmutationPage" />
+              <Route path="/search" component={Search} key="Search" />
               <Route path="/not-found" component={NotFound} key="NotFound" />
               <Route component={NotFoundRedirect} key="NotFoundRedirect" />
             </Switch>

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useExpanded } from 'react-table'
-import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
+import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn } from '../utils/Filters'
 import { useAuth } from "../context/auth";
 import { getTextsQuery } from './../queries/queries'
 import { sortReshape, filterReshape, textReshape } from "./../utils/reshapers"
@@ -301,47 +301,6 @@ function TextTable(props) {
           </span>
         ),
       },
-      // {
-      //   Header: 'History/Edit/Delete',
-      //   disableFilters: true,
-      //   sortable: false,
-      //   width: 100,
-      //   show: true,
-      //   id: 'historyEditDelete',
-      //   label: 'History/Edit/Delete',
-      //   tableName: 'TextTable',
-      //   Cell: ({row, original}) => (
-      //     <div className="buttons">
-      //       <Link 
-      //         to={{
-      //           pathname: "/texthistory",
-      //           search: "?id=" + row.original.id,
-      //         }}>
-      //         <button className="basic blue ui icon button">
-      //           <Icon name="history" />
-      //         </button>              
-      //       </Link>
-      //       <Link 
-      //         to={{
-      //           pathname: "/edittext",
-      //           search: "?id=" + row.original.id,
-      //         }}>
-      //         <button className="basic blue ui icon button">
-      //           <Icon name="edit" />
-      //         </button>              
-      //       </Link>
-      //       <Link 
-      //         to={{
-      //           pathname: "/deletetext",
-      //           search: "?id=" + row.original.id,
-      //         }}>
-      //         <button className="basic blue ui icon button">
-      //           <Icon name="close" />
-      //         </button>              
-      //       </Link>
-      //     </div>
-      //   )
-      // },     
       {
         Header: 'Title',
         accessor: 'title',
@@ -401,9 +360,6 @@ function TextTable(props) {
 
   const renderRowSubComponent = React.useCallback(
     ({ row }) => (
-      // <pre>
-      //   <code>{JSON.stringify({ values: row.values }, null, 2)}</code>
-      // </pre>
       <div>
         <SubTable subData={row.values.sourcefiles}/>
       </div>    
@@ -458,7 +414,7 @@ function TextTable(props) {
       // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) {
         const controlledSort = sortReshape(sortBy) 
-        const controlledFilter = filterReshape(filters, globalFilter, [])
+        const controlledFilter = filterReshape(filters, globalFilter, ["title", "cycle", "speaker"])
         getTexts(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
         .then((data) => {
           let totalCount = data.texts_aggregate.aggregate.count

@@ -1,12 +1,10 @@
 import React, { useRef, useState } from "react";
 import ReactDOM from "react-dom";
 import Keyboard from "react-simple-keyboard";
+import { Input } from 'semantic-ui-react';
 import "react-simple-keyboard/build/css/index.css";
 
-
 export default function SimpleKeyboard() {
-
-
   const [input, setInput] = useState('');
   const [layout, setLayout] = useState('default');
   const keyboard = useRef();
@@ -37,9 +35,11 @@ export default function SimpleKeyboard() {
 
   return (
     <div className="App">
-      <input
+      <Input
+        id="keyboardInput"
+        fluid
         value={input}
-        placeholder={"Tap on the virtual keyboard to start"}
+        placeholder={"copy and paste into any input field"}
         onChange={onChangeInput}
       />
       <Keyboard
@@ -49,6 +49,7 @@ export default function SimpleKeyboard() {
           'default' : [
             "á ä ä́ é ɛ ɛ́ í ι ó ú ə ɔ ụ · ʷ",
             "ɫ ∤ ɬ č ǰ š x̣ ʔ ʕ ‿ † ‡ § √",
+            "ʀ ᴇ c̕ l̕ m̕ n̕ p̕ q̕ r̕ ṛ ʀ̕ s̕ t̕ w̕ y̕",
             "1 2 3 4 5 6 7 8 9 0 - = {bksp}",
             "q w e r t y u i o p [ ] \\",
             "{lock} a s d f g h j k l ; '",
@@ -57,7 +58,8 @@ export default function SimpleKeyboard() {
             ],
           'shift' : [
             "Á Ä Ä́ É ɛ ɛ́ Í ι Ó Ú ə ɔ Ụ · ʷ",
-            "ɫ Ł Č J̌ Š  X̣ ʔ ʕ ‿ · † ‡ § √",
+            "ɫ Ł Č J̌ Š X̣ ʔ ʕ ‿ · † ‡ § √",
+            "ʀ ᴇ c̕ l̕ m̕ n̕ p̕ q̕ r̕ ṛ ʀ̕ s̕ t̕ w̕ y̕",
             "! @ # $ % ^ & * ( ) _ + {bksp}",
             "Q W E R T Y U I O P { } |",
             "{lock} A S D F G H J K L : \"",
