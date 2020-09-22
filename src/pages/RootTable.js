@@ -113,7 +113,7 @@ React.useEffect(
   // Render the UI for your table
   return (
     <>
-      {/* <pre>
+      <pre>
         <code>
           {JSON.stringify(
             {
@@ -130,7 +130,7 @@ React.useEffect(
             2
           )}
         </code>
-      </pre> */}
+      </pre>
       <div className="columnToggle">
         {allColumns.map(column => (
           <div key={column.id} className="columnToggle">

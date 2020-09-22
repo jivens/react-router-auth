@@ -1,8 +1,8 @@
 import React, { useRef, useState } from "react";
-import ReactDOM from "react-dom";
 import Keyboard from "react-simple-keyboard";
-import { Grid, Header, Segment, Message, Input, Button, Icon } from 'semantic-ui-react';
+import { Grid, Header, Segment, Message, Input } from 'semantic-ui-react';
 import "react-simple-keyboard/build/css/index.css";
+import { filterReshape } from "../utils/reshapers"
 
 //import { useAuth } from "../context/auth";
 //import { broadCastSuccess } from '../utils/messages';
@@ -12,7 +12,13 @@ function Search(props) {
     const [layout, setLayout] = useState('default');
     const keyboard = useRef();
   
-    
+    const globalFilters =  { 
+        "roots": { 
+            "filters": [],
+            "globalFilterVariables": ["english", "nicodemus", "salish"]
+        } 
+    }
+   
     const onChange = input => {
       setInput(input);
       console.log("Input changed", input);
@@ -34,7 +40,14 @@ function Search(props) {
       keyboard.current.setInput(input);
     };
   
-    
+    const globalFilterReshape = (globalFilter, globalFilters) => {
+        let res = {}
+        globalFilters.forEach((item) => {
+          let h = []
+          h = { [item]: filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) }
+        })
+      }
+          
 
   return (
     <Grid relaxed columns={1} textAlign='center'  verticalAlign='top'>
