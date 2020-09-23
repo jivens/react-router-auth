@@ -107,7 +107,7 @@ React.useEffect(
       columns.filter(column => !column.show).map(column => column.id)
     );
   },
-  [columns]
+  [columns, setHiddenColumns]
 );
 
   // Render the UI for your table
@@ -153,7 +153,7 @@ React.useEffect(
                   to={{
                     pathname: "/addroot",
                   }}>
-                  <Button animated='vertical' basic color='blue'>
+                  <Button animated='vertical' color='blue'>
                     <Button.Content hidden>Add Root</Button.Content>
                     <Button.Content visible>
                       <Icon name='plus' />

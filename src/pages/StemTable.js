@@ -154,7 +154,7 @@ React.useEffect(
                   to={{
                     pathname: "/addstem",
                   }}>
-                  <Button animated='vertical' basic color='blue'>
+                  <Button animated='vertical' color='blue'>
                     <Button.Content hidden>Add Stem</Button.Content>
                     <Button.Content visible>
                       <Icon name='plus' />
@@ -322,7 +322,7 @@ function StemTable(props) {
         accessor: 'reichard',
         tableName: 'StemTable',
         Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
-        show: true,
+        show: false,
         id: 'reichard',
         label: 'Reichard'
       },
@@ -398,7 +398,7 @@ function StemTable(props) {
             accessor: 'reichard',
             tableName: 'StemTable',
             Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
-            show: true,
+            show: false,
             id: 'reichard',
             label: 'Reichard'
           },

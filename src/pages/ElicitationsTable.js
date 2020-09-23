@@ -1,14 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
-import { intersectionWith, isEqual } from 'lodash';
-import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useExpanded } from 'react-table'
+import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { getTextsQuery } from './../queries/queries'
-import { sortReshape, filterReshape, textReshape } from "./../utils/reshapers"
-import SubTable from "./SubTable";
+import { getElicitationSetsQuery } from './../queries/queries'
+import ElicitationsPlayer from '../utils/ElicitationsPlayer';
+import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
-import { Icon, Button } from "semantic-ui-react";
 
 function Table({
   columns,
@@ -17,12 +14,7 @@ function Table({
   loading,
   pageCount: controlledPageCount,
   selectValues, 
-  renderRowSubComponent
 }) {
-
-  const { user } = useAuth();
-  //console.log("Inside table, I have select values: ", selectValues)
-  console.log("my user is: ", user)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -40,7 +32,7 @@ function Table({
     }),
     []
   )
-
+  const { user } = useAuth();
   const defaultColumn = React.useMemo(
     () => ({
       Filter: DefaultColumnFilter,       // Let's set up our default Filter UI
@@ -58,9 +50,7 @@ function Table({
     page,
     rows,
     state,
-    flatColumns,
     allColumns,
-    getToggleHideAllColumnsProps,
     setHiddenColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
@@ -82,7 +72,6 @@ function Table({
       data,
       initialState: { 
         pageIndex: 0,
-        sortBy: [{ id: 'cycle' }]
        }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
@@ -100,7 +89,6 @@ function Table({
     useGlobalFilter,
     useFilters,
     useSortBy,
-    useExpanded,
     usePagination,   
   )
 
@@ -116,40 +104,20 @@ function Table({
         columns.filter(column => !column.show).map(column => column.id)
       );
     },
-    [columns]
+    [columns, setHiddenColumns]
   );
 
   // Render the UI for your table
   return (
     <>
-      {/* <pre>
-        <code>
-          {JSON.stringify(
-            {
-              pageIndex,
-              pageSize,
-              pageCount,
-              canNextPage,
-              canPreviousPage,
-              sortBy,
-              filters,
-              globalFilter
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre> */}
       <div className="columnToggle">
         {allColumns.map(column => (
-          (column.label !== "sourcefiles" && column.id !== "expander") ? 
-          (<div key={column.id} className="columnToggle">
+          <div key={column.id} className="columnToggle">
             <label>
               <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
               {column.label}
             </label>
-          </div>) : (null)
-          // condition ? (operation) : (operation) 
+          </div>
         ))}
       </div>
       <table {...getTableProps()}>
@@ -158,21 +126,6 @@ function Table({
             <th
               colSpan={visibleColumns.length}
             >
-            {/* { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
-              (
-                <Link 
-                  to={{
-                    pathname: "/addtext",
-                  }}>
-                  <Button animated='vertical' color='blue'>
-                    <Button.Content hidden>Add Text</Button.Content>
-                    <Button.Content visible>
-                      <Icon name='plus' />
-                    </Button.Content>
-                  </Button> 
-                </Link> 
-              )
-            } */}
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
@@ -212,13 +165,6 @@ function Table({
                     );
                   })}
                 </tr>
-                {row.isExpanded && (
-                  <tr>
-                    <td colSpan={visibleColumns.length}>
-                      {renderRowSubComponent({row})}
-                    </td>
-                  </tr>
-                )}
               </React.Fragment>
             );
           })}
@@ -286,100 +232,68 @@ function Table({
 }
 
 
-function TextTable(props) {
-  console.log(props.selectValues)
+function ElicitationsTable(props) {
 
   const columns = React.useMemo(
     () => [
       {
-        Header: () => null, // No header
-        id: 'expander', // It needs an ID
+        Header: 'Audio',
+        id: 'audio',
+        accessor: 'elicitationsets_elicitationfiles', 
         show: true,
-        Cell: ({ row }) => (
-          <span {...row.getToggleRowExpandedProps()}>
-            {row.isExpanded ? '▼' : '▶'}
-          </span>
-        ),
+        label: 'Audio',
+        //Cell: ({ row }) => <span>{JSON.stringify(row.original.elicitationfiles)}</span>,
+        Cell: ({ row }) => (<ElicitationsPlayer id={row.original.id} title={row.original.title} speaker={row.original.speaker} sources={row.original.elicitationfiles} />)
+      }, 
+      {
+        Header: 'Transcription',
+        accessor: 'transcription',
+        tableName: 'Elicitations',
+        show: false,
+        id: 'transcription',
+        label: 'Transcription'
       },
       {
-        Header: 'Title',
+        Header: 'Prompt',
         accessor: 'title',
-        tableName: 'TextTable',
+        tableName: 'Elicitations',
         show: true,
-        id: 'title',
-        label: 'Title'
-      },
-      {
-        Header: 'Pub.#',
-        accessor: 'rnumber',
-        tableName: 'TextTable',
-        disableFilters: true,
-        show: false,
-        id: 'rnumber',
-        label: 'Pub.#'
-      },
-      {
-        Header: 'Text#',
-        accessor: 'tnumber',
-        tableName: 'TextTable',
-        disableFilters: true,
-        show: false,
-        id: 'tnumber',
-        label: 'Text#'
-      },
-      {
-        Header: 'Cycle',
-        accessor: 'cycle',
-        tableName: 'TextTable',
-        show: true,
-        id: 'cycle',
-        label: 'cycle'
+        id: 'prompt',
+        label: 'Prompt'
       },
       {
         Header: 'Speaker',
         accessor: 'speaker',
-        filter: 'fuzzyText',
-        tableName: 'TextTable',
-        show: true,
+        tableName: 'Elicitations',
+        show: false,
         id: 'speaker',
-        label: 'speaker'
+        label: 'Speaker'
       },
       {
-        Header: 'Sourcefiles',
-        accessor: 'sourcefiles',
-        tableName: 'TextTable',
-        disableSortBy: true,
-        show: false,
-        id: 'sourcefiles',
-        label: 'sourcefiles'
-      },
+        Header: 'Language',
+        accessor: 'language',
+        tableName: 'Elicitations',
+        show: true,
+        id: 'language',
+        label: 'Language'
+      }
     ], []
   )
 
 
+// We'll start our table without any data
+const [data, setData] = React.useState([])
+const [loading, setLoading] = React.useState(false)
+const [pageCount, setPageCount] = React.useState(0)
+//const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
+const fetchIdRef = React.useRef(0)
+const { client } = useAuth();
 
-  const renderRowSubComponent = React.useCallback(
-    ({ row }) => (
-      <div>
-        <SubTable subData={row.values.sourcefiles}/>
-      </div>    
-    ),
-    []
-  ) 
 
-  // We'll start our table without any data
-  const [data, setData] = React.useState([])
-  const [loading, setLoading] = React.useState(false)
-  const [pageCount, setPageCount] = React.useState(0)
-  //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
-  const fetchIdRef = React.useRef(0)
-  const { client, user } = useAuth();
-
-  
-  async function getTexts(limit, offset, sortBy, filters) {
+async function getElicitations(limit, offset, sortBy, filters) {
     let res = {}
     res = await client.query({
-      query: getTextsQuery,
+      query: getElicitationSetsQuery,
       variables: { 
         limit: limit,
         offset: offset,
@@ -387,50 +301,49 @@ function TextTable(props) {
         where: filters,
         }
     })
-    let texts = textReshape(res.data.texts)
-    let i = 0
-    for ( i = 0; i < texts.length; i++ ) {
-      res.data.texts[i].sourcefiles = texts[i].sourcefiles
-    }
-    console.log("this is res.data ", res.data)
-    console.log("this is texts ", texts)
+    // let texts = textReshape(res.data.texts)
+    // let i = 0
+    // for ( i = 0; i < texts.length; i++ ) {
+    //   res.data.texts[i].sourcefiles = texts[i].sourcefiles
+    // }
+    // console.log("this is res.data ", res.data)
+    // console.log("this is texts ", texts)
     return res.data
   }  
 
 
-  const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
-    // This will get called when the table needs new data
-    // You could fetch your data from literally anywhere,
-    // even a server. But for this example, we'll just fake it.
+const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
+  // This will get called when the table needs new data
+  // You could fetch your data from literally anywhere,
+  // even a server. But for this example, we'll just fake it.
 
-    // Give this fetch an ID
-    const fetchId = ++fetchIdRef.current
+  // Give this fetch an ID
+  const fetchId = ++fetchIdRef.current
 
-    // Set the loading state
-    setLoading(true)
+  // Set the loading state
+  setLoading(true)
 
-    // We'll even set a delay to simulate a server here
-    setTimeout(() => {
-      // Only update the data if this is the latest fetch
-      if (fetchId === fetchIdRef.current) {
-        const controlledSort = sortReshape(sortBy) 
-        const controlledFilter = filterReshape(filters, globalFilter, ["title", "cycle", "speaker"])
-        getTexts(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
-        .then((data) => {
-          let totalCount = data.texts_aggregate.aggregate.count
-          setData(data.texts)
-          setPageCount(Math.ceil(totalCount / pageSize))
-          setLoading(false)
-        })
-        .catch((error) => {
-          console.log(error)
-          setData([])
-          setPageCount(0)
-          setLoading(false)
-        })
-      }
-    }, 1000)
-  }, [])
+  // We'll even set a delay to simulate a server here
+  setTimeout(() => {
+    if (fetchId === fetchIdRef.current) {
+      const controlledSort = sortReshape(sortBy) 
+      const controlledFilter = filterReshape(filters, globalFilter, [])
+      getElicitations(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
+      .then((data) => {
+        let totalCount = data.elicitationsets_aggregate.aggregate.count
+        setData(data.elicitationsets)
+        setPageCount(Math.ceil(totalCount / pageSize))
+        setLoading(false)
+      })
+      .catch((error) => {
+        console.log(error)
+        setData([])
+        setPageCount(0)
+        setLoading(false)
+      })
+    }
+  }, 1000)
+}, [])
 
 
   return (
@@ -438,7 +351,6 @@ function TextTable(props) {
       <Table
         columns={columns}
         data={data}
-        renderRowSubComponent={renderRowSubComponent}
         fetchData={fetchData}
         loading={loading}
         pageCount={pageCount}
@@ -447,4 +359,4 @@ function TextTable(props) {
   )
 }
 
-export default TextTable
+export default ElicitationsTable

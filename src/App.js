@@ -17,13 +17,13 @@ import EditRoot from './pages/EditRoot';
 import DeleteRoot from './pages/DeleteRoot';
 import AffixHistory from './pages/AffixHistory';
 import UserListContainer from './pages/UserListContainer';
-import Testmutation from './pages/Testmutation';
 import Affixes from './pages/Affixes';
 import Roots from './pages/Roots';
 import Stems from './pages/Stems';
 import Texts from './pages/Texts';
 import Log from './pages/Log';
 import Audios from './pages/Audios';
+import Elicitations from './pages/Elicitations'
 import Search from './pages/Search';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
@@ -134,6 +134,7 @@ function App(props) {
               <Route path="/stems" component={Stems} key="Stems" />
               <Route path="/texts" component={Texts} key="Texts" />
               <Route path="/audios" component={Audios} key="Audios" />
+              <Route path="/elicitations" component={Elicitations} key="Elicitations" />
               <Route path="/imageviewer" component={ImageViewer} />
               <Route path="/splitview" component={SplitView} />
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />

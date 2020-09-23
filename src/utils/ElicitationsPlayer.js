@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class AudioPlayer extends Component {
+class ElicitationsPlayer extends Component {
 
   createAudioSources = (sources) => {
 
@@ -10,9 +10,9 @@ class AudioPlayer extends Component {
      let directLink = "";
      for (let i = 0; i < sources.length; i++)
      {
-         children.push(<source src={sources[i].audio_with_path} type={sources[i].type} key={sources[i].key}></source>);
+         children.push(<source src={sources[i].elicitationfiles_with_path} type={sources[i].type} key={sources[i].id}></source>);
          if (sources[i].direct) {
-           directLink = <a href={sources[i].audio_with_path}>Access the files</a>;
+           directLink = <a href={sources[i].elicitationfiles_with_path} key={sources[i].id}>Access the files</a>;
          }
      }
      if (directLink !== "") {
@@ -34,7 +34,7 @@ class AudioPlayer extends Component {
 
     return (
       <div key={this.props.id}>
-        <audio controls="controls" preload="none">
+        <audio controls="controls" preload="none" key={this.props.id}>
           {this.createAudioSources(this.props.sources)}
         </audio>
       </div>
@@ -42,4 +42,4 @@ class AudioPlayer extends Component {
   }
 }
 
-export default AudioPlayer;
+export default ElicitationsPlayer;

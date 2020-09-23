@@ -226,3 +226,26 @@ export function textReshape(jsonData) {
     }
     return json;
    }
+
+   export function elicitationReshape(jsonData) {
+    let json = JSON.parse(JSON.stringify(jsonData))
+    while (json.length) {
+      let i = 0
+      let j = 0
+      while (i < json["elicitationsets"][i].elicitationsets_elicitationfiles.length) { 
+        json["elicitationsets"][i].elicitationsets_elicitationfiles[j].key = i.toString() + '_' + j.toString() 
+        i++
+      }
+      json[i]["sourcefiles"].push(
+        {
+          speaker: json[i]["elicitationsets"][j].speaker,
+          title: json[i]["elicitationsets"][j].title,
+          sources: json[i]["elicitationsets"][j].elicitationsets_elicitationfiles,
+          type: "audio",
+          key: i
+        }
+      );
+      i++; 
+    }
+    return json;
+   }

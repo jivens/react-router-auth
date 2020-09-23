@@ -52,25 +52,29 @@ const NavBarMobile = ({
      <Icon name="home" />
       Home
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/affixes" name="Affixes" size='mini' key="miniaffixes">
-     <Icon name="book" />
-      Affixes
-    </Menu.Item>
     <Menu.Item as={NavLink} to="/roots" name="Roots" size='mini' key="miniroots">
      <Icon name="book" />
       Roots
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/texts" name="Texts" size='mini' key="minitexts">
+    <Menu.Item as={NavLink} to="/affixes" name="Affixes" size='mini' key="miniaffixes">
      <Icon name="book" />
-      Texts
+      Affixes
     </Menu.Item>
     <Menu.Item as={NavLink} to="/stems" name="Stems" size='mini' key="ministems">
      <Icon name="book" />
       Stems
     </Menu.Item>
+    <Menu.Item as={NavLink} to="/texts" name="Texts" size='mini' key="minitexts">
+     <Icon name="book" />
+      Texts
+    </Menu.Item>
     <Menu.Item as={NavLink} to="/audios" name="Audios" size='mini' key="miniaudios">
      <Icon name="file audio outline" />
       Audios
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/elictations" name="Elicitations" size='mini' key="minielicitations">
+     <Icon name="file audio outline" />
+      Elicitaions
     </Menu.Item>
     {currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
@@ -104,20 +108,23 @@ const NavBarDesktop = ({ rightItems, currentUser }) => (
     <Menu.Item as={NavLink} to="/" name="home" key="mhome">
        <Icon name="home" />
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/affixes" name="Affixes" key="maffixes">
-       Affixes
-    </Menu.Item>
     <Menu.Item as={NavLink} to="/roots" name="Roots" key="mroots">
        Roots
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/texts" name="Texts" key="mtexts">
-       Texts
+    <Menu.Item as={NavLink} to="/affixes" name="Affixes" key="maffixes">
+       Affixes
     </Menu.Item>
     <Menu.Item as={NavLink} to="/stems" name="Stems" key="mstems">
        Stems
     </Menu.Item>
+    <Menu.Item as={NavLink} to="/texts" name="Texts" key="mtexts">
+       Texts
+    </Menu.Item>
     <Menu.Item as={NavLink} to="/audios" name="Audios" key="maudios">
        Audios
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/elicitations" name="Elicitations" key="melicitations">
+       Elicitations
     </Menu.Item>
     { currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&

@@ -693,11 +693,19 @@ export const getAnonStemsQuery = gql`
           first
           username
         }
+        text {
+          cycle
+          id
+          speaker
+          rnumber
+          title
+          tnumber
+        }
       }
     }
   `;
 
-  export const getAudioSetsById = gql`
+  export const getAudioSetById = gql`
     query getAudioSetsByIdQuery($id: Int) {
       audiosets(where: {id: {_eq: $id}}) {
           id
@@ -721,4 +729,36 @@ export const getAnonStemsQuery = gql`
         }
       }
     }
+`;
+
+export const getElicitationSetsQuery = gql`
+  query getElicitationsetsQuery($limit: Int, $offset: Int, $order: [elicitationsets_order_by!], $where: elicitationsets_bool_exp) {
+    elicitationsets_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    elicitationsets(limit: $limit, offset: $offset, order_by: $order, where: $where) {
+      editnote
+      id
+      language
+      speaker
+      title
+      transcription
+      user {
+        email
+        first
+        id
+        last
+      }
+      elicitationfiles {
+        direct
+        elicitationSetId
+        elicitationfiles_with_path
+        id
+        src
+        type
+      }
+    }
+  }
 `;
