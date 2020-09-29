@@ -73,8 +73,8 @@ function Search(props) {
           }
         })
       }
-      console.log('the affixes res.data are ', res.data)
-      return res.data
+      console.log('the affixes res are ', res)
+      return res
     } 
     
     async function getRoots(limit, offset, sortBy, filters) {
@@ -102,52 +102,52 @@ function Search(props) {
           }
         })
       }
-      console.log('the roots res.data are ', res.data)
-      return res.data
+      console.log('the roots res are ', res)
+      return res
     }  
 
     async function getSearchResults(globalFilter, globalFilters) {
       let res = {}
-      Object.keys(globalFilters).forEach((item) => {
+      Promise.all(Object.keys(globalFilters).asyncforEach(async (item) => {
         let controlledSort = []
         let controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
         if (item === "affixes") {
-          let data = getAffixes(10, 0, controlledSort, controlledFilter)
-          res[item] = data
+          let result = await getAffixes(10, 0, controlledSort, controlledFilter)
+          res[item] = result.data.affixes
         } else if (item === "roots") {
-          let data = getRoots(10, 0, controlledSort, controlledFilter)
-          res[item] = data
+          let result = await getRoots(10, 0, controlledSort, controlledFilter)
+          res[item] = result.data.roots
         }
-      })
+      }))
       return res
     }
 
-    const globalFilterReshape = (globalFilter, globalFilters) => {
-        let res = {}
-        const controlledSort = [] 
-        let controlledFilter = {}  
-        Object.keys(globalFilters).forEach((item) => {
-          controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
-          if (item === "affixes") {
-            getAffixes(10, 0, controlledSort, controlledFilter)
-            .then((data) => {
-              res[item] = data
-            })
-            .catch((error) => {
-              console.log(error)
-            })
-          } else if (item === "roots") {
-            getRoots(10, 0, controlledSort, controlledFilter)
-            .then((data) => {
-              res[item] = data
-            })
-            .catch((error) => {
-              console.log(error)
-            })
-          }
-        })
-        return res
-      }
+    // const globalFilterReshape = (globalFilter, globalFilters) => {
+    //     let res = {}
+    //     const controlledSort = [] 
+    //     let controlledFilter = {}  
+    //     Object.keys(globalFilters).forEach((item) => {
+    //       controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
+    //       if (item === "affixes") {
+    //         getAffixes(10, 0, controlledSort, controlledFilter)
+    //         .then((data) => {
+    //           res[item] = data
+    //         })
+    //         .catch((error) => {
+    //           console.log(error)
+    //         })
+    //       } else if (item === "roots") {
+    //         getRoots(10, 0, controlledSort, controlledFilter)
+    //         .then((data) => {
+    //           res[item] = data
+    //         })
+    //         .catch((error) => {
+    //           console.log(error)
+    //         })
+    //       }
+    //     })
+    //     return res
+    //   }
   
 
 
@@ -175,8 +175,8 @@ function Search(props) {
                             labelPosition: 'right',
                             icon: 'search',
                             content: 'find it!',
-                            onClick: (event,data)=>{
-                              console.log(JSON.stringify(globalFilterReshape(input, globalFilters)));
+                            onClick: async(event,data)=>{
+                              console.log(JSON.stringify(await getSearchResults(input, globalFilters)));
                             }
                         }} 
                         placeholder='Search the COLRC...'

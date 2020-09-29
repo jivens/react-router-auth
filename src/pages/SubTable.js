@@ -23,7 +23,7 @@ function Table({ columns, data }) {
   // Render the UI for your table
   return (
     <React.Fragment>
-      <table {...getTableProps()}>
+      <table className='subtable'{...getTableProps()}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
