@@ -6,6 +6,7 @@ import { intersectionWith, isEqual } from 'lodash';
 import { getRootsQuery, getAnonRootsQuery, getAffixesQuery, getAnonAffixesQuery } from '../queries/queries'
 import "react-simple-keyboard/build/css/index.css";
 import { filterReshape } from "../utils/reshapers"
+import RootTable from "./RootTable"
 
 //import { useAuth } from "../context/auth";
 //import { broadCastSuccess } from '../utils/messages';
@@ -73,7 +74,7 @@ function Search(props) {
           }
         })
       }
-      console.log('the affixes res are ', res)
+      console.log('the affixes res.data are ', res.data)
       return res
     } 
     
@@ -108,7 +109,7 @@ function Search(props) {
 
     async function getSearchResults(globalFilter, globalFilters) {
       let res = {}
-      Promise.all(Object.keys(globalFilters).asyncforEach(async (item) => {
+      await Promise.all(Object.keys(globalFilters).map(async (item) => {
         let controlledSort = []
         let controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
         if (item === "affixes") {
@@ -122,32 +123,37 @@ function Search(props) {
       return res
     }
 
-    // const globalFilterReshape = (globalFilter, globalFilters) => {
-    //     let res = {}
-    //     const controlledSort = [] 
-    //     let controlledFilter = {}  
-    //     Object.keys(globalFilters).forEach((item) => {
-    //       controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
-    //       if (item === "affixes") {
-    //         getAffixes(10, 0, controlledSort, controlledFilter)
-    //         .then((data) => {
-    //           res[item] = data
-    //         })
-    //         .catch((error) => {
-    //           console.log(error)
-    //         })
-    //       } else if (item === "roots") {
-    //         getRoots(10, 0, controlledSort, controlledFilter)
-    //         .then((data) => {
-    //           res[item] = data
-    //         })
-    //         .catch((error) => {
-    //           console.log(error)
-    //         })
-    //       }
-    //     })
-    //     return res
-    //   }
+    // await Promise.all(files.map(async (file) => {
+    //   const contents = await fs.readFile(file, 'utf8')
+    //   console.log(contents)
+    // }));
+
+    const globalFilterReshape = (globalFilter, globalFilters) => {
+        let res = {}
+        const controlledSort = [] 
+        let controlledFilter = {}  
+        Object.keys(globalFilters).forEach((item) => {
+          controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
+          if (item === "affixes") {
+            getAffixes(10, 0, controlledSort, controlledFilter)
+            .then((data) => {
+              res[item] = data
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          } else if (item === "roots") {
+            getRoots(10, 0, controlledSort, controlledFilter)
+            .then((data) => {
+              res[item] = data
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          }
+        })
+        return res
+      }
   
 
 
@@ -175,7 +181,7 @@ function Search(props) {
                             labelPosition: 'right',
                             icon: 'search',
                             content: 'find it!',
-                            onClick: async(event,data)=>{
+                            onClick: async (event,data)=>{
                               console.log(JSON.stringify(await getSearchResults(input, globalFilters)));
                             }
                         }} 
@@ -213,6 +219,9 @@ function Search(props) {
                 </div>
             </Segment.Inline>
           </Segment>
+        </Grid.Row>
+        <Grid.Row>
+            <RootTable/>
         </Grid.Row>
       </Grid.Column>
     </Grid>

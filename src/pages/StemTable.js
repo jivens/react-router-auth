@@ -264,7 +264,7 @@ React.useEffect(
 }
 
 function StemTable(props) {
-  console.log(props.selectValues)
+
   const updateColumns = React.useMemo(
     () => [
       {
