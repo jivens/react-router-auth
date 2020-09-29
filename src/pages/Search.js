@@ -6,6 +6,7 @@ import { intersectionWith, isEqual } from 'lodash';
 import { getRootsQuery, getAnonRootsQuery, getAffixesQuery, getAnonAffixesQuery } from '../queries/queries'
 import "react-simple-keyboard/build/css/index.css";
 import { filterReshape } from "../utils/reshapers"
+import RootTable from "./RootTable"
 
 //import { useAuth } from "../context/auth";
 //import { broadCastSuccess } from '../utils/messages';
@@ -74,7 +75,7 @@ function Search(props) {
         })
       }
       console.log('the affixes res.data are ', res.data)
-      return res.data
+      return res
     } 
     
     async function getRoots(limit, offset, sortBy, filters) {
@@ -103,24 +104,29 @@ function Search(props) {
         })
       }
       console.log('the roots res.data are ', res.data)
-      return res.data
+      return res
     }  
 
     async function getSearchResults(globalFilter, globalFilters) {
       let res = {}
-      Object.keys(globalFilters).forEach((item) => {
+      await Promise.all(Object.keys(globalFilters).map(async (item) => {
         let controlledSort = []
         let controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
         if (item === "affixes") {
-          let data = getAffixes(10, 0, controlledSort, controlledFilter)
-          res[item] = data
+          let result = await getAffixes(10, 0, controlledSort, controlledFilter)
+          res[item] = result.data.affixes
         } else if (item === "roots") {
-          let data = getRoots(10, 0, controlledSort, controlledFilter)
-          res[item] = data
+          let result = await getRoots(10, 0, controlledSort, controlledFilter)
+          res[item] = result.data.roots
         }
-      })
+      }))
       return res
     }
+
+    // await Promise.all(files.map(async (file) => {
+    //   const contents = await fs.readFile(file, 'utf8')
+    //   console.log(contents)
+    // }));
 
     const globalFilterReshape = (globalFilter, globalFilters) => {
         let res = {}
@@ -175,8 +181,8 @@ function Search(props) {
                             labelPosition: 'right',
                             icon: 'search',
                             content: 'find it!',
-                            onClick: (event,data)=>{
-                              console.log(JSON.stringify(globalFilterReshape(input, globalFilters)));
+                            onClick: async (event,data)=>{
+                              console.log(JSON.stringify(await getSearchResults(input, globalFilters)));
                             }
                         }} 
                         placeholder='Search the COLRC...'
@@ -213,6 +219,9 @@ function Search(props) {
                 </div>
             </Segment.Inline>
           </Segment>
+        </Grid.Row>
+        <Grid.Row>
+            <RootTable/>
         </Grid.Row>
       </Grid.Column>
     </Grid>
