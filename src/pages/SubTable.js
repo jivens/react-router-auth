@@ -56,7 +56,7 @@ function SubTable({ subData }) {
   console.log('this is my subData ', subData)
   const columns = React.useMemo(() => [
     {
-      Header: 'Source',
+      Header: 'Materials',
       id: 'src',
       accessor: 'source', 
       Cell: ({ row }) => (

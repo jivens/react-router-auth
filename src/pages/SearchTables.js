@@ -1,12 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
-import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useExpanded } from 'react-table'
-import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn } from '../utils/Filters'
+import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
+import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { getTextsQuery } from './../queries/queries'
-import { sortReshape, filterReshape, textReshape } from "./../utils/reshapers"
-import SubTable from "./SubTable";
+//import { getLogQuery } from './../queries/queries'
+import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
 
@@ -16,13 +15,11 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
-  selectValues, 
-  renderRowSubComponent
+//   selectValues
 }) {
 
   const { user } = useAuth();
   //console.log("Inside table, I have select values: ", selectValues)
-  console.log("my user is: ", user)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -55,21 +52,19 @@ function Table({
     getTableProps,
     getTableBodyProps,
     headerGroups,
+    prepareRow,
     page,
-    rows,
     state,
-    flatColumns,
     allColumns,
     getToggleHideAllColumnsProps,
     setHiddenColumns,
+    visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
     canPreviousPage,
     canNextPage,
     pageOptions,
     pageCount,
-    visibleColumns,
-    prepareRow,
     gotoPage,
     nextPage,
     previousPage,
@@ -80,10 +75,7 @@ function Table({
     {
       columns,
       data,
-      initialState: { 
-        pageIndex: 0,
-        sortBy: [{ id: 'cycle' }]
-       }, // Pass our hoisted table state
+      initialState: { pageIndex: 0 }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
       // This means we'll also have to provide our own
@@ -95,12 +87,11 @@ function Table({
       defaultColumn,
       filterTypes,
       //hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
-      selectValues
+    //   selectValues
     },
     useGlobalFilter,
     useFilters,
     useSortBy,
-    useExpanded,
     usePagination,   
   )
 
@@ -142,37 +133,22 @@ function Table({
       </pre> */}
       <div className="columnToggle">
         {allColumns.map(column => (
-          (column.label !== "sourcefiles" && column.id !== "expander") ? 
-          (<div key={column.id} className="columnToggle">
+          <div key={column.id} className="columnToggle">
             <label>
               <input type="checkbox" {...column.getToggleHiddenProps()} />{' '}
               {column.label}
             </label>
-          </div>) : (null)
-          // condition ? (operation) : (operation) 
+          </div>
         ))}
       </div>
-      <table className="table" {...getTableProps()}>
+      <table {...getTableProps()}>
         <thead>
           <tr>
             <th
               colSpan={visibleColumns.length}
             >
-            {/* { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
-              (
-                <Link 
-                  to={{
-                    pathname: "/addtext",
-                  }}>
-                  <Button animated='vertical' color='blue'>
-                    <Button.Content hidden>Add Text</Button.Content>
-                    <Button.Content visible>
-                      <Icon name='plus' />
-                    </Button.Content>
-                  </Button> 
-                </Link> 
-              )
-            } */}
+            { (user && (user.roles.includes('update') || user.roles.includes('manager')))
+            }
               <GlobalFilter
                 preGlobalFilteredRows={preGlobalFilteredRows}
                 globalFilter={state.globalFilter}
@@ -188,8 +164,8 @@ function Table({
                     {column.render('Header')}                 
                     {column.isSorted
                       ? column.isSortedDesc
-                        ? '▲'
-                        : '▼'
+                        ? ' ▼'
+                        : ' ▲'
                       : ''}
                   </span>
                   <div>
@@ -200,40 +176,28 @@ function Table({
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>          
-          {rows.map((row) => {
-            prepareRow(row);
+        <tbody {...getTableBodyProps()}>
+          {page.map((row, i) => {
+            prepareRow(row)
             return (
-              <React.Fragment key={row.getRowProps().key}>
-                <tr>
-                  {row.cells.map((cell) => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                    );
-                  })}
-                </tr>
-                {row.isExpanded && (
-                  <tr>
-                    <td colSpan={visibleColumns.length}>
-                      {renderRowSubComponent({row})}
-                    </td>
-                  </tr>
-                )}
-              </React.Fragment>
-            );
+              <tr {...row.getRowProps()}>
+                {row.cells.map(cell => {
+                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                })}
+              </tr>
+            )
           })}
-
-          <tr>  
+          <tr>
             {loading ? (
               // Use our custom loading state to show a loading indicator
-              <td colSpan="10"> Loading... </td>
+              <td colSpan="10000">Loading...</td>
             ) : (
-              <td colSpan="10">
-                Showing {page.length} of ~{pageCount * pageSize} results
+              <td colSpan="10000">
+                Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
+                results
               </td>
             )}
           </tr>
-          
         </tbody>
       </table>
 
@@ -286,86 +250,79 @@ function Table({
 }
 
 
-function TextTable(props) {
-  console.log(props.selectValues)
+function LogTable(props) {
 
-  const columns = React.useMemo(
+  const updateColumns = React.useMemo(
     () => [
+      // {
+      //   Header: 'ID',
+      //   accessor: 'id',
+      //   tableName: 'LogTable',
+      //   show: false,
+      //   disableFilters: true,
+      //   id: 'id'
+      // },
       {
-        Header: () => null, // No header
-        id: 'expander', // It needs an ID
+        Header: 'Action',
+        accessor: 'action',
+        Filter: DefaultColumnFilter,
+        tableName: 'LogTable',
         show: true,
-        Cell: ({ row }) => (
-          <span {...row.getToggleRowExpandedProps()}>
-            {row.isExpanded ? '▼' : '▶'}
-          </span>
-        ),
+        disableSortBy: true,
+        id: 'action',
+        label: 'action'
       },
       {
-        Header: 'Title',
-        accessor: 'title',
-        tableName: 'TextTable',
+        Header: 'Changed_fields',
+        accessor: 'changed_fields',
+        tableName: 'LogTable',
+        Cell: ({ row }) => <span>{JSON.stringify(row.original.changed_fields)}</span>,
         show: true,
-        id: 'title',
-        label: 'Title'
+        id: 'changed_fields',
+        label: 'Changed_fields'
       },
       {
-        Header: 'Pub.#',
-        accessor: 'rnumber',
-        tableName: 'TextTable',
-        disableFilters: true,
-        show: false,
-        id: 'rnumber',
-        label: 'Pub.#'
-      },
-      {
-        Header: 'Text#',
-        accessor: 'tnumber',
-        tableName: 'TextTable',
-        disableFilters: true,
-        show: false,
-        id: 'tnumber',
-        label: 'Text#'
-      },
-      {
-        Header: 'Cycle',
-        accessor: 'cycle',
-        tableName: 'TextTable',
-        show: true,
-        id: 'cycle',
-        label: 'cycle'
-      },
-      {
-        Header: 'Speaker',
-        accessor: 'speaker',
+        Header: 'User',
+        accessor: 'audit_user[0].first',
         filter: 'fuzzyText',
-        tableName: 'TextTable',
+        tableName: 'LogTable',
+        //Cell: ({ row }) => <span>{JSON.stringify(row.original.hasura_user)}</span>,
         show: true,
-        id: 'speaker',
-        label: 'speaker'
+        id: 'user',
+        label: 'user'
       },
       {
-        Header: 'Sourcefiles',
-        accessor: 'sourcefiles',
-        tableName: 'TextTable',
+        Header: 'Row_data',
+        accessor: 'row_data',
+        tableName: 'LogTable',
+        Cell: ({ row }) => <span>{JSON.stringify(row.original.row_data)}</span>,
+        show: true,
+        id: 'row_data',
+        label: 'Row_data'
+      },
+      {
+        Header: 'schema_name',
+        accessor: 'schema_name',
+        Filter: DefaultColumnFilter,
+        tableName: 'LogTable',
         disableSortBy: true,
         show: false,
-        id: 'sourcefiles',
-        label: 'sourcefiles'
+        id: 'schema_name',
+        label: 'schema_name'
+      },
+      {
+        Header: 'table_name',
+        accessor: 'table_name',
+        tableName: 'LogTable',
+        disableFilters: true,
+        show: true,
+        id: 'table_name',
+        label: 'table_name'
       },
     ], []
   )
 
 
-
-  const renderRowSubComponent = React.useCallback(
-    ({ row }) => (
-      <div>
-        <SubTable subData={row.values.sourcefiles}/>
-      </div>    
-    ),
-    []
-  ) 
 
   // We'll start our table without any data
   const [data, setData] = React.useState([])
@@ -376,24 +333,30 @@ function TextTable(props) {
   const { client, user } = useAuth();
 
   
-  async function getTexts(limit, offset, sortBy, filters) {
+  async function getLog(limit, offset, sortBy, filters) {
     let res = {}
-    res = await client.query({
-      query: getTextsQuery,
-      variables: { 
-        limit: limit,
-        offset: offset,
-        order: sortBy,
-        where: filters,
-        }
-    })
-    let texts = textReshape(res.data.texts)
-    let i = 0
-    for ( i = 0; i < texts.length; i++ ) {
-      res.data.texts[i].sourcefiles = texts[i].sourcefiles
+    if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
+      res = await client.query({
+        query: getLogQuery,
+        variables: { 
+          limit: limit,
+          offset: offset,
+          log_order: sortBy,
+          where: filters,
+         }
+      })
     }
-    console.log("this is res.data ", res.data)
-    console.log("this is texts ", texts)
+    // else {
+    //   res = await client.query({
+    //     query: getAnonAffixesQuery,
+    //     variables: { 
+    //       limit: limit,
+    //       offset: offset,
+    //       affix_order: sortBy,
+    //       where: filters,
+    //     }
+    //   })
+    // }
     return res.data
   }  
 
@@ -414,11 +377,17 @@ function TextTable(props) {
       // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) {
         const controlledSort = sortReshape(sortBy) 
-        const controlledFilter = filterReshape(filters, globalFilter, ["title", "cycle", "speaker"])
-        getTexts(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
+        const controlledFilter = filterReshape(filters, globalFilter, ['action', 'table_name'])
+        console.log(controlledFilter)
+        // reset to first page when filters change
+        // if (filters.length > 0) {
+        //   pageIndex = 0
+        // }
+        getLog(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
         .then((data) => {
-          let totalCount = data.texts_aggregate.aggregate.count
-          setData(data.texts)
+          console.log(data)  
+          let totalCount = data.audit_logged_actions_aggregate.aggregate.count
+          setData(data.audit_logged_actions)
           setPageCount(Math.ceil(totalCount / pageSize))
           setLoading(false)
         })
@@ -432,19 +401,21 @@ function TextTable(props) {
     }, 1000)
   }, [])
 
+  let columns = updateColumns
+  
 
   return (
     <TableStyles>
       <Table
         columns={columns}
         data={data}
-        renderRowSubComponent={renderRowSubComponent}
         fetchData={fetchData}
         loading={loading}
         pageCount={pageCount}
+        // selectValues={props.selectValues}
       />
     </TableStyles>
   )
 }
 
-export default TextTable
+export default LogTable

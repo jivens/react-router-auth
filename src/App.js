@@ -134,9 +134,9 @@ function App(props) {
               <Route path="/stems" component={Stems} key="Stems" />
               <Route path="/texts" component={Texts} key="Texts" />
               <Route path="/audios" component={Audios} key="Audios" />
-              <Route path="/elicitations" component={Elicitations} key="Elicitations" />
               <Route path="/imageviewer" component={ImageViewer} />
               <Route path="/splitview" component={SplitView} />
+              <PrivateRoute path="/elicitations" component={Elicitations} key="Elicitations" />
               <PrivateRoute path="/addaffix" component={AddAffix} key="AddAffix" />
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />

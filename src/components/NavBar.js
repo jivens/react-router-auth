@@ -72,10 +72,15 @@ const NavBarMobile = ({
      <Icon name="file audio outline" />
       Audios
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/elictations" name="Elicitations" size='mini' key="minielicitations">
-     <Icon name="file audio outline" />
-      Elicitaions
-    </Menu.Item>
+
+    {currentUser && (
+      currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
+        (<Menu.Item as={NavLink} to="/elicitations" name="Elicitations" size='mini' key="minielicitations">
+          <Icon name="file audio outline" />
+            Elicitations
+         </Menu.Item>
+        )
+    )}
     {currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
         (<Menu.Item as={NavLink} to="/log" name="Log" size='mini' key="minilog">
@@ -84,6 +89,7 @@ const NavBarMobile = ({
          </Menu.Item>
         )
     )}
+
     </Sidebar>
     <Sidebar.Pusher
       dimmed={visible}
@@ -123,15 +129,17 @@ const NavBarDesktop = ({ rightItems, currentUser }) => (
     <Menu.Item as={NavLink} to="/audios" name="Audios" key="maudios">
        Audios
     </Menu.Item>
-    <Menu.Item as={NavLink} to="/elicitations" name="Elicitations" key="melicitations">
-       Elicitations
-    </Menu.Item>
     { currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
-      (<Menu.Item as={NavLink} to="/log" name="Log" key="mlog">
-       Log
-    </Menu.Item>) )
+      (<Menu.Item as={NavLink} to="/elicitations" name="Elicitations" key="melicitations">Elicitations</Menu.Item>) 
+      )
     }
+    { currentUser && (
+      currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
+      (<Menu.Item as={NavLink} to="/log" name="Log" key="mlog">Log</Menu.Item>) 
+      )
+    }
+
     <Menu.Menu position="right">
       {map(rightItems, item  => <Popup key={item.key} content={ item.content } trigger={<Menu.Item as={NavLink} to={item.to} key={item.key} icon={item.icon} /> } /> )}
     </Menu.Menu>

@@ -1,6 +1,9 @@
 import React, { useRef, useState } from "react";
 import Keyboard from "react-simple-keyboard";
 import { Grid, Header, Segment, Message, Input } from 'semantic-ui-react';
+import { useAuth } from "../context/auth";
+import { intersectionWith, isEqual } from 'lodash';
+import { getRootsQuery, getAnonRootsQuery, getAffixesQuery, getAnonAffixesQuery } from '../queries/queries'
 import "react-simple-keyboard/build/css/index.css";
 import { filterReshape } from "../utils/reshapers"
 
@@ -8,6 +11,7 @@ import { filterReshape } from "../utils/reshapers"
 //import { broadCastSuccess } from '../utils/messages';
 
 function Search(props) {
+    const { client, user } = useAuth();
     const [input, setInput] = useState('');
     const [layout, setLayout] = useState('default');
     const keyboard = useRef();
@@ -15,8 +19,12 @@ function Search(props) {
     const globalFilters =  { 
         "roots": { 
             "filters": [],
-            "globalFilterVariables": ["english", "nicodemus", "salish"]
-        } 
+            "globalFilterVariables": ["english", "salish"]
+        },
+        "affixes": { 
+          "filters": [],
+          "globalFilterVariables": ["english", "nicodemus"]
+      }  
     }
    
     const onChange = input => {
@@ -40,19 +48,114 @@ function Search(props) {
       keyboard.current.setInput(input);
     };
   
-    const globalFilterReshape = (globalFilter, globalFilters) => {
-        let res = {}
-        globalFilters.forEach((item) => {
-          let h = []
-          h = { [item]: filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) }
+    async function getAffixes(limit, offset, sortBy, filters) {
+      console.log(limit, offset, sortBy, filters)
+      let res = {}
+      if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
+        res = await client.query({
+          query: getAffixesQuery,
+          variables: { 
+            limit: limit,
+            offset: offset,
+            affix_order: sortBy,
+            where: filters,
+           }
         })
       }
-          
+      else {
+        res = await client.query({
+          query: getAnonAffixesQuery,
+          variables: { 
+            limit: limit,
+            offset: offset,
+            affix_order: sortBy,
+            where: filters,
+          }
+        })
+      }
+      console.log('the affixes res.data are ', res.data)
+      return res.data
+    } 
+    
+    async function getRoots(limit, offset, sortBy, filters) {
+      console.log(limit, offset, sortBy, filters)
+      let res = {}
+      if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
+        res = await client.query({
+          query: getRootsQuery,
+          variables: { 
+            limit: limit,
+            offset: offset,
+            root_order: sortBy,
+            where: filters,
+           }
+        })
+      }
+      else {
+        res = await client.query({
+          query: getAnonRootsQuery,
+          variables: { 
+            limit: limit,
+            offset: offset,
+            root_order: sortBy,
+            where: filters,
+          }
+        })
+      }
+      console.log('the roots res.data are ', res.data)
+      return res.data
+    }  
+
+    async function getSearchResults(globalFilter, globalFilters) {
+      let res = {}
+      Object.keys(globalFilters).forEach((item) => {
+        let controlledSort = []
+        let controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
+        if (item === "affixes") {
+          let data = getAffixes(10, 0, controlledSort, controlledFilter)
+          res[item] = data
+        } else if (item === "roots") {
+          let data = getRoots(10, 0, controlledSort, controlledFilter)
+          res[item] = data
+        }
+      })
+      return res
+    }
+
+    const globalFilterReshape = (globalFilter, globalFilters) => {
+        let res = {}
+        const controlledSort = [] 
+        let controlledFilter = {}  
+        Object.keys(globalFilters).forEach((item) => {
+          controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
+          if (item === "affixes") {
+            getAffixes(10, 0, controlledSort, controlledFilter)
+            .then((data) => {
+              res[item] = data
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          } else if (item === "roots") {
+            getRoots(10, 0, controlledSort, controlledFilter)
+            .then((data) => {
+              res[item] = data
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+          }
+        })
+        return res
+      }
+  
+
+
 
   return (
     <Grid relaxed columns={1} textAlign='center'  verticalAlign='top'>
       <Grid.Column>
-        <Grid.Row padded>
+        <Grid.Row>
             <Header as='h2'  textAlign='center'>
                 Search the COLRC
             </Header>
@@ -72,6 +175,9 @@ function Search(props) {
                             labelPosition: 'right',
                             icon: 'search',
                             content: 'find it!',
+                            onClick: (event,data)=>{
+                              console.log(JSON.stringify(globalFilterReshape(input, globalFilters)));
+                            }
                         }} 
                         placeholder='Search the COLRC...'
                         onChange={onChangeInput}
