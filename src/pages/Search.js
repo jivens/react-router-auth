@@ -20,11 +20,11 @@ function Search(props) {
     const globalFilters =  { 
         "roots": { 
             "filters": [],
-            "globalFilterVariables": ["english", "salish"]
+            "globalFilterVariables": ["english", "nicodemus", "salish"]
         },
         "affixes": { 
           "filters": [],
-          "globalFilterVariables": ["english", "nicodemus"]
+          "globalFilterVariables": ["english", "nicodemus", "salish"]
       }  
     }
    
@@ -123,41 +123,6 @@ function Search(props) {
       return res
     }
 
-    // await Promise.all(files.map(async (file) => {
-    //   const contents = await fs.readFile(file, 'utf8')
-    //   console.log(contents)
-    // }));
-
-    const globalFilterReshape = (globalFilter, globalFilters) => {
-        let res = {}
-        const controlledSort = [] 
-        let controlledFilter = {}  
-        Object.keys(globalFilters).forEach((item) => {
-          controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
-          if (item === "affixes") {
-            getAffixes(10, 0, controlledSort, controlledFilter)
-            .then((data) => {
-              res[item] = data
-            })
-            .catch((error) => {
-              console.log(error)
-            })
-          } else if (item === "roots") {
-            getRoots(10, 0, controlledSort, controlledFilter)
-            .then((data) => {
-              res[item] = data
-            })
-            .catch((error) => {
-              console.log(error)
-            })
-          }
-        })
-        return res
-      }
-  
-
-
-
   return (
     <Grid relaxed columns={1} textAlign='center'  verticalAlign='top'>
       <Grid.Column>
@@ -169,59 +134,57 @@ function Search(props) {
         </Grid.Row>
         <Grid.Row>
           <Segment>
-            <Segment.Inline>
-                <div id="App">
-                    <Input 
-                        id="search"
-                        value={input}
-                        size='large' 
-                        fluid 
-                        action={{
-                            color: 'blue',
-                            labelPosition: 'right',
-                            icon: 'search',
-                            content: 'find it!',
-                            onClick: async (event,data)=>{
-                              console.log(JSON.stringify(await getSearchResults(input, globalFilters)));
-                            }
-                        }} 
-                        placeholder='Search the COLRC...'
-                        onChange={onChangeInput}
-                    />
-                    <Keyboard
-                        keyboardRef={r => (keyboard.current = r)}
-                        layoutName={layout}
-                        layout={ {
-                        'default' : [
-                            "á ä ä́ é ɛ ɛ́ í ι ó ú ə ɔ ụ · ʷ",
-                            "ɫ ∤ ɬ č ǰ š x̣ ʔ ʕ ‿ † ‡ § √",
-                            "ʀ ᴇ c̕ l̕ m̕ n̕ p̕ q̕ r̕ ṛ ʀ̕ s̕ t̕ w̕ y̕",
-                            "1 2 3 4 5 6 7 8 9 0 - = {bksp}",
-                            "q w e r t y u i o p [ ] \\",
-                            "{lock} a s d f g h j k l ; '",
-                            "{shift} z x c v b n m , . / {shift}",
-                            "{space}"
-                            ],
-                        'shift' : [
-                            "Á Ä Ä́ É ɛ ɛ́ Í ι Ó Ú ə ɔ Ụ · ʷ",
-                            "ɫ Ł Č J̌ Š X̣ ʔ ʕ ‿ · † ‡ § √",
-                            "ʀ ᴇ c̕ l̕ m̕ n̕ p̕ q̕ r̕ ṛ ʀ̕ s̕ t̕ w̕ y̕",
-                            "! @ # $ % ^ & * ( ) _ + {bksp}",
-                            "Q W E R T Y U I O P { } |",
-                            "{lock} A S D F G H J K L : \"",
-                            "{shift} Z X C V B N M < > ? {shift}",
-                            "{space}"
-                            ] 
-                        } }
-                        onChange={onChange}
-                        onKeyPress={onKeyPress}
-                    />
-                </div>
-            </Segment.Inline>
+            <div id="App">
+                <Input 
+                    id="search"
+                    value={input}
+                    size='large' 
+                    fluid 
+                    action={{
+                        color: 'blue',
+                        labelPosition: 'right',
+                        icon: 'search',
+                        content: 'find it!',
+                        onClick: async (event,data)=>{
+                          console.log(JSON.stringify(await getSearchResults(input, globalFilters)));
+                        }
+                    }} 
+                    placeholder='Search the COLRC...'
+                    onChange={onChangeInput}
+                />
+                <Keyboard
+                    keyboardRef={r => (keyboard.current = r)}
+                    layoutName={layout}
+                    layout={ {
+                    'default' : [
+                        "á ä ä́ é ɛ ɛ́ í ι ó ú ə ɔ ụ · ʷ",
+                        "ɫ ∤ ɬ č ǰ š x̣ ʔ ʕ ‿ † ‡ § √",
+                        "ʀ ᴇ c̕ l̕ m̕ n̕ p̕ q̕ r̕ ṛ ʀ̕ s̕ t̕ w̕ y̕",
+                        "1 2 3 4 5 6 7 8 9 0 - = {bksp}",
+                        "q w e r t y u i o p [ ] \\",
+                        "{lock} a s d f g h j k l ; '",
+                        "{shift} z x c v b n m , . / {shift}",
+                        "{space}"
+                        ],
+                    'shift' : [
+                        "Á Ä Ä́ É ɛ ɛ́ Í ι Ó Ú ə ɔ Ụ · ʷ",
+                        "ɫ Ł Č J̌ Š X̣ ʔ ʕ ‿ · † ‡ § √",
+                        "ʀ ᴇ c̕ l̕ m̕ n̕ p̕ q̕ r̕ ṛ ʀ̕ s̕ t̕ w̕ y̕",
+                        "! @ # $ % ^ & * ( ) _ + {bksp}",
+                        "Q W E R T Y U I O P { } |",
+                        "{lock} A S D F G H J K L : \"",
+                        "{shift} Z X C V B N M < > ? {shift}",
+                        "{space}"
+                        ] 
+                    } }
+                    onChange={onChange}
+                    onKeyPress={onKeyPress}
+                />
+            </div>
           </Segment>
         </Grid.Row>
         <Grid.Row>
-            <RootTable/>
+          <RootTable/>
         </Grid.Row>
       </Grid.Column>
     </Grid>
