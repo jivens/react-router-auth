@@ -373,25 +373,6 @@ function AffixTable(props) {
         id: 'page',
         label: 'Link'
       },
-      {
-        Header: 'Username',
-        accessor: 'user.username',
-        Filter: SelectColumnFilter,
-        tableName: 'AffixTable',
-        disableSortBy: true,
-        show: false,
-        id: 'user.username',
-        label: 'Username'
-      },
-      {
-        Header: 'Edit Note',
-        accessor: 'editnote',
-        tableName: 'AffixTable',
-        disableFilters: true,
-        show: false,
-        id: 'editnote',
-        label: 'Edit Note'
-      },
     ], []
   )
 

@@ -16,7 +16,8 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
-  selectValues
+  selectValues,
+  globalSearch
 }) {
 
   const { user } = useAuth();
@@ -76,7 +77,10 @@ function Table({
     {
       columns,
       data,
-      initialState: { pageIndex: 0 }, // Pass our hoisted table state
+      initialState: { 
+        pageIndex: 0, 
+        globalFilter: ((globalSearch && globalSearch !== '') ? globalSearch : null)
+      }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
       // This means we'll also have to provide our own
@@ -360,25 +364,6 @@ function StemTable(props) {
         id: 'english',
         label: 'English'
       },
-      {
-        Header: 'Username',
-        accessor: 'user.username',
-        Filter: SelectColumnFilter,
-        tableName: 'StemTable',
-        disableSortBy: true,
-        show: false,
-        id: 'user.username',
-        label: 'Username'
-      },
-      {
-        Header: 'Edit Note',
-        accessor: 'editnote',
-        tableName: 'StemTable',
-        disableFilters: true,
-        show: false,
-        id: 'editnote',
-        label: 'Edit Note'
-      },
     ], []
   )
 
@@ -528,6 +513,7 @@ function StemTable(props) {
         loading={loading}
         pageCount={pageCount}
         selectValues={props.selectValues}
+        globalSearch={props.globalSearch}
       />
     </TableStyles>
   )

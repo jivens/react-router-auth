@@ -12,20 +12,20 @@ import { filterReshape } from "../utils/reshapers"
 
 function Search(props) {
     const { client, user } = useAuth();
-    const [globalFilter, setGlobalFilter] = useState('horse');
+    const [globalFilter, setGlobalFilter] = useState('');
     const [layout, setLayout] = useState('default');
     const keyboard = useRef();
   
-    const globalFilters =  { 
-        "roots": { 
-            "filters": [],
-            "globalFilterVariables": ["english", "nicodemus", "salish"]
-        },
-        "affixes": { 
-          "filters": [],
-          "globalFilterVariables": ["english", "nicodemus", "salish"]
-      }  
-    }
+    // const globalFilters =  { 
+    //     "roots": { 
+    //         "filters": [],
+    //         "globalFilterVariables": ["english", "nicodemus", "salish"]
+    //     },
+    //     "affixes": { 
+    //       "filters": [],
+    //       "globalFilterVariables": ["english", "nicodemus", "salish"]
+    //   }  
+    // }
    
     const onChange = input => {
       setGlobalFilter(input);
@@ -48,79 +48,79 @@ function Search(props) {
       keyboard.current.setInput(input);
     };
   
-    async function getAffixes(limit, offset, sortBy, filters) {
-      console.log(limit, offset, sortBy, filters)
-      let res = {}
-      if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
-        res = await client.query({
-          query: getAffixesQuery,
-          variables: { 
-            limit: limit,
-            offset: offset,
-            affix_order: sortBy,
-            where: filters,
-           }
-        })
-      }
-      else {
-        res = await client.query({
-          query: getAnonAffixesQuery,
-          variables: { 
-            limit: limit,
-            offset: offset,
-            affix_order: sortBy,
-            where: filters,
-          }
-        })
-      }
-      console.log('the affixes res.data are ', res.data)
-      return res
-    } 
+    // async function getAffixes(limit, offset, sortBy, filters) {
+    //   console.log(limit, offset, sortBy, filters)
+    //   let res = {}
+    //   if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
+    //     res = await client.query({
+    //       query: getAffixesQuery,
+    //       variables: { 
+    //         limit: limit,
+    //         offset: offset,
+    //         affix_order: sortBy,
+    //         where: filters,
+    //        }
+    //     })
+    //   }
+    //   else {
+    //     res = await client.query({
+    //       query: getAnonAffixesQuery,
+    //       variables: { 
+    //         limit: limit,
+    //         offset: offset,
+    //         affix_order: sortBy,
+    //         where: filters,
+    //       }
+    //     })
+    //   }
+    //   console.log('the affixes res.data are ', res.data)
+    //   return res
+    // } 
     
-    async function getRoots(limit, offset, sortBy, filters) {
-      console.log(limit, offset, sortBy, filters)
-      let res = {}
-      if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
-        res = await client.query({
-          query: getRootsQuery,
-          variables: { 
-            limit: limit,
-            offset: offset,
-            root_order: sortBy,
-            where: filters,
-           }
-        })
-      }
-      else {
-        res = await client.query({
-          query: getAnonRootsQuery,
-          variables: { 
-            limit: limit,
-            offset: offset,
-            root_order: sortBy,
-            where: filters,
-          }
-        })
-      }
-      console.log('the roots res are ', res)
-      return res
-    }  
+    // async function getRoots(limit, offset, sortBy, filters) {
+    //   console.log(limit, offset, sortBy, filters)
+    //   let res = {}
+    //   if(user && intersectionWith(["manager", "update"], user.roles, isEqual).length >= 1) { 
+    //     res = await client.query({
+    //       query: getRootsQuery,
+    //       variables: { 
+    //         limit: limit,
+    //         offset: offset,
+    //         root_order: sortBy,
+    //         where: filters,
+    //        }
+    //     })
+    //   }
+    //   else {
+    //     res = await client.query({
+    //       query: getAnonRootsQuery,
+    //       variables: { 
+    //         limit: limit,
+    //         offset: offset,
+    //         root_order: sortBy,
+    //         where: filters,
+    //       }
+    //     })
+    //   }
+    //   console.log('the roots res are ', res)
+    //   return res
+    // }  
 
-    async function getSearchResults(globalFilter, globalFilters) {
-      let res = {}
-      await Promise.all(Object.keys(globalFilters).map(async (item) => {
-        let controlledSort = []
-        let controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
-        if (item === "affixes") {
-          let result = await getAffixes(10, 0, controlledSort, controlledFilter)
-          res[item] = result.data.affixes
-        } else if (item === "roots") {
-          let result = await getRoots(10, 0, controlledSort, controlledFilter)
-          res[item] = result.data.roots
-        }
-      }))
-      return res
-    }
+    // async function getSearchResults(globalFilter, globalFilters) {
+    //   let res = {}
+    //   await Promise.all(Object.keys(globalFilters).map(async (item) => {
+    //     let controlledSort = []
+    //     let controlledFilter = filterReshape(globalFilters[item]["filters"], globalFilter, globalFilters[item]["globalFilterVariables"]) 
+    //     if (item === "affixes") {
+    //       let result = await getAffixes(10, 0, controlledSort, controlledFilter)
+    //       res[item] = result.data.affixes
+    //     } else if (item === "roots") {
+    //       let result = await getRoots(10, 0, controlledSort, controlledFilter)
+    //       res[item] = result.data.roots
+    //     }
+    //   }))
+    //   return res
+    // }
 
   return (
     <Grid relaxed columns={1} textAlign='center'  verticalAlign='top'>
