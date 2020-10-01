@@ -42,6 +42,7 @@ function Affixes(props) {
     "affix_type.value": affixTypeSelections
   }
 
+
   //return <AffixTable setLimit={setLimit} setOffset={setTheOffset} affixes={data.affixes} />;
   return (
     <React.Fragment>
@@ -51,7 +52,7 @@ function Affixes(props) {
             <AffixesAccordion />
           </Grid.Row>
           <Grid.Row>
-            <AffixTable selectValues={selectValues} />
+            <AffixTable selectValues={selectValues} globalSearch={""} />
           </Grid.Row>
         </Grid.Column>
       </Grid>

@@ -15,11 +15,13 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
-  selectValues
+  selectValues,
+  globalSearch
 }) {
 
   const { user } = useAuth();
   //console.log("Inside table, I have select values: ", selectValues)
+  console.log("Inside table, I have globalSearch ", globalSearch)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -75,7 +77,10 @@ function Table({
     {
       columns,
       data,
-      initialState: { pageIndex: 0 }, // Pass our hoisted table state
+      initialState: { 
+        pageIndex: 0,
+        globalFilter: ((globalSearch && globalSearch !== '') ? globalSearch : null)
+       }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
       // This means we'll also have to provide our own
@@ -113,7 +118,7 @@ React.useEffect(
   // Render the UI for your table
   return (
     <>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -130,7 +135,7 @@ React.useEffect(
             2
           )}
         </code>
-      </pre>
+      </pre> */}
       <div className="columnToggle">
         {allColumns.map(column => (
           <div key={column.id} className="columnToggle">
@@ -263,7 +268,7 @@ React.useEffect(
 }
 
 function RootTable(props) {
-  console.log(props.selectValues)
+  console.log('my props.globalSearch is ', props.globalSearch)
   const updateColumns = React.useMemo(
     () => [
       {
@@ -590,6 +595,7 @@ function RootTable(props) {
         loading={loading}
         pageCount={pageCount}
         selectValues={props.selectValues}
+        globalSearch={props.globalSearch}
       />
     </TableStyles>
   )

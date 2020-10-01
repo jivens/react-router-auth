@@ -1,13 +1,15 @@
 import React from "react"
+import { useLocation } from 'react-router-dom';
 import { useAuth } from "../context/auth"
 import { useQuery } from '@apollo/react-hooks'
 import { getUsernamesQuery } from './../queries/queries'
 import { Grid } from 'semantic-ui-react'
-import RootsAccordion from "./accordions/RootsAccordion";
 import RootTable from "./RootTable"
 
-function Roots(props) {
+function SearchResults(props) {
   const { client } = useAuth()
+  const search = new URLSearchParams(useLocation().search)
+  const globalSearch = search.get("search")
 
   let { loading: usersLoading, error: usersError, data: usersData } = useQuery(getUsernamesQuery, {client: client })  
 
@@ -34,10 +36,7 @@ function Roots(props) {
       <Grid>
         <Grid.Column width="16">
           <Grid.Row>
-            <RootsAccordion />
-          </Grid.Row>
-          <Grid.Row>
-            <RootTable selectValues={selectValues} globalSearch={"horse"}/>
+            <RootTable selectValues={selectValues} globalSearch={globalSearch}/>
           </Grid.Row>
         </Grid.Column>
       </Grid>
@@ -45,4 +44,5 @@ function Roots(props) {
   )
 }
 
-export default Roots;
+
+export default SearchResults

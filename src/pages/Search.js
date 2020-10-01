@@ -6,14 +6,13 @@ import { intersectionWith, isEqual } from 'lodash';
 import { getRootsQuery, getAnonRootsQuery, getAffixesQuery, getAnonAffixesQuery } from '../queries/queries'
 import "react-simple-keyboard/build/css/index.css";
 import { filterReshape } from "../utils/reshapers"
-import RootTable from "./RootTable"
 
 //import { useAuth } from "../context/auth";
 //import { broadCastSuccess } from '../utils/messages';
 
 function Search(props) {
     const { client, user } = useAuth();
-    const [input, setInput] = useState('');
+    const [globalFilter, setGlobalFilter] = useState('horse');
     const [layout, setLayout] = useState('default');
     const keyboard = useRef();
   
@@ -29,8 +28,8 @@ function Search(props) {
     }
    
     const onChange = input => {
-      setInput(input);
-      console.log("Input changed", input);
+      setGlobalFilter(input);
+      console.log("Input changed", globalFilter);
     };
   
     const handleShift = () => {
@@ -45,7 +44,7 @@ function Search(props) {
   
     const onChangeInput = event => {
       const input = event.target.value;
-      setInput(input);
+      setGlobalFilter(input);
       keyboard.current.setInput(input);
     };
   
@@ -137,7 +136,7 @@ function Search(props) {
             <div id="App">
                 <Input 
                     id="search"
-                    value={input}
+                    value={globalFilter}
                     size='large' 
                     fluid 
                     action={{
@@ -146,7 +145,9 @@ function Search(props) {
                         icon: 'search',
                         content: 'find it!',
                         onClick: async (event,data)=>{
-                          console.log(JSON.stringify(await getSearchResults(input, globalFilters)));
+                          //console.log(JSON.stringify(await getSearchResults(input, globalFilters)));
+                          console.log(globalFilter)
+                          props.history.push('/searchresults?search=' + globalFilter)
                         }
                     }} 
                     placeholder='Search the COLRC...'
@@ -182,9 +183,6 @@ function Search(props) {
                 />
             </div>
           </Segment>
-        </Grid.Row>
-        <Grid.Row>
-          <RootTable/>
         </Grid.Row>
       </Grid.Column>
     </Grid>
