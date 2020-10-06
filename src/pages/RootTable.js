@@ -556,7 +556,7 @@ function RootTable(props) {
       // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) {
         const controlledSort = sortReshape(sortBy) 
-        const controlledFilter = filterReshape(filters, globalFilter, ["english", "nicodemus", "salish"])
+        const controlledFilter = filterReshape(filters, globalFilter, ["root", "variant", "crossref", "cognate", "grammar", "english", "nicodemus", "salish"])
         console.log(controlledFilter)
         // reset to first page when filters change
         // if (filters.length > 0) {

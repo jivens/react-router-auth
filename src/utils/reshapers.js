@@ -1,6 +1,3 @@
-import { isJsonValue } from "apollo-utilities"
-import { isValidJSValue } from "graphql"
-
 export function sortReshape(sortBy) {
     let res = []
     sortBy.forEach((item) => {
@@ -89,11 +86,6 @@ export function filterReshape(filters, globalFilter, globalFilterVariables) {
         res = {}
     }
         
-    //     res =  {"_and": [{"activeByActive": {"value": {"_eq": "Y"}}}, {"_and": andCond}]} 
-    // } else {
-    //     res = {"activeByActive": {"value": {"_eq": "Y"}}}
-    // }
-
     console.log("The filter result: ", res)
 
     return(res)

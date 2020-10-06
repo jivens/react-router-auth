@@ -1,17 +1,12 @@
 import React, { useRef, useState } from "react";
 import Keyboard from "react-simple-keyboard";
 import { Grid, Header, Segment, Message, Input } from 'semantic-ui-react';
-import { useAuth } from "../context/auth";
-import { intersectionWith, isEqual } from 'lodash';
-import { getRootsQuery, getAnonRootsQuery, getAffixesQuery, getAnonAffixesQuery } from '../queries/queries'
 import "react-simple-keyboard/build/css/index.css";
-import { filterReshape } from "../utils/reshapers"
 
 //import { useAuth } from "../context/auth";
 //import { broadCastSuccess } from '../utils/messages';
 
 function Search(props) {
-    const { client, user } = useAuth();
     const [globalFilter, setGlobalFilter] = useState('');
     const [layout, setLayout] = useState('default');
     const keyboard = useRef();

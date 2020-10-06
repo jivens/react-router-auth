@@ -54,6 +54,7 @@ function Table({ columns, data }) {
 
 function SubTable({ subData }) {
   console.log('this is my subData ', subData)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const columns = React.useMemo(() => [
     {
       Header: 'Materials',

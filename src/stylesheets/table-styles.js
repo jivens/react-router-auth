@@ -27,7 +27,7 @@ const TableStyles = styled.div`
     },
     td {
       margin: 0;
-      padding: 0.5rem;
+      padding: 1rem;
       word-wrap: break-word;
       }
     }

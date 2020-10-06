@@ -7,7 +7,6 @@ import { Formik, Form } from 'formik';
 import { useAuth } from "../context/auth";
 import { useQuery } from '@apollo/react-hooks'
 import { handleErrors, broadCastSuccess } from '../utils/messages';
-import { set } from "lodash";
 import { confirmAlert } from 'react-confirm-alert';
 import '../stylesheets/react-confirm-alert.css';
 
@@ -79,6 +78,7 @@ function AddAffix() {
 
   function dropDownOptions(options) {
       let res = []
+      // eslint-disable-next-line array-callback-return
       options.map((item) => {
           let h = {}
           h = { 
@@ -130,6 +130,7 @@ function AddAffix() {
                   },
                   {
                     label: 'No',
+                    // eslint-disable-next-line no-self-assign
                     onClick: () => {values = values
                                     setSubmitting(false)}
                   }

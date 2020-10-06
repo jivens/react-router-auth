@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-operators */
 
 import { map } from "lodash"
 import React, { useState } from "react"
