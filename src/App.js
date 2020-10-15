@@ -26,6 +26,7 @@ import Audios from './pages/Audios';
 import Elicitations from './pages/Elicitations'
 import Search from './pages/Search';
 import SearchResults from './pages/SearchResults';
+import Contact from './pages/Contact';
 import { AuthContext } from "./context/auth";
 import { ToastContainer } from 'react-toastify';
 import { broadCastSuccess } from './utils/messages';
@@ -135,6 +136,7 @@ function App(props) {
               <Route path="/stems" component={Stems} key="Stems" />
               <Route path="/texts" component={Texts} key="Texts" />
               <Route path="/audios" component={Audios} key="Audios" />
+              <Route path="/contact" component={Contact} key="Contact" />
               <Route path="/imageviewer" component={ImageViewer} />
               <Route path="/splitview" component={SplitView} />
               <PrivateRoute path="/elicitations" component={Elicitations} key="Elicitations" />

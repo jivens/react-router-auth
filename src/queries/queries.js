@@ -25,20 +25,6 @@ export const getUserFromToken = gql`
   }
 `;
 
-export const addUserMutation = gql`
-  mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
-    addUser_M(first: $first, last: $last, username: $username, email: $email, password: $password) {
-      id
-      first
-      last
-      username
-      email
-      password
-      roles
-    }
-  }
-`;
-
 export const insertRootMutation = gql`
   mutation insert_a_root($editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $root: String!, $number: Int, $sense: String, $symbol: String, $grammar: String, $crossref: String, $variant: String, $cognate: String) {
     insert_roots_one(object: {editnote: $editnote, english: $english, salish: $salish, nicodemus: $nicodemus, root: $root, number: $number, sense: $sense, symbol: $symbol, grammar: $grammar, crossref: $crossref, variant: $variant, cognate: $cognate}) {
@@ -762,3 +748,18 @@ export const getElicitationSetsQuery = gql`
     }
   }
 `;
+
+export const insertUserMutation = gql `
+  mutation insertUserMutation($email: String!, $first: String!, $last: String!, $username: String!, $password: String!) {
+    insert_users_one(object: {first: $first, last: $last, password: $password, username: $username, email: $email}) {
+      createdAt
+      updatedAt
+      first
+      id
+      last
+      password
+      username
+      email
+    }
+  }
+`

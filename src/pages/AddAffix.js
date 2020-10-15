@@ -25,13 +25,8 @@ let addAffixSchema = Yup.object().shape({
 function AddAffix() {
   const { client } = useAuth();
   const [ hasUpdated, setHasUpdated] = useState(false)
-  // const search = new URLSearchParams(useLocation().search)
-  // //console.log(search.get("id"))
-  // const id = search.get("id")
   const history = useHistory()
 
-
-  // let { loading: affixLoading, error: affixError, data: affixData } = useQuery(getAffixByIdQuery, {client: client, variables: {id: id} }) 
   let { loading: typeLoading, error: typeError, data: typeData } = useQuery(getAffixTypesQuery, {client: client }) 
    
   if (typeLoading) {
@@ -43,7 +38,6 @@ function AddAffix() {
 
   async function onFormSubmit (values, setSubmitting) {
     try {
-    //   console.log('my values.type is ', values.type)
       const result = await client.mutate({
         mutation: insertAffixMutation,
         variables: {

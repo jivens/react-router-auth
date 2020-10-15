@@ -1,28 +1,16 @@
 import React, { useState } from "react";
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect, Link, useHistory } from 'react-router-dom';
 import logoImg from "../img/logo.jpg";
 import { Logo } from '../components/AuthForm'
 import { Grid, Button, Input, Segment, Message } from 'semantic-ui-react';
 import * as Yup from 'yup';
+import { insertUserMutation, getUserToken } from './../queries/queries'
 import { Formik, Form } from 'formik';
-//import { useMutation } from "@apollo/react-hooks"
-import { gql } from 'apollo-boost';
 import { useAuth } from "../context/auth";
 import { handleErrors, broadCastSuccess } from '../utils/messages';
+import { confirmAlert } from 'react-confirm-alert';
+import '../stylesheets/react-confirm-alert.css';
 
-const addUserMutation = gql`
-  mutation($first: String!, $last: String!, $username: String!, $email: String!, $password: String!) {
-    addUser_M(first: $first, last: $last, username: $username, email: $email, password: $password) {
-      id
-      first
-      last
-      username
-      email
-      password
-      roles
-    }
-  }
-`;
 
 let signupSchema = Yup.object().shape({
   first: Yup.string()
@@ -45,19 +33,17 @@ let signupSchema = Yup.object().shape({
 
 
 function Signup(props) {
-  const { client } = useAuth();
-  const [hasRegistered, setHasRegistered] = useState(false)
-  // const [addUser, { loading: addUserLoading, error: addUserError}] = useMutation(addUserMutation, { client: client })
-  // if (addUserLoading) return <div>Loading</div>
-  // if (addUserError) {
-  //   broadCastError(addUserError)
-  //   return <div>Error</div>
-  // }
+  const [hasRegistered, setHasRegistered] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const history = useHistory();
+  const { client, authClient, setAuthTokens } = useAuth();
+
 
   async function onFormSubmit (values, setSubmitting) {
+    console.log(values)
     try {
       const result = await client.mutate({
-        mutation: addUserMutation,
+        mutation: insertUserMutation,
         variables: {
           first: values.first,
           last: values.last,
@@ -72,24 +58,48 @@ function Signup(props) {
       } else {
         broadCastSuccess(`User ${values.username} successfully added!`)
         setSubmitting(false)
-        setHasRegistered(true)
+        await postLogin(values)
       }
-      // addUser({variables: {
-      //   first: values.first,
-      //   last: values.last,
-      //   username: values.username,
-      //   email: values.email,
-      //   password: values.password
-      // }}) 
     } catch (error) {
       handleErrors(error)
       setSubmitting(false)
     }
   }
 
+  async function postLogin(values) {
+    try {
+      let tokenQuery = await authClient.query({
+        query: getUserToken,
+        variables: {
+          email: values.email,
+          password: values.password
+        },
+        errorPolicy: 'all'
+      })
+      if (!tokenQuery.data.loginUser_Q) {
+        handleErrors(`Username or Password is incorrect`) 
+        setIsError(true)
+      }
+      else {
+        const token = tokenQuery.data.loginUser_Q[0].password
+        console.log('the token is ', token)
+        //localStorage.setItem("tokens", JSON.stringify(token));
+        setAuthTokens(token)
+        setHasRegistered(true)
+      }
+    } 
+    catch(e) {
+      handleErrors(e)
+    }
+  }
+
+  const routeChange=()=> {
+    let path = `/home`;
+    history.push(path);
+  }
+
   if (hasRegistered) {
-    return <Redirect to="/login" />;
-    //return <Redirect to="/" />;
+    return <Redirect to="/" />;
   }
 
   return (
@@ -107,9 +117,24 @@ function Signup(props) {
           }}
           validationSchema={signupSchema}
           onSubmit={(values, { setSubmitting }) => {
-            onFormSubmit(values, setSubmitting);
-          }}
-          >
+            confirmAlert({
+                title: 'Confirm to submit',
+                message: 'Are you sure you want to create this account?',
+                buttons: [
+                  {
+                    label: 'Yes',
+                    onClick: () => onFormSubmit(values, setSubmitting)
+                  },
+                  {
+                    label: 'No',
+                    // eslint-disable-next-line no-self-assign
+                    onClick: () => {values = values
+                                    setSubmitting(false)}
+                  }
+                ]
+              });
+          }}>
+
           {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
             <Form>
               <Segment stacked>
@@ -211,6 +236,9 @@ function Signup(props) {
                     disabled={isSubmitting}
                   >
                     Submit
+                  </Button>
+                  <Button onClick={routeChange} fluid>
+                    Cancel
                   </Button>
                 </Segment>
             </Form>
