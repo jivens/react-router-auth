@@ -1,43 +1,129 @@
 import React, { useState } from "react";
+import emailjs from 'emailjs-com';
+import { Grid, Segment, Button, Input, TextArea, Message } from "semantic-ui-react"
+import { Redirect, useHistory } from 'react-router-dom';
+import * as Yup from 'yup';
+import { Formik, Form } from 'formik';
+import logoImg from "../img/logo.jpg";
+import { Logo } from "../components/AuthForm";
+import { handleErrors, broadCastSuccess } from '../utils/messages';
 
-function Contact(props) {
-    const [input, setInput] = useState('');
+function Contact() {
+    const [isSent, setSent] = useState(false);
 
-    var templateParams = {
-        name: 'Amy',
-        notes: 'Check this out!'
-    };
+    function sendEmail(values, setSubmitting) {
 
-    function handleChange (event) {
-        const input = event.target.value;
-        setInput(input);
-    };
-    
-    function handleSubmit (e) {
-        window.emailjs.send('service_vo6cvb8', 'template_1vxc755', templateParams)
-        .then(function(response) {
-        console.log('SUCCESS!', response.status, response.text);
-        }, function(error) {
-        console.log('FAILED...', error);
+        emailjs.send('service_vo6cvb8', 'template_1vxc755', values, 'user_iJteqht7mTj2Ram41h2z3')
+        .then((result) =>  {
+            setSubmitting(false)
+            setSent(true)
+            broadCastSuccess(`Your email from ${values.user_name} was sent!`)
+            
+            console.log('SUCCESS!', result.text)
+
+        }).catch((error) =>  {
+            handleErrors(`Oh No!  Something went wrong!`) 
+            setSubmitting(false)
+            console.log('FAILED...', error.text);
         });
     }
 
-        return (
-        <form className="test-mailing">
-            <h1>Let's see if it works</h1>
-            <div>
-            <input
-                id="test-mailing"
-                name="test-mailing"
-                onChange={handleChange}
-                placeholder="Post some lorem ipsum here"
-                required
-                style={{width: '100%', height: '150px'}}
-            />
-            </div>
-            <input type="button" value="Submit" className="btn btn--submit" onClick={handleSubmit} />
-        </form>
-        )
-    }
+    let contactSchema = Yup.object().shape({
+        user_name: Yup.string()
+          .required('Required'),
+        user_email: Yup.string()
+          .email('Please enter a valid email address')
+          .required('Required'),
+        message: Yup.string()
+          .required('Required'),
+      });
+
+      if (isSent) {
+        return <Redirect to="/" />;
+      }
+
+    return (
+        <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+        <Grid.Column style={{ maxWidth: 450 }}>
+            <Logo src={logoImg} />
+            <Message>
+                Contact the COLRC Team with questions or concerns, or for information about creating an account.
+            </Message>
+            <Formik 
+                initialValues={{ 
+                user_email: '', 
+                user_name: '',
+                message: '', 
+            }}
+            validationSchema={contactSchema}
+            onSubmit={(values, { setSubmitting }) => {
+                sendEmail(values, setSubmitting);
+              }} 
+            >
+            {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
+                <Form className="ui form"> 
+                    <Segment>
+                        <input type="hidden" name="contact_number" />
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            icon="user"
+                            iconPosition="left"
+                            name="user_name"
+                            placeholder="Your name"
+                            type="text"
+                            value={ values.user_name }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.name && touched.name ? 'text-input error' : 'text-input'}
+                        />
+                        {errors.name && touched.name && ( <div className="input-feedback">{errors.name}</div>
+                        )}
+                        <Input
+                            fluid
+                            style={{ paddingBottom: '5px' }}
+                            icon="mail"
+                            iconPosition="left"
+                            name="user_email"
+                            id="user_email"
+                            placeholder="Your email"
+                            type="email"
+                            value={ values.user_email }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.email && touched.email ? 'text-input error' : 'text-input'}
+                        />
+                        {errors.email && touched.email && ( <div className="input-feedback">{errors.email}</div>
+                        )}
+                        <TextArea
+                            style={{ paddingBottom: '10px', paddingTop: '10px' }}
+                            placeholder="Your message"
+                            name="message"
+                            id="message"
+                            type="textarea"
+                            value={ values.message }
+                            onChange={ handleChange }
+                            onBlur={ handleBlur }
+                            className={ errors.message && touched.message ? 'text-input error' : 'text-input'}
+                        />
+                        {errors.message && touched.message && ( <div className="input-feedback">{errors.message}</div>
+                        )}
+
+                    </Segment>
+                        <Button 
+                            color="blue" 
+                            type="submit" 
+                            disabled={isSubmitting}
+                            style={{ paddingTop: '5px' }}
+                        >
+                            Send
+                        </Button>
+                </Form>
+                )}
+            </Formik>
+        </Grid.Column>
+    </Grid>
+    )
+}
 
 export default Contact

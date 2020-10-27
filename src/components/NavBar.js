@@ -20,11 +20,13 @@ let rightMenuItems = (currentUser) => {
     {to: "/search", icon: 'search', content:"Search", key: 'rsearch'},
     ]
     if (currentUser){
-      rightItems.push({ to: "/users", icon: 'user', content:"User Profile", key: 'ruser'},
-      { to: "/testmutation", icon: 'rocket', content:"Test Mutation", key: 'rtest'})
+      rightItems.push({ to: "/users", icon: 'user', content:"User Profile", key: 'ruser'})
     }
     else {
-      rightItems.push({ to: "/login", icon: 'user outline', content:"Log In/Sign Up", key: 'rreg'})
+      rightItems.push(
+        { to: "/login", icon: 'user outline', content:"Log In/Sign Up", key: 'rreg'},
+        { to: "/contact", icon: 'mail outline', content:"Contact Us", key: 'rcontact'}
+      )
     }
     return rightItems
   }
