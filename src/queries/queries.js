@@ -763,3 +763,10 @@ export const insertUserMutation = gql `
     }
   }
 `
+export const isHuman = gql`
+  query($token: String!) {
+    isHuman_Q(token: $token) {
+      token
+    }
+  }
+`;

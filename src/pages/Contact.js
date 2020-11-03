@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import emailjs from 'emailjs-com';
-import { Grid, Segment, Button, Input, TextArea, Message } from "semantic-ui-react"
-import { Redirect, useHistory } from 'react-router-dom';
+import { Grid, Segment, Button, Input, TextArea, Message } from "semantic-ui-react";
+import { Redirect } from 'react-router-dom';
 import * as Yup from 'yup';
 import { Formik, Form } from 'formik';
 import logoImg from "../img/logo.jpg";
 import { Logo } from "../components/AuthForm";
 import { handleErrors, broadCastSuccess } from '../utils/messages';
+import { useAuth } from "../context/auth";
+import { isHuman } from "../queries/queries";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function Contact() {
     const [isSent, setSent] = useState(false);
+    const { authClient } = useAuth();
+    const reRef = useRef();
 
     function sendEmail(values, setSubmitting) {
 
@@ -56,8 +61,24 @@ function Contact() {
                 message: '', 
             }}
             validationSchema={contactSchema}
-            onSubmit={(values, { setSubmitting }) => {
-                sendEmail(values, setSubmitting);
+            onSubmit={async (values, { setSubmitting }) => {
+                //call function to catchBots
+                const token = await reRef.current.executeAsync();
+                console.log(token)
+
+                let valid = await authClient.query({
+                    query: isHuman,
+                    variables: {
+                      token: token,
+                    },
+                    errorPolicy: 'all'
+                  })
+                if (valid) {
+                    sendEmail(values, setSubmitting);
+                } else {
+                    handleErrors('bwahahahah Bot detected')
+                }
+
               }} 
             >
             {({ isSubmitting, values, errors, touched, handleChange, handleBlur }) => (
@@ -108,16 +129,20 @@ function Contact() {
                         />
                         {errors.message && touched.message && ( <div className="input-feedback">{errors.message}</div>
                         )}
-
+                        <ReCAPTCHA 
+                            sitekey="6LekA90ZAAAAAPdGHR29U92IXjrXdGEFFpPCztbg"
+                            ref={reRef}
+                            size="invisible"
+                        />
                     </Segment>
-                        <Button 
-                            color="blue" 
-                            type="submit" 
-                            disabled={isSubmitting}
-                            style={{ paddingTop: '5px' }}
-                        >
-                            Send
-                        </Button>
+                    <Button 
+                        color="blue" 
+                        type="submit" 
+                        disabled={isSubmitting}
+                        style={{ paddingTop: '5px' }}
+                    >
+                        Send
+                    </Button>
                 </Form>
                 )}
             </Formik>
