@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react'
+import { Button, Input } from 'semantic-ui-react'
 import matchSorter from 'match-sorter'
 
 // {
@@ -17,7 +17,7 @@ export function GlobalFilter({
   return (
     <span>
       <label style={{marginRight: '10px'}}> Search all:</label>
-      <input
+      <Input
         value={globalFilter || ''}
         onChange={e => {
           setGlobalFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
@@ -52,26 +52,37 @@ export function DefaultColumnFilter({
   const count = pageSize * pageCount
 
   return (
-    <input
+    <Input
       value={filterValue || ''}
-      display='flex'
+      display='inline-block'
+      size='mini'
       onChange={e => {
         setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
-        //alert(e.target.value + " " + id + " " + tableName)
-        // if (tableName === "AffixTable") {
-        //   let filtered = []
-        //   //if (filtered.contains)
-        //   filtered.push({
-        //     id: id,
-        //     value: e.target.value
-        //   })
-        //   console.log(filtered)
-        // }
       }}
-      placeholder={`~ ${count} items...`}
+      placeholder={`~ ${count}...`}
       style={{
-        fontSize: '1rem',
-        border: '0',
+        width: '100px',
+        marginRight: '0.5rem',
+      }}
+    />
+  )
+}
+
+export function TinyColumnFilter({
+  pageCount, 
+  state: { pageSize },
+  column: { id, tableName, filterValue, setFilter },
+  }) {
+
+  return (
+    <Input
+      value={filterValue || ''}
+      onChange={e => {
+        setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+      }}
+      style={{
+        width: '0.5rem',
+        marginRight: '0.5rem',
       }}
     />
   )

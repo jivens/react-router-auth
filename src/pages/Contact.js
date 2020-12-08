@@ -16,6 +16,7 @@ function Contact() {
     const { authClient } = useAuth();
     const reRef = useRef();
 
+
     function sendEmail(values, setSubmitting) {
 
         emailjs.send('service_vo6cvb8', 'template_1vxc755', values, 'user_iJteqht7mTj2Ram41h2z3')
@@ -131,8 +132,8 @@ function Contact() {
                         )}
                         <ReCAPTCHA 
                             sitekey="6LekA90ZAAAAAPdGHR29U92IXjrXdGEFFpPCztbg"
-                            ref={reRef}
                             size="invisible"
+                            ref={reRef}
                         />
                     </Segment>
                     <Button 

@@ -1,13 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
-import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
-import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
+import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useFlexLayout  } from 'react-table'
+import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, TinyColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
 import { getRootsQuery, getAnonRootsQuery } from './../queries/queries'
+
+
+
 
 function Table({
   columns,
@@ -43,13 +46,14 @@ function Table({
 
   const defaultColumn = React.useMemo(
     () => ({
-      Filter: DefaultColumnFilter,       // Let's set up our default Filter UI
-      minWidth: 25, // minWidth is only used as a limit for resizing
-      width: 50, // width is used for both the flex-basis and flex-grow
+      Filter: DefaultColumnFilter,   
+      minWidth: 50, // minWidth is only used as a limit for resizing
+      width: 300, // width is used for both the flex-basis and flex-grow
       maxWidth: 500, // maxWidth is only used as a limit for resizing
     }),
     []
   )
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -97,7 +101,8 @@ function Table({
     useGlobalFilter,
     useFilters,
     useSortBy,
-    usePagination,   
+    usePagination,
+    useFlexLayout,   
   )
 
 
@@ -146,7 +151,7 @@ React.useEffect(
           </div>
         ))}
       </div>
-      <table {...getTableProps()}>
+      <table {...getTableProps()} className="table">
         <thead>
           <tr>
             <th
@@ -177,7 +182,7 @@ React.useEffect(
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>
+                <th {...column.getHeaderProps()} className="th">
                   <span {...column.getSortByToggleProps()}>
                     {column.render('Header')}                 
                     {column.isSorted
@@ -272,11 +277,11 @@ function RootTable(props) {
   const updateColumns = React.useMemo(
     () => [
       {
-        Header: 'History/Edit/Delete',
+        Header: '',
         disableFilters: true,
         sortable: false,
-        width: 100,
         show: true,
+        width: 100,
         id: 'historyEditDelete',
         label: 'History/Edit/Delete',
         tableName: 'RootTable',
@@ -287,7 +292,7 @@ function RootTable(props) {
                 pathname: "/roothistory",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini circular basic blue icon button">
                 <Icon name="history" />
               </button>              
             </Link>
@@ -296,7 +301,7 @@ function RootTable(props) {
                 pathname: "/editroot",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini circular blue icon button">
                 <Icon name="edit" />
               </button>              
             </Link>
@@ -305,7 +310,7 @@ function RootTable(props) {
                 pathname: "/deleteroot",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini circular basic icon button">
                 <Icon name="close" />
               </button>              
             </Link>
@@ -313,30 +318,32 @@ function RootTable(props) {
         )
       }, 
       {
-        Header: 'Root',
+        Header: '√',
         accessor: 'root',
         tableName: 'RootTable',
         id: 'root',
         show: true,
-        width: 50,
+        width: 100,
         label: 'Root'
       },
       {
-        Header: 'Number',
+        Header: '#',
+        disableFilters: true,
         accessor: 'number',
         tableName: 'RootTable',
         id: 'number',
-        show: false,
+        show: true,
         width: 50,
         label: 'Number'
       },
       {
         Header: 'Sense',
+        disableFilters: true,
         accessor: 'sense',
         tableName: 'RootTable',
         id: 'sense',
-        show: false,
-        width: 50,
+        show: true,
+        width: 55,
         label: 'Sense',
       },
       {
@@ -364,25 +371,27 @@ function RootTable(props) {
         label: 'English',
       },
       {
-        Header: 'Symbol',
+        Header: 'Sym.',
+        disableFilters: true,
         accessor: 'symbol',
         tableName: 'RootTable',
         id: 'symbol',
         show: false,
         width: 50,
-        label: 'Symbol',
+        label: 'Symbols',
       },
       {
         Header: 'Grammar',
+        disableFilters: true,
         accessor: 'grammar',
         tableName: 'RootTable',
         id: 'grammar',
         show: false,
-        width: 50,
+        width: 75,
         label: 'Grammar',
       },
       {
-        Header: 'Crossref',
+        Header: 'x-ref',
         accessor: 'crossref',
         tableName: 'RootTable',
         id: 'crossref',
@@ -390,7 +399,7 @@ function RootTable(props) {
         label: 'Crossref',
       },
       {
-        Header: 'Variant',
+        Header: 'Var.',
         accessor: 'variant',
         tableName: 'RootTable',
         id: 'variant',
@@ -416,7 +425,6 @@ function RootTable(props) {
         tableName: 'RootTable',
         id: 'root',
         show: true,
-        width: 50,
         label: 'Root'
       },
       {
@@ -425,7 +433,6 @@ function RootTable(props) {
         tableName: 'RootTable',
         id: 'number',
         show: false,
-        width: 50,
         label: 'Number'
       },
       {
@@ -434,7 +441,6 @@ function RootTable(props) {
         tableName: 'RootTable',
         id: 'sense',
         show: false,
-        width: 50,
         label: 'Sense',
       },
       {
@@ -476,7 +482,6 @@ function RootTable(props) {
         tableName: 'RootTable',
         id: 'grammar',
         show: false,
-        width: 50,
         label: 'Grammar',
       },
       {

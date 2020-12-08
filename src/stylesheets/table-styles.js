@@ -1,10 +1,11 @@
 import styled from 'styled-components'
 
+
 const TableStyles = styled.div`
    table {
-    overflow: auto;
-    display: block;
     width: 100%;
+    overflow: auto;
+    display: inline-block;
     tr {
       :nth-child(even) {
         background-color: #f5f5f5;
