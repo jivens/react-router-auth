@@ -292,7 +292,7 @@ function RootTable(props) {
                 pathname: "/roothistory",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui mini basic blue icon button">
+              <button className="ui mini blue icon button">
                 <Icon name="history" />
               </button>              
             </Link>
@@ -301,7 +301,7 @@ function RootTable(props) {
                 pathname: "/editroot",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui mini blue icon button">
+              <button className="ui mini black icon button">
                 <Icon name="edit" />
               </button>              
             </Link>
@@ -310,7 +310,7 @@ function RootTable(props) {
                 pathname: "/deleteroot",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui mini basic blue icon button">
+              <button className="ui mini blue icon button">
                 <Icon name="close" />
               </button>              
             </Link>
