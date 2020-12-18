@@ -1,6 +1,6 @@
 import React from "react"
 import { useAuth } from "../context/auth"
-import { Grid } from 'semantic-ui-react'
+import { Grid, Container } from 'semantic-ui-react'
 import RootsAccordion from "./accordions/RootsAccordion";
 import RootTable from "./RootTable"
 
@@ -9,16 +9,18 @@ function Roots(props) {
 
   return (
     <React.Fragment>
-      <Grid>
-        <Grid.Column width="16">
-          <Grid.Row>
-            <RootsAccordion />
-          </Grid.Row>
-          <Grid.Row>
-            <RootTable/>
-          </Grid.Row>
-        </Grid.Column>
-      </Grid>
+      <Container>
+        <Grid>
+          <Grid.Column>
+            <Grid.Row>
+              <RootsAccordion />
+            </Grid.Row>
+            <Grid.Row>
+              <RootTable/>
+            </Grid.Row>
+          </Grid.Column>
+        </Grid>
+      </Container>
     </React.Fragment>
   )
 }

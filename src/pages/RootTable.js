@@ -2,13 +2,13 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useFlexLayout  } from 'react-table'
-import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, TinyColumnFilter } from '../utils/Filters'
+import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
+//import styled from 'styled-components'
 import { Icon, Button } from "semantic-ui-react";
 import { getRootsQuery, getAnonRootsQuery } from './../queries/queries'
-
 
 
 
@@ -48,7 +48,7 @@ function Table({
     () => ({
       Filter: DefaultColumnFilter,   
       minWidth: 50, // minWidth is only used as a limit for resizing
-      width: 300, // width is used for both the flex-basis and flex-grow
+      width: 200, // width is used for both the flex-basis and flex-grow
       maxWidth: 500, // maxWidth is only used as a limit for resizing
     }),
     []
@@ -292,7 +292,7 @@ function RootTable(props) {
                 pathname: "/roothistory",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui mini circular basic blue icon button">
+              <button className="ui mini basic blue icon button">
                 <Icon name="history" />
               </button>              
             </Link>
@@ -301,7 +301,7 @@ function RootTable(props) {
                 pathname: "/editroot",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui mini circular blue icon button">
+              <button className="ui mini blue icon button">
                 <Icon name="edit" />
               </button>              
             </Link>
@@ -310,7 +310,7 @@ function RootTable(props) {
                 pathname: "/deleteroot",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="ui mini circular basic icon button">
+              <button className="ui mini basic blue icon button">
                 <Icon name="close" />
               </button>              
             </Link>
@@ -319,35 +319,37 @@ function RootTable(props) {
       }, 
       {
         Header: '√',
+        width: 75,
+        Filter: NarrowColumnFilter,
         accessor: 'root',
         tableName: 'RootTable',
         id: 'root',
         show: true,
-        width: 100,
         label: 'Root'
       },
       {
         Header: '#',
-        disableFilters: true,
+        width: 75,
+        Filter: NarrowColumnFilter,
         accessor: 'number',
         tableName: 'RootTable',
         id: 'number',
-        show: true,
-        width: 50,
+        show: false,
         label: 'Number'
       },
       {
-        Header: 'Sense',
-        disableFilters: true,
+        Header: 'Sns.',
+        width: 100,
+        Filter: NarrowColumnFilter,
         accessor: 'sense',
         tableName: 'RootTable',
         id: 'sense',
-        show: true,
-        width: 55,
+        show: false,
         label: 'Sense',
       },
       {
         Header: 'Salish',
+        width: 150,
         accessor: 'salish',
         tableName: 'RootTable',
         id: 'salish',
@@ -357,6 +359,7 @@ function RootTable(props) {
       {
         Header: 'Nicodemus',
         accessor: 'nicodemus',
+        width: 250,
         tableName: 'RootTable',
         id: 'nicodemus',
         show: true,
@@ -371,56 +374,61 @@ function RootTable(props) {
         label: 'English',
       },
       {
-        Header: 'Sym.',
-        disableFilters: true,
+        Header: '§',
         accessor: 'symbol',
+        width: 100,
+        Filter: NarrowColumnFilter,
         tableName: 'RootTable',
         id: 'symbol',
         show: false,
-        width: 50,
-        label: 'Symbols',
+        label: 'Symbol',
       },
       {
-        Header: 'Grammar',
-        disableFilters: true,
+        Header: 'Gr.',
         accessor: 'grammar',
+        width: 100,
+        Filter: NarrowColumnFilter,
         tableName: 'RootTable',
         id: 'grammar',
         show: false,
-        width: 75,
         label: 'Grammar',
       },
       {
         Header: 'x-ref',
         accessor: 'crossref',
+        width: 150,
         tableName: 'RootTable',
         id: 'crossref',
         show: false,
-        label: 'Crossref',
+        label: 'Cross Reference',
       },
       {
         Header: 'Var.',
         accessor: 'variant',
+        width: 150,
         tableName: 'RootTable',
         id: 'variant',
         show: false,
         label: 'Variant'
       },
       {
-        Header: 'Cognate',
+        Header: 'Cog.',
         accessor: 'cognate',
+        width: 150,
         tableName: 'RootTable',
         id: 'cognate',
         show: false,
         label: 'Cognate',
-      }
+      },
     ], []
   )
 
   const anonColumns = React.useMemo(
     () => [
       {
-        Header: 'Root',
+        Header: '√',
+        width: 75,
+        Filter: NarrowColumnFilter,
         accessor: 'root',
         tableName: 'RootTable',
         id: 'root',
@@ -428,7 +436,9 @@ function RootTable(props) {
         label: 'Root'
       },
       {
-        Header: 'Number',
+        Header: '#',
+        width: 75,
+        Filter: NarrowColumnFilter,
         accessor: 'number',
         tableName: 'RootTable',
         id: 'number',
@@ -436,7 +446,9 @@ function RootTable(props) {
         label: 'Number'
       },
       {
-        Header: 'Sense',
+        Header: 'Sns.',
+        width: 100,
+        Filter: NarrowColumnFilter,
         accessor: 'sense',
         tableName: 'RootTable',
         id: 'sense',
@@ -445,6 +457,7 @@ function RootTable(props) {
       },
       {
         Header: 'Salish',
+        width: 150,
         accessor: 'salish',
         tableName: 'RootTable',
         id: 'salish',
@@ -454,6 +467,7 @@ function RootTable(props) {
       {
         Header: 'Nicodemus',
         accessor: 'nicodemus',
+        width: 250,
         tableName: 'RootTable',
         id: 'nicodemus',
         show: true,
@@ -468,41 +482,47 @@ function RootTable(props) {
         label: 'English',
       },
       {
-        Header: 'Symbol',
+        Header: '§',
         accessor: 'symbol',
+        width: 100,
+        Filter: NarrowColumnFilter,
         tableName: 'RootTable',
         id: 'symbol',
         show: false,
-        width: 50,
         label: 'Symbol',
       },
       {
-        Header: 'Grammar',
+        Header: 'Gr.',
         accessor: 'grammar',
+        width: 100,
+        Filter: NarrowColumnFilter,
         tableName: 'RootTable',
         id: 'grammar',
         show: false,
         label: 'Grammar',
       },
       {
-        Header: 'Crossref',
+        Header: 'x-ref',
         accessor: 'crossref',
+        width: 150,
         tableName: 'RootTable',
         id: 'crossref',
         show: false,
-        label: 'Crossref',
+        label: 'Cross Reference',
       },
       {
-        Header: 'Variant',
+        Header: 'Var.',
         accessor: 'variant',
+        width: 150,
         tableName: 'RootTable',
         id: 'variant',
         show: false,
         label: 'Variant'
       },
       {
-        Header: 'Cognate',
+        Header: 'Cog.',
         accessor: 'cognate',
+        width: 150,
         tableName: 'RootTable',
         id: 'cognate',
         show: false,

@@ -61,8 +61,44 @@ export function DefaultColumnFilter({
       }}
       placeholder={`~ ${count}...`}
       style={{
-        width: '100px',
-        marginRight: '0.5rem',
+        width: '125px',
+        marginRight: '1rem',
+      }}
+    />
+  )
+}
+
+// Define a default UI for filtering
+export function NarrowColumnFilter({
+  pageCount, 
+  state: { pageSize },
+  column: { id, tableName, filterValue, setFilter },
+  }) {
+  // console.log(theHash)
+  // const id = theHash.column.id
+  // const tableName = theHash.column.tableName
+  // const filterValue = theHash.column.filterValue
+  // const preFilteredRows = theHash.column.preFilteredRows
+  // const setFilter = theHash.column.setFilter
+  // const pageSize = theHash.state.pageSize
+  // const pageCount = theHash.pageCount
+  // console.log('the pageSize is', pageSize)
+  // console.log('the pageCount is', pageCount)
+  //const count = preFilteredRows.length
+  const count = pageSize * pageCount
+
+  return (
+    <Input
+      value={filterValue || ''}
+      display='inline-block'
+      size='mini'
+      onChange={e => {
+        setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+      }}
+      placeholder={`~ ${count}...`}
+      style={{
+        width: '50px',
+        marginRight: '1rem',
       }}
     />
   )
