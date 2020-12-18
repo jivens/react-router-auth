@@ -33,6 +33,7 @@ import { broadCastSuccess } from './utils/messages';
 import ImageViewer from './utils/ImageViewer';
 import SplitView from './utils/SplitView';
 import NavBar from './components/NavBar';
+import Footer from './components/Footer';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -160,6 +161,7 @@ function App(props) {
               <Route path="/not-found" component={NotFound} key="NotFound" />
               <Route component={NotFoundRedirect} key="NotFoundRedirect" />
             </Switch>
+            <Footer />
           </NavBar>
         </div>
 
