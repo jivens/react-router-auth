@@ -146,7 +146,7 @@ React.useEffect(
           </div>
         ))}
       </div>
-      <table {...getTableProps()}>
+      <table {...getTableProps()} className="table">
         <thead>
           <tr>
             <th
@@ -177,7 +177,7 @@ React.useEffect(
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>
+                <th {...column.getHeaderProps()} className="th">
                   <span {...column.getSortByToggleProps()}>
                     {column.render('Header')}                 
                     {column.isSorted
@@ -287,7 +287,7 @@ function StemTable(props) {
                 pathname: "/stemhistory",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini blue icon button">
                 <Icon name="history" />
               </button>              
             </Link>
@@ -296,7 +296,7 @@ function StemTable(props) {
                 pathname: "/editstem",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini black icon button">
                 <Icon name="edit" />
               </button>              
             </Link>
@@ -305,7 +305,7 @@ function StemTable(props) {
                 pathname: "/deletestem",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini blue icon button">
                 <Icon name="close" />
               </button>              
             </Link>

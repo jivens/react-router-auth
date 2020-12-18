@@ -85,7 +85,8 @@ const TableStyles = styled.div`
           border-bottom: 0;
         }
       }
-      border-bottom: 1px solid #ddd;
+      border: 0px;
+      background: #f5f5f5;
     }
     th {
       border: 0px;
@@ -95,6 +96,7 @@ const TableStyles = styled.div`
     },
     td {
       margin: 0;
+      border: 0px;
       padding: 1rem;
       word-wrap: break-word;
       }

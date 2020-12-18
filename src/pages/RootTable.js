@@ -102,7 +102,7 @@ function Table({
     useFilters,
     useSortBy,
     usePagination,
-    useFlexLayout,   
+    //useFlexLayout,   
   )
 
 
@@ -151,7 +151,7 @@ React.useEffect(
           </div>
         ))}
       </div>
-      <table {...getTableProps()} className="table">
+      <table {...getTableProps()}>
         <thead>
           <tr>
             <th
@@ -182,7 +182,7 @@ React.useEffect(
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()} className="th">
+                <th {...column.getHeaderProps()}>
                   <span {...column.getSortByToggleProps()}>
                     {column.render('Header')}                 
                     {column.isSorted
@@ -273,7 +273,7 @@ React.useEffect(
 }
 
 function RootTable(props) {
-  console.log('my props.globalSearch is ', props.globalSearch)
+  //console.log('my props.globalSearch is ', props.globalSearch)
   const updateColumns = React.useMemo(
     () => [
       {

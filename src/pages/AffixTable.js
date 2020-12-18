@@ -297,7 +297,7 @@ function AffixTable(props) {
                 pathname: "/affixhistory",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini blue icon button">
                 <Icon name="history" />
               </button>              
             </Link>
@@ -306,7 +306,7 @@ function AffixTable(props) {
                 pathname: "/editaffix",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini black icon button">
                 <Icon name="edit" />
               </button>              
             </Link>
@@ -315,7 +315,7 @@ function AffixTable(props) {
                 pathname: "/deleteaffix",
                 search: "?id=" + row.original.id,
               }}>
-              <button className="basic blue ui icon button">
+              <button className="ui mini blue icon button">
                 <Icon name="close" />
               </button>              
             </Link>
