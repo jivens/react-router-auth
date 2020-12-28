@@ -136,7 +136,7 @@ function DeleteStem() {
                         selection
                         options = { dropDownOptions(categoryData.stem_categories) }
                         onChange = {(e, data) => setFieldValue(data.id, data.value)}
-                        value= { values.type }
+                        value= { values.category }
                     />
                     {errors.type && touched.type && <div className="input-feedback"> {errors.type} </div>}
                     </Grid.Column>
@@ -241,6 +241,7 @@ function DeleteStem() {
                     <Grid.Column width={10}>
                         <Input
                             fluid
+                            disabled
                             style={{ paddingBottom: '5px' }}
                             id="editnote"
                             placeholder="An edit note is required"

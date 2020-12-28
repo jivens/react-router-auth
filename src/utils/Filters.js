@@ -284,9 +284,9 @@ export function SelectOrthographyFilter({
   const options = React.useMemo(() => {
     const options = new Set()
     preFilteredRows.forEach(row => {
-      options.add("N")
       options.add("R")
       options.add("S")
+      options.add("N")
     })
     return [...options.values()]
   }, [id, preFilteredRows])
