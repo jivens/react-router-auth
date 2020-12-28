@@ -770,3 +770,93 @@ export const isHuman = gql`
     }
   }
 `;
+
+export const getSpellingListQuery = gql`
+  query getSpellingListQuery($limit: Int, $offset: Int, $spellings_order: [spellings_order_by!], $where: spellings_bool_exp) {
+    spellings_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    spellings(limit: $limit, offset: $offset, where: $where, order_by: $spellings_order) {
+      english
+      nicodemus
+      createdAt
+      id
+      note
+      reichard
+      salish
+      updatedAt
+      id
+    }
+  }
+`;
+
+export const getConsonantsQuery = gql `
+  query getConsonantsQuery($limit: Int, $offset: Int, $consonant_order: [consonants_order_by!], $where: consonants_bool_exp) {
+    consonants_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    consonants(limit: $limit, offset: $offset, where: $where, order_by: $consonant_order) {
+      alveolar
+      alveopalatal
+      glottal
+      labial
+      lateral
+      manner
+      orthography
+      palatal
+      pharyngeal
+      secondary
+      uvular
+      velar
+      voice
+      createdAt
+      updatedAt
+      id
+    }
+  }
+`
+
+export const getVowelsQuery = gql `
+  query getVowelsQuery($limit: Int, $offset: Int, $vowel_order: [vowels_order_by!], $where: vowels_bool_exp) {
+    vowels_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    vowels(limit: $limit, offset: $offset, where: $where, order_by: $vowel_order) {
+      orthography
+      height
+      front
+      central
+      back
+      createdAt
+      updatedAt
+      id
+    }
+  }
+`
+
+export const getBibliographyQuery = gql `
+  query getBibliographyQuery($limit: Int, $offset: Int, $bibliographies_order: [bibliographies_order_by!], $where: bibliographies_bool_exp) {
+    bibliographies_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    bibliographies(limit: $limit, offset: $offset, where: $where, order_by: $bibliographies_order) {
+      author
+      year
+      title
+      reference
+      link
+      linktext
+      createdAt
+      updatedAt
+      id
+    }
+  }
+`

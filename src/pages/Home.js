@@ -27,9 +27,10 @@ function Home(props) {
 	  <React.Fragment>
 		<Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
 			<Grid.Column style={{ maxWidth: 450 }}>
-				<Message>Welcome to the COLRC!  You can use this site without signing in, but if you are a member of the Language Programs you may wish to <Link to="/login">sign in or register</Link>!</Message>
+				<Message>Welcome to the COLRC!</Message>  
 				<Logo src={logoImg} />
 				<HomeAccordion />
+				<Message>Are you a site administrator? <Link to="/login">Log in here</Link></Message>
 			</Grid.Column>
 		</Grid>
 	  </React.Fragment>

@@ -56,15 +56,15 @@ const NavBarMobile = ({
       Home
     </Menu.Item>
     <Menu.Item as={NavLink} to="/roots" name="Roots" size='mini' key="miniroots">
-     <Icon name="book" />
+     <Icon name="database" />
       Roots
     </Menu.Item>
     <Menu.Item as={NavLink} to="/affixes" name="Affixes" size='mini' key="miniaffixes">
-     <Icon name="book" />
+     <Icon name="leaf" />
       Affixes
     </Menu.Item>
     <Menu.Item as={NavLink} to="/stems" name="Stems" size='mini' key="ministems">
-     <Icon name="book" />
+     <Icon name="code branch" />
       Stems
     </Menu.Item>
     <Menu.Item as={NavLink} to="/texts" name="Texts" size='mini' key="minitexts">
@@ -75,7 +75,14 @@ const NavBarMobile = ({
      <Icon name="file audio outline" />
       Audios
     </Menu.Item>
-
+    <Menu.Item as={NavLink} to="/spelling" name="Spelling" size='mini' key="minispelling">
+     <Icon name="pencil" />
+      Spelling
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/bibliography" name="Bibliograpy" size='mini' key="minibib">
+     <Icon name="list" />
+      Bibliography
+    </Menu.Item>
     {currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&
         (<Menu.Item as={NavLink} to="/elicitations" name="Elicitations" size='mini' key="minielicitations">
@@ -131,6 +138,12 @@ const NavBarDesktop = ({ rightItems, currentUser }) => (
     </Menu.Item>
     <Menu.Item as={NavLink} to="/audios" name="Audios" key="maudios">
        Audios
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/spelling" name="Spelling" key="mspelling">
+       Spelling
+    </Menu.Item>
+    <Menu.Item as={NavLink} to="/bibliography" name="Bibliography" key="mbib">
+       Bibliography
     </Menu.Item>
     { currentUser && (
       currentUser.roles.includes('manager') || currentUser.roles.includes('update') &&

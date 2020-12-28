@@ -131,7 +131,7 @@ function Contact() {
                         {errors.message && touched.message && ( <div className="input-feedback">{errors.message}</div>
                         )}
                         <ReCAPTCHA 
-                            sitekey="6LekA90ZAAAAAPdGHR29U92IXjrXdGEFFpPCztbg"
+                            sitekey="6LctOA0aAAAAAGOiLvqyQzB2DeQcMXZyYriWL4LY"
                             size="invisible"
                             ref={reRef}
                         />

@@ -1,19 +1,18 @@
 import React from 'react'
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter } from 'react-table'
-import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
+import { GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter, ClientSelectFilter, SelectOrthographyFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { getSpellingListQuery } from './../queries/queries'
+import { getConsonantsQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
-import DecoratedTextSpan from "./../utils/DecoratedTextSpan"
 import TableStyles from "./../stylesheets/table-styles"
 
 function Table({
-  columns,
-  data,
-  fetchData,
-  loading,
-  pageCount: controlledPageCount,
-  selectValues, 
+    columns,
+    data,
+    fetchData,
+    loading,
+    pageCount: controlledPageCount,
+    selectValues, 
 }) {
 
   const filterTypes = React.useMemo(
@@ -35,7 +34,7 @@ function Table({
 
   const defaultColumn = React.useMemo(
     () => ({
-      Filter: DefaultColumnFilter,       // Let's set up our default Filter UI
+      Filter: NarrowColumnFilter,       // Let's set up our default Filter UI
       minWidth: 25, // minWidth is only used as a limit for resizing
       width: 50, // width is used for both the flex-basis and flex-grow
       maxWidth: 500, // maxWidth is only used as a limit for resizing
@@ -72,6 +71,7 @@ function Table({
       data,
       initialState: { 
         pageIndex: 0,
+        sortBy: [{ id: 'orthography' }, {id: 'manner', desc: true}, {id: 'voice', desc: true}]
        }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
@@ -83,8 +83,6 @@ function Table({
       manualGlobalFilter: true,
       defaultColumn,
       filterTypes,
-      //hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
-      selectValues
     },
     useGlobalFilter,
     useFilters,
@@ -232,81 +230,134 @@ function Table({
 }
 
 
-function SpellingTable(props) {
+function ConsonantChart(props) {
 
   const columns = React.useMemo(
     () => [
-      {
-        Header: 'Nicodemus',
-        accessor: 'nicodemus',
-        width: 75,
-        Filter: NarrowColumnFilter,
-        tableName: 'SpellingsTable',
-        show: true,
-        id: 'nicodemus',
-        label: 'Nicodemus',
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />)
-      }, 
-      {
-        Header: 'Reichard',
-        accessor: 'reichard',
-        width: 75,
-        Filter: NarrowColumnFilter,
-        tableName: 'SpellingsTable',
-        show: false,
-        id: 'reichard',
-        label: 'Reichard',
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />)
-      }, 
-      {
-        Header: 'Salish',
-        accessor: 'salish',
-        width: 75,
-        Filter: NarrowColumnFilter,
-        tableName: 'SpellingsTable',
-        show: false,
-        id: 'salish',
-        label: 'Salish',
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
-      }, 
-      {
-        Header: 'English',
-        id: 'english',
-        accessor: 'english', 
-        label: 'English',
-        tableName: 'SpellingsTable',
-        show: true,
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />)
-      }, 
-      {
-        Header: 'Note',
-        accessor: 'note',
-        tableName: 'SpellingsTable',
-        show: false,
-        id: 'note',
-        label: 'Note'
-      }
+        {
+            Header: 'Orth.',
+            accessor: 'orthography',
+            id: 'orthography',
+            Filter: SelectOrthographyFilter,
+            label: 'Orthography: N = Nicodemus, R = Reichard, S = Salish',
+            show: true,
+        },
+        {
+            Header: 'Voice',
+            accessor: 'voice',
+            id: 'voice',
+            Filter: ClientSelectFilter,
+            label: 'Voicing:  V = voiced, VL = voiceless, VR = resonant',
+            show: false,
+        },
+        {
+            Header: 'Manner',
+            accessor: 'manner',
+            id: 'manner',
+            Filter: ClientSelectFilter,
+            label: 'Manner of Articulation',
+            show: false,
+        },
+        {
+            Header: '2nd',
+            accessor: 'secondary',
+            label: 'Secondary Articulation (Labial, Glottal, Both, None)',
+            id: 'secondary',
+            Filter: ClientSelectFilter,
+            show: false,
+        },
+        {
+            Header: 'labial',
+            accessor: 'labial',
+            label: 'Labial',
+            id: 'labial',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'alveolar',
+            accessor: 'alveolar',
+            label: 'Alveolar',
+            id: 'alveolar',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'alveo-pal.',
+            accessor: 'alveopalatal',
+            label: 'Alveopalatal',
+            id: 'alveopalatal',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'lateral',
+            accessor: 'lateral',
+            label: 'Lateral',
+            id: 'lateral',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'palatal',
+            accessor: 'palatal',
+            label: 'Palatal',
+            id: 'palatal',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'velar',
+            accessor: 'velar',
+            label: 'Velar',
+            id: 'velar',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'uvular',
+            accessor: 'uvular',
+            label: 'Uvular',
+            id: 'uvular',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'pharyngeal',
+            accessor: 'pharyngeal',
+            label: 'Pharyngeal',
+            id: 'pharyngeal',
+            Filter: ClientSelectFilter,
+            show: true,
+        },
+        {
+            Header: 'glottal',
+            accessor: 'glottal',
+            label: 'Glottal',
+            id: 'glottal',
+            Filter: ClientSelectFilter,
+            show: true,
+        }
     ], []
-  )
+)
 
 
 // We'll start our table without any data
 const [data, setData] = React.useState([])
 const [loading, setLoading] = React.useState(false)
 const [pageCount, setPageCount] = React.useState(0)
-//const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
 const fetchIdRef = React.useRef(0)
 const { client } = useAuth();
 
 
-async function getSpellingList(limit, offset, sortBy, filters) {
+async function getConsonants(limit, offset, sortBy, filters) {
     let res = {}
     res = await client.query({
-      query: getSpellingListQuery,
+      query: getConsonantsQuery,
       variables: { 
         limit: limit,
         offset: offset,
-        spellings_order: sortBy,
+        consonant_order: sortBy,
         where: filters,
         }
     })
@@ -314,7 +365,7 @@ async function getSpellingList(limit, offset, sortBy, filters) {
   }  
 
 
-const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
+const fetchData = React.useCallback(({  pageSize, pageIndex, sortBy, filters, globalFilter }) => {
   // This will get called when the table needs new data
   // You could fetch your data from literally anywhere,
   // even a server. But for this example, we'll just fake it.
@@ -330,10 +381,10 @@ const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, glo
     if (fetchId === fetchIdRef.current) {
       const controlledSort = sortReshape(sortBy) 
       const controlledFilter = filterReshape(filters, globalFilter, [])
-      getSpellingList(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
+      getConsonants(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
       .then((data) => {
-        let totalCount = data.spellings_aggregate.aggregate.count
-        setData(data.spellings)
+        let totalCount = data.consonants_aggregate.aggregate.count
+        setData(data.consonants)
         setPageCount(Math.ceil(totalCount / pageSize))
         setLoading(false)
       })
@@ -361,4 +412,4 @@ const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, glo
   )
 }
 
-export default SpellingTable
+export default ConsonantChart

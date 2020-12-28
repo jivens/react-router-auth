@@ -7,8 +7,8 @@ function Footer() {
         <React.Fragment>
             <Grid>
                 <Message compact size="mini">
-                    <p>coeur d'alene online language resource center copyright 2009-2020 the coeur d'alene tribe by
-    project supported by the national science foundation awards BCS-1160627 and BCS-1160394 and the national endowment for the humanities award PD-261031-18.</p>
+                    <p>Coeur d'Alene online language resource center copyright 2009-2020, rights to language content reserved by the Coeur d'Alene Tribal Language Programs.</p>
+                    <p>Project supported by the National Science Foundation awards BCS-1160627 and BCS-1160394 and the National Endowment for the Humanities award PD-261031-18.</p>
                 </Message>
             </Grid>
         </React.Fragment>

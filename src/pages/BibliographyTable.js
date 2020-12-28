@@ -1,11 +1,13 @@
 import React from 'react'
-import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter } from 'react-table'
+import { Link } from 'react-router-dom';
+import { intersectionWith, isEqual } from 'lodash';
+import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { getSpellingListQuery } from './../queries/queries'
-import { sortReshape, filterReshape } from "./../utils/reshapers"
-import DecoratedTextSpan from "./../utils/DecoratedTextSpan"
-import TableStyles from "./../stylesheets/table-styles"
+import { getBibliographyQuery } from '../queries/queries'
+import { sortReshape, filterReshape } from "../utils/reshapers"
+import TableStyles from "../stylesheets/table-styles"
+import { Icon, Button } from "semantic-ui-react";
 
 function Table({
   columns,
@@ -13,8 +15,13 @@ function Table({
   fetchData,
   loading,
   pageCount: controlledPageCount,
-  selectValues, 
+  globalSearch
 }) {
+
+  const { user } = useAuth();
+
+  //console.log("Inside table, I have select values: ", selectValues)
+  //console.log("Inside table, I have a globalSearch ", globalSearch)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -47,19 +54,18 @@ function Table({
     getTableProps,
     getTableBodyProps,
     headerGroups,
+    prepareRow,
     page,
-    rows,
     state,
     allColumns,
     setHiddenColumns,
+    visibleColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
     canPreviousPage,
     canNextPage,
     pageOptions,
     pageCount,
-    visibleColumns,
-    prepareRow,
     gotoPage,
     nextPage,
     previousPage,
@@ -71,8 +77,9 @@ function Table({
       columns,
       data,
       initialState: { 
-        pageIndex: 0,
-       }, // Pass our hoisted table state
+        pageIndex: 0, 
+        sortBy: [{ id: 'author'}, { id: 'year', desc: true }]
+      }, // Pass our hoisted table state
       manualPagination: true, // Tell the usePagination
       // hook that we'll handle our own data fetching
       // This means we'll also have to provide our own
@@ -84,7 +91,7 @@ function Table({
       defaultColumn,
       filterTypes,
       //hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
-      selectValues
+      //selectValues
     },
     useGlobalFilter,
     useFilters,
@@ -92,6 +99,13 @@ function Table({
     usePagination,   
   )
 
+  console.log('filters ', filters.map(f => {
+    if (f.id === "salish") {
+      return f.value
+    } else {
+      return null
+    }
+  }))
 
   // Listen for changes in pagination and use the state to fetch our new data
   React.useEffect(() => {
@@ -110,6 +124,25 @@ function Table({
   // Render the UI for your table
   return (
     <>
+      {/* <pre>
+        <code>
+          {JSON.stringify(
+            {
+              pageIndex,
+              pageSize,
+              pageCount,
+              canNextPage,
+              canPreviousPage,
+              sortBy,
+              filters,
+              globalFilter
+            },
+            null,
+            2
+          )}
+        </code>
+      </pre> */}
+      {/* <SimpleKeyboard /> */}
       <div className="columnToggle">
         {allColumns.map(column => (
           <div key={column.id} className="columnToggle">
@@ -141,8 +174,8 @@ function Table({
                     {column.render('Header')}                 
                     {column.isSorted
                       ? column.isSortedDesc
-                        ? '▲'
-                        : '▼'
+                        ? ' ▼'
+                        : ' ▲'
                       : ''}
                   </span>
                   <div>
@@ -153,33 +186,28 @@ function Table({
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>          
-          {rows.map((row) => {
-            prepareRow(row);
+        <tbody {...getTableBodyProps()}>
+          {page.map((row, i) => {
+            prepareRow(row)
             return (
-              <React.Fragment key={row.getRowProps().key}>
-                <tr>
-                  {row.cells.map((cell) => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                    );
-                  })}
-                </tr>
-              </React.Fragment>
-            );
+              <tr {...row.getRowProps()}>
+                {row.cells.map(cell => {
+                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                })}
+              </tr>
+            )
           })}
-
-          <tr>  
+          <tr>
             {loading ? (
               // Use our custom loading state to show a loading indicator
-              <td colSpan="10"> Loading... </td>
+              <td colSpan="10000">Loading...</td>
             ) : (
-              <td colSpan="10">
-                Showing {page.length} of ~{pageCount * pageSize} results
+              <td colSpan="10000">
+                Showing {page.length} of ~{controlledPageCount * pageSize}{' '}
+                results
               </td>
             )}
           </tr>
-          
         </tbody>
       </table>
 
@@ -232,133 +260,122 @@ function Table({
 }
 
 
-function SpellingTable(props) {
+function BibliographyTable(props) {
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'Nicodemus',
-        accessor: 'nicodemus',
-        width: 75,
-        Filter: NarrowColumnFilter,
-        tableName: 'SpellingsTable',
-        show: true,
-        id: 'nicodemus',
-        label: 'Nicodemus',
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />)
-      }, 
-      {
-        Header: 'Reichard',
-        accessor: 'reichard',
-        width: 75,
-        Filter: NarrowColumnFilter,
-        tableName: 'SpellingsTable',
-        show: false,
-        id: 'reichard',
-        label: 'Reichard',
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />)
-      }, 
-      {
-        Header: 'Salish',
-        accessor: 'salish',
-        width: 75,
-        Filter: NarrowColumnFilter,
-        tableName: 'SpellingsTable',
-        show: false,
-        id: 'salish',
-        label: 'Salish',
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />),
-      }, 
-      {
-        Header: 'English',
-        id: 'english',
-        accessor: 'english', 
-        label: 'English',
-        tableName: 'SpellingsTable',
-        show: true,
-        Cell: ({ cell: { value } }) => (<DecoratedTextSpan str={value} />)
-      }, 
-      {
-        Header: 'Note',
-        accessor: 'note',
-        tableName: 'SpellingsTable',
-        show: false,
-        id: 'note',
-        label: 'Note'
+    const columns = React.useMemo(
+      () => [
+          {
+            Header: 'Author',
+            accessor: 'author',
+            id: 'author',
+            label: 'Author',
+            show: true,
+          },
+          {
+            Header: 'Year',
+            accessor: 'year',
+            id: 'year',
+            label: 'Year',
+            Filter: NarrowColumnFilter,
+            show: true,
+            width: 55,
+          },
+          {
+            Header: 'Title',
+            accessor: 'title',
+            id: 'title',
+            label: 'Title',
+            show: true,
+            width: 250,
+          },
+          {
+            Header: 'Reference',
+            accessor: 'reference',
+            id: 'reference',
+            label: 'Reference',
+            show: false,
+          },
+          {
+            Header: 'Link',
+            accessor: 'linktext',
+            Cell: ({ row }) => <a href={row.original.link} target="_blank" rel="noopener noreferrer">{row.original.linktext}</a>,
+            show: false,
+            id: 'link',
+            label: 'Link (if available online)'
+          },
+      ], []
+  )
+  
+  
+  // We'll start our table without any data
+  const [data, setData] = React.useState([])
+  const [loading, setLoading] = React.useState(false)
+  const [pageCount, setPageCount] = React.useState(0)
+  const fetchIdRef = React.useRef(0)
+  const { client } = useAuth();
+  
+  
+  async function getBibliography(limit, offset, sortBy, filters) {
+      let res = {}
+      res = await client.query({
+        query: getBibliographyQuery,
+        variables: { 
+          limit: limit,
+          offset: offset,
+          bibliographies_order: sortBy,
+          where: filters,
+          }
+      })
+      return res.data
+    }  
+  
+  
+  const fetchData = React.useCallback(({  pageSize, pageIndex, sortBy, filters, globalFilter }) => {
+    // This will get called when the table needs new data
+    // You could fetch your data from literally anywhere,
+    // even a server. But for this example, we'll just fake it.
+  
+    // Give this fetch an ID
+    const fetchId = ++fetchIdRef.current
+  
+    // Set the loading state
+    setLoading(true)
+  
+    // We'll even set a delay to simulate a server here
+    setTimeout(() => {
+      if (fetchId === fetchIdRef.current) {
+        const controlledSort = sortReshape(sortBy) 
+        const controlledFilter = filterReshape(filters, globalFilter, [])
+        getBibliography(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
+        .then((data) => {
+          let totalCount = data.bibliographies_aggregate.aggregate.count
+          setData(data.bibliographies)
+          setPageCount(Math.ceil(totalCount / pageSize))
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.log(error)
+          setData([])
+          setPageCount(0)
+          setLoading(false)
+        })
       }
-    ], []
-  )
+    }, 1000)
+  }, [])
+  
+  
+    return (
+      <TableStyles>
+        <Table
+          columns={columns}
+          data={data}
+          fetchData={fetchData}
+          loading={loading}
+          pageCount={pageCount}
+        />
+      </TableStyles>
+    )
+  }
+  
 
-
-// We'll start our table without any data
-const [data, setData] = React.useState([])
-const [loading, setLoading] = React.useState(false)
-const [pageCount, setPageCount] = React.useState(0)
-//const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
-const fetchIdRef = React.useRef(0)
-const { client } = useAuth();
-
-
-async function getSpellingList(limit, offset, sortBy, filters) {
-    let res = {}
-    res = await client.query({
-      query: getSpellingListQuery,
-      variables: { 
-        limit: limit,
-        offset: offset,
-        spellings_order: sortBy,
-        where: filters,
-        }
-    })
-    return res.data
-  }  
-
-
-const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
-  // This will get called when the table needs new data
-  // You could fetch your data from literally anywhere,
-  // even a server. But for this example, we'll just fake it.
-
-  // Give this fetch an ID
-  const fetchId = ++fetchIdRef.current
-
-  // Set the loading state
-  setLoading(true)
-
-  // We'll even set a delay to simulate a server here
-  setTimeout(() => {
-    if (fetchId === fetchIdRef.current) {
-      const controlledSort = sortReshape(sortBy) 
-      const controlledFilter = filterReshape(filters, globalFilter, [])
-      getSpellingList(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
-      .then((data) => {
-        let totalCount = data.spellings_aggregate.aggregate.count
-        setData(data.spellings)
-        setPageCount(Math.ceil(totalCount / pageSize))
-        setLoading(false)
-      })
-      .catch((error) => {
-        console.log(error)
-        setData([])
-        setPageCount(0)
-        setLoading(false)
-      })
-    }
-  }, 1000)
-}, [])
-
-
-  return (
-    <TableStyles>
-      <Table
-        columns={columns}
-        data={data}
-        fetchData={fetchData}
-        loading={loading}
-        pageCount={pageCount}
-      />
-    </TableStyles>
-  )
-}
-
-export default SpellingTable
+export default BibliographyTable
