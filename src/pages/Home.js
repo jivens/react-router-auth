@@ -13,11 +13,17 @@ function Home(props) {
 	if (user) {
   		return (
 			<React.Fragment>
-				<Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+				<Grid textAlign='center'>
 					<Grid.Column style={{ maxWidth: 450 }}>
-		  				<Message>Welcome to the COLRC!  You are currently signed in as {user.first} {user.last}</Message>
-						<Logo src={logoImg} />
-						<HomeAccordion />
+						<Grid.Row>
+		  					<Message>Welcome to the COLRC!  You are currently signed in as {user.first} {user.last}</Message>
+						</Grid.Row>
+						<Grid.Row>
+							<Logo src={logoImg} />
+						</Grid.Row>
+						<Grid.Row>
+							<HomeAccordion />
+						</Grid.Row>
 					</Grid.Column>
 				</Grid>
 			</React.Fragment>
@@ -25,7 +31,7 @@ function Home(props) {
 	}
   	return (
 	  <React.Fragment>
-		<Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
+		<Grid textAlign='center'>
 			<Grid.Column style={{ maxWidth: 450 }}>
 				<Message>Welcome to the COLRC!</Message>  
 				<Logo src={logoImg} />

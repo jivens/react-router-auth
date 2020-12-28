@@ -13,6 +13,8 @@ import EditAffix from './pages/EditAffix';
 import DeleteAffix from './pages/DeleteAffix';
 import AddRoot from './pages/AddRoot';
 import AddStem from './pages/AddStem';
+import EditStem from './pages/EditStem';
+import DeleteStem from './pages/DeleteStem';
 import EditRoot from './pages/EditRoot';
 import DeleteRoot from './pages/DeleteRoot';
 import AffixHistory from './pages/AffixHistory';
@@ -149,8 +151,8 @@ function App(props) {
               <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
               <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" />
               <PrivateRoute path="/addstem" component={AddStem} key="AddStem" />
-              {/* <PrivateRoute path="/editaffix" component={EditAffix} key="EditAffix" />
-              <PrivateRoute path="/deleteaffix" component={DeleteAffix} key="DeleteAffix" /> */}
+              <PrivateRoute path="/editstem" component={EditStem} key="EditStem" />
+              <PrivateRoute path="/deletestem" component={DeleteStem} key="DeleteStem" /> */}
               <PrivateRoute path="/addroot" component={AddRoot} key="AddRoot" />
               <PrivateRoute path="/editroot" component={EditRoot} key="EditRoot" />
               <PrivateRoute path="/deleteroot" component={DeleteRoot} key="DeleteRoot" /> 
@@ -165,10 +167,9 @@ function App(props) {
               <Route path="/not-found" component={NotFound} key="NotFound" />
               <Route component={NotFoundRedirect} key="NotFoundRedirect" />
             </Switch>
-            <Footer />
           </NavBar>
-        </div>
-
+        </div>            
+        <Footer />
       </Router>
     </AuthContext.Provider>
   );

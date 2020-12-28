@@ -194,46 +194,83 @@ export const updateAffixMutation = gql`
   }
 `;
 
-export const updateRootMutation = gql`
-mutation updateARoot($id: Int!, $editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $root: String!, $number: Int, $sense: String, $symbol: String, $grammar: String, $crossref: String, $variant: String, $cognate: String){
-  update_roots_by_pk(pk_columns: {id: $id},
-  _set: {
-      editnote: $editnote,
-      english: $english,
-      nicodemus: $nicodemus,
-      salish: $salish,
-      root: $root,
-      number: $number,
-      sense: $sense,
-      symbol: $symbol,
-      grammar: $grammar,
-      crossref: $crossref,
-      variant: $variant
+export const updateStemMutation = gql`
+  mutation updateAStem($id: Int!, $editnote: String!, $english: String!, $salish: String!, $nicodemus: String!, $doak: String!, $reichard: String!, $category: Int!){
+    update_stems_by_pk(pk_columns: {id: $id},
+    _set: {
+        english: $english,
+        nicodemus: $nicodemus,
+        editnote: $editnote,
+        salish: $salish,
+        doak: $doak,
+        reichard: $reichard,
+        category: $category
+      }
+    )
+    {
+      createdAt
+      editnote
+      english
+      id
+      doak
+      nicodemus
+      reichard
+      salish
+      category
+      updatedAt
+      userId
     }
-  )
-  {
-    createdAt
-    editnote
-    english
-    id
-    nicodemus
-    salish
-    root
-    number
-    sense
-    symbol
-    grammar
-    crossref
-    variant
-    updatedAt
-    userId
   }
-}
+`;
+
+export const updateRootMutation = gql`
+  mutation updateARoot($id: Int!, $editnote: String!, $english: String!, $salish: String, $nicodemus: String!, $root: String!, $number: Int, $sense: String, $symbol: String, $grammar: String, $crossref: String, $variant: String, $cognate: String){
+    update_roots_by_pk(pk_columns: {id: $id},
+    _set: {
+        editnote: $editnote,
+        english: $english,
+        nicodemus: $nicodemus,
+        salish: $salish,
+        root: $root,
+        number: $number,
+        sense: $sense,
+        symbol: $symbol,
+        grammar: $grammar,
+        crossref: $crossref,
+        variant: $variant
+      }
+    )
+    {
+      createdAt
+      editnote
+      english
+      id
+      nicodemus
+      salish
+      root
+      number
+      sense
+      symbol
+      grammar
+      crossref
+      variant
+      updatedAt
+      userId
+    }
+  }
 `
 
 export const deleteAffixMutation = gql`
   mutation($id: Int!) {
     delete_affixes_by_pk(id: $id) {
+      id
+    }
+  }
+`;
+
+export const deleteStemMutation = gql`
+  mutation($id: Int!) {
+    delete_stems_by_pk(id: $id) {
       id
     }
   }
@@ -263,25 +300,25 @@ export const updateUserMutation = gql`
 `;
 
 export const getUsersQuery = gql`
-    query($limit: Int, $offset: Int) {
-      users_Q(limit: $limit, offset: $offset) {
-        id
-        first
-        last
-        username
-        password
-        email
-      }
+  query($limit: Int, $offset: Int) {
+    users_Q(limit: $limit, offset: $offset) {
+      id
+      first
+      last
+      username
+      password
+      email
     }
+  }
 `;
 
 export const getUsernamesQuery = gql`
-    query {
-      users {
-        username
-        id
-      }
+  query {
+    users {
+      username
+      id
     }
+  }
 `;
 
 export const getLogQuery = gql`
@@ -310,21 +347,21 @@ export const getLogQuery = gql`
   `;
 
 export const getAffixTypesQuery = gql`
-    query {
-      affix_types {
-        value
-        id
-      }
+  query {
+    affix_types {
+      value
+      id
     }
+  }
 `;
 
 export const getStemCategoriesQuery = gql`
-    query {
-      stem_categories {
-        value
-        id
-      }
+  query {
+    stem_categories {
+      value
+      id
     }
+  }
 `;
 
 export const getTextsById = gql`
@@ -491,34 +528,34 @@ export const getAnonRootsQuery = gql`
 `;
 
 export const getStemsQuery = gql`
-query getStemsQuery($where: stems_bool_exp = {}, $limit: Int = 10, $offset: Int = 10, $stem_order: [stems_order_by!] = {}) {
-  stems_aggregate(where: $where) {
-    aggregate {
-      count
+  query getStemsQuery($where: stems_bool_exp = {}, $limit: Int = 10, $offset: Int = 10, $stem_order: [stems_order_by!] = {}) {
+    stems_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    stems(where: $where, limit: $limit, offset: $offset, order_by: $stem_order) {
+      createdAt
+      editnote
+      english
+      id
+      nicodemus
+      salish
+      updatedAt
+      user {
+        username
+        id
+      }
+      reichard
+      note
+      doak
+      stem_category {
+        id
+        value
+      }
     }
   }
-  stems(where: $where, limit: $limit, offset: $offset, order_by: $stem_order) {
-    createdAt
-    editnote
-    english
-    id
-    nicodemus
-    salish
-    updatedAt
-    user {
-      username
-      id
-    }
-    reichard
-    note
-    doak
-    stem_category {
-      id
-      value
-    }
-  }
-}
-  `;
+`;
   
 export const getAnonStemsQuery = gql`
   query getAnonStemsQuery($where: stems_bool_exp = {}, $limit: Int = 10, $offset: Int = 10, $stem_order: [stems_order_by!] = {}) {
@@ -546,120 +583,71 @@ export const getAnonStemsQuery = gql`
   }
 `;
     
-  export const getAffixHistoryByIdQuery = gql`
-    query getAffixHistoryById($row_data: jsonb!, $table_name: String!) {
-      audit_logged_actions(where: {table_name: {_eq: $table_name}, row_data: {_contains: $row_data}}, order_by: {action_tstamp_clk: asc})  {
-        action
-        action_tstamp_clk
-        action_tstamp_stm
-        action_tstamp_tx
-        application_name
-        changed_fields
-        client_addr
-        client_port
-        client_query
-        event_id
-        hasura_user
-        relid
-        row_data
-        schema_name
-        session_user_name
-        statement_only
-        table_name
-        transaction_id
-      }
-    } 
-  `;
+export const getAffixHistoryByIdQuery = gql`
+  query getAffixHistoryById($row_data: jsonb!, $table_name: String!) {
+    audit_logged_actions(where: {table_name: {_eq: $table_name}, row_data: {_contains: $row_data}}, order_by: {action_tstamp_clk: asc})  {
+      action
+      action_tstamp_clk
+      action_tstamp_stm
+      action_tstamp_tx
+      application_name
+      changed_fields
+      client_addr
+      client_port
+      client_query
+      event_id
+      hasura_user
+      relid
+      row_data
+      schema_name
+      session_user_name
+      statement_only
+      table_name
+      transaction_id
+    }
+  } 
+`;
 
-  export const getRootHistoryByIdQuery = gql`
-    query getRootHistoryById($row_data: jsonb!, $table_name: String!) {
-      audit_logged_actions(where: {table_name: {_eq: $table_name}, row_data: {_contains: $row_data}}, order_by: {action_tstamp_clk: asc})  {
-        action
-        action_tstamp_clk
-        action_tstamp_stm
-        action_tstamp_tx
-        application_name
-        changed_fields
-        client_addr
-        client_port
-        client_query
-        event_id
-        hasura_user
-        relid
-        row_data
-        schema_name
-        session_user_name
-        statement_only
-        table_name
-        transaction_id
-      }
-    } 
-  `;
+export const getRootHistoryByIdQuery = gql`
+  query getRootHistoryById($row_data: jsonb!, $table_name: String!) {
+    audit_logged_actions(where: {table_name: {_eq: $table_name}, row_data: {_contains: $row_data}}, order_by: {action_tstamp_clk: asc})  {
+      action
+      action_tstamp_clk
+      action_tstamp_stm
+      action_tstamp_tx
+      application_name
+      changed_fields
+      client_addr
+      client_port
+      client_query
+      event_id
+      hasura_user
+      relid
+      row_data
+      schema_name
+      session_user_name
+      statement_only
+      table_name
+      transaction_id
+    }
+  } 
+`;
 
-  export const getTextsQuery = gql`
-    query getTextsQuery($limit: Int, $offset: Int, $order: [texts_order_by!], $where: texts_bool_exp) {
-      texts_aggregate(where: $where) {
-        aggregate {
-          count
-        }
+export const getTextsQuery = gql`
+  query getTextsQuery($limit: Int, $offset: Int, $order: [texts_order_by!], $where: texts_bool_exp) {
+    texts_aggregate(where: $where) {
+      aggregate {
+        count
       }
-      texts(limit: $limit, offset: $offset, order_by: $order, where: $where) {
-        id
-        title
-        speaker
-        cycle
-        rnumber
-        tnumber
-        audiosets {
-          id
-          speaker
-          title
-          textId
-          audiosets_audiofiles {
-            audiosetId
-            direct
-            id
-            src
-            subdir
-            type
-            audio_with_path
-          }
-        }
-        texts_textfiles {
-          fileType
-          id
-          msType
-          resType
-          src
-          subdir
-          textId
-          textfile_with_path
-          textimages {
-            id
-            src
-            subdir
-            textimage_with_path
-            textFileId
-          }
-        }
-        user {
-          id
-          last
-          first
-          username
-        }
-      }
-    } 
-  `;
-
-  export const getAudioSetsQuery = gql`
-    query getAudioSetsQuery($limit: Int, $offset: Int, $order: [audiosets_order_by!], $where: audiosets_bool_exp) {
-      audiosets_aggregate(where: $where) {
-        aggregate {
-          count
-        }
-      }
-      audiosets(limit: $limit, offset: $offset, order_by: $order, where: $where) {
+    }
+    texts(limit: $limit, offset: $offset, order_by: $order, where: $where) {
+      id
+      title
+      speaker
+      cycle
+      rnumber
+      tnumber
+      audiosets {
         id
         speaker
         title
@@ -673,48 +661,97 @@ export const getAnonStemsQuery = gql`
           type
           audio_with_path
         }
-        user {
+      }
+      texts_textfiles {
+        fileType
+        id
+        msType
+        resType
+        src
+        subdir
+        textId
+        textfile_with_path
+        textimages {
           id
-          last
-          first
-          username
-        }
-        text {
-          cycle
-          id
-          speaker
-          rnumber
-          title
-          tnumber
+          src
+          subdir
+          textimage_with_path
+          textFileId
         }
       }
+      user {
+        id
+        last
+        first
+        username
+      }
     }
-  `;
+  } 
+`;
 
-  export const getAudioSetById = gql`
-    query getAudioSetsByIdQuery($id: Int) {
-      audiosets(where: {id: {_eq: $id}}) {
-          id
-          speaker
-          title
-          textId
-          audiosets_audiofiles {
-            audiosetId
-            direct
-            id
-            src
-            subdir
-            type
-            audio_with_path
-          }
-        user {
-          id
-          last
-          first
-          username
-        }
+export const getAudioSetsQuery = gql`
+  query getAudioSetsQuery($limit: Int, $offset: Int, $order: [audiosets_order_by!], $where: audiosets_bool_exp) {
+    audiosets_aggregate(where: $where) {
+      aggregate {
+        count
       }
     }
+    audiosets(limit: $limit, offset: $offset, order_by: $order, where: $where) {
+      id
+      speaker
+      title
+      textId
+      audiosets_audiofiles {
+        audiosetId
+        direct
+        id
+        src
+        subdir
+        type
+        audio_with_path
+      }
+      user {
+        id
+        last
+        first
+        username
+      }
+      text {
+        cycle
+        id
+        speaker
+        rnumber
+        title
+        tnumber
+      }
+    }
+  }
+`;
+
+export const getAudioSetById = gql`
+  query getAudioSetsByIdQuery($id: Int) {
+    audiosets(where: {id: {_eq: $id}}) {
+        id
+        speaker
+        title
+        textId
+        audiosets_audiofiles {
+          audiosetId
+          direct
+          id
+          src
+          subdir
+          type
+          audio_with_path
+        }
+      user {
+        id
+        last
+        first
+        username
+      }
+    }
+  }
 `;
 
 export const getElicitationSetsQuery = gql`
@@ -860,3 +897,4 @@ export const getBibliographyQuery = gql `
     }
   }
 `
+
