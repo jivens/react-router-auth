@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { intersectionWith, isEqual } from 'lodash';
+import { forEach, intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useFlexLayout  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
@@ -323,6 +323,7 @@ function RootTable(props) {
         Filter: NarrowColumnFilter,
         accessor: 'root',
         tableName: 'RootTable',
+        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}} target="_blank">{row.original.root}</Link>,
         id: 'root',
         show: true,
         label: 'Root'
@@ -430,6 +431,7 @@ function RootTable(props) {
         width: 75,
         Filter: NarrowColumnFilter,
         accessor: 'root',
+        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}} target="_blank">{row.original.root}</Link>,
         tableName: 'RootTable',
         id: 'root',
         show: true,

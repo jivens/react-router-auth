@@ -898,3 +898,27 @@ export const getBibliographyQuery = gql `
   }
 `
 
+export const getExactRootQuery = gql `
+  query ExactRoot($root: String!) {
+    roots(where: {root: {_ilike: $root}}) {
+      cognate
+      createdAt
+      crossref
+      editnote
+      english
+      grammar
+      id
+      nicodemus
+      number
+      root
+      salish
+      sense
+      symbol
+      updatedAt
+      userId
+      variant
+    }
+  }
+
+
+`
