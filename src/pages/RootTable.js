@@ -1,5 +1,6 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import Login from './Login';
 import { forEach, intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useFlexLayout  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
@@ -9,6 +10,7 @@ import TableStyles from "./../stylesheets/table-styles"
 //import styled from 'styled-components'
 import { Icon, Button } from "semantic-ui-react";
 import { getRootsQuery, getAnonRootsQuery } from './../queries/queries'
+import { handleErrors, broadCastSuccess } from '../utils/messages';
 
 
 
@@ -274,6 +276,8 @@ React.useEffect(
 
 function RootTable(props) {
   //console.log('my props.globalSearch is ', props.globalSearch)
+  let history = useHistory()
+ 
   const updateColumns = React.useMemo(
     () => [
       {
@@ -538,7 +542,7 @@ function RootTable(props) {
   const [pageCount, setPageCount] = React.useState(0)
   //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
-  const { client, user } = useAuth();
+  const { client, setAuthTokens, user } = useAuth();
 
   async function getRoots(limit, offset, sortBy, filters) {
     let res = {}
@@ -565,7 +569,9 @@ function RootTable(props) {
       })
     }
     return res.data
-  }  
+  } 
+ 
+
 
   const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
     // This will get called when the table needs new data
@@ -598,9 +604,11 @@ function RootTable(props) {
         })
         .catch((error) => {
           console.log(error)
+          handleErrors(error, {'logout': {'action': setAuthTokens, 'redirect': '/login'}})
           setData([])
           setPageCount(0)
           setLoading(false)
+          history.push('./login')
         })
       }
     }, 1000)

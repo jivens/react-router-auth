@@ -16,7 +16,7 @@ export function GlobalFilter({
 
   return (
     <span>
-      <label style={{marginRight: '10px'}}> Search all:</label>
+      <label style={{marginRight: '10px'}}> Search all (case sensitive):</label>
       <Input
         value={globalFilter || ''}
         onChange={e => {

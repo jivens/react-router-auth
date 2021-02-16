@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import Keyboard from "react-simple-keyboard";
+import { useLocation, Link } from 'react-router-dom';
 import { Grid, Header, Segment, Message, Input } from 'semantic-ui-react';
 import "react-simple-keyboard/build/css/index.css";
 
@@ -124,7 +125,7 @@ function Search(props) {
             <Header as='h2'  textAlign='center'>
                 Search the COLRC
             </Header>
-            <Message>Use this page to search across these resources :: list the resources that the search looks at.</Message>
+            <Message>Use this page to search across all <Link to="/roots">roots</Link>, <Link to="/affixes">affixes</Link> and <Link to="/stem">stems</Link>.  Search is case-sensitive.</Message>
         </Grid.Row>
         <Grid.Row>
           <Segment>

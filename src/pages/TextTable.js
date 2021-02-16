@@ -1,6 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
-import { intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useExpanded } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn } from '../utils/Filters'
 import { useAuth } from "../context/auth";
@@ -8,7 +6,7 @@ import { getTextsQuery } from './../queries/queries'
 import { sortReshape, filterReshape, textReshape } from "./../utils/reshapers"
 import SubTable from "./SubTable";
 import TableStyles from "./../stylesheets/table-styles"
-import { Icon, Button } from "semantic-ui-react";
+
 
 function Table({
   columns,
@@ -22,7 +20,7 @@ function Table({
 
   const { user } = useAuth();
   //console.log("Inside table, I have select values: ", selectValues)
-  console.log("my user is: ", user)
+  //console.log("my user is: ", user)
 
   const filterTypes = React.useMemo(
     () => ({
@@ -58,9 +56,7 @@ function Table({
     page,
     rows,
     state,
-    flatColumns,
     allColumns,
-    getToggleHideAllColumnsProps,
     setHiddenColumns,
     preGlobalFilteredRows,
     setGlobalFilter,
@@ -152,6 +148,7 @@ function Table({
           // condition ? (operation) : (operation) 
         ))}
       </div>
+        
       <table className="table" {...getTableProps()}>
         <thead>
           <tr>
@@ -373,7 +370,7 @@ function TextTable(props) {
   const [pageCount, setPageCount] = React.useState(0)
   //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
-  const { client, user } = useAuth();
+  const { client } = useAuth();
 
   
   async function getTexts(limit, offset, sortBy, filters) {

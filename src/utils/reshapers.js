@@ -117,6 +117,7 @@ export function textReshape(jsonData) {
               fileType: json[i]["texts_textfiles"][j].fileType,
               msType: json[i]["texts_textfiles"][j].msType,
               path: json[i]["texts_textfiles"][j].textfile_with_path,
+              metadata: json[i]["texts_textfiles"][j].textfilemetadata.textFileId,
               type: "text",
               key: k
             }
@@ -131,6 +132,7 @@ export function textReshape(jsonData) {
               l++;
             }
             //console.log(json[i]["texts_textfiles"][j]["imagequerystring"]);
+
           json[i]["sourcefiles"].push(
               {
                 src: json[i]["texts_textfiles"][j]["imagequerystring"],
@@ -194,6 +196,7 @@ export function textReshape(jsonData) {
         i++;
       }
       return json;
+
    }
 
    export function audioReshape(jsonData) {

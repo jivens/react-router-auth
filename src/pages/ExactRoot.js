@@ -8,7 +8,6 @@ import { Icon, Message } from "semantic-ui-react";
 import { getExactRootQuery } from './../queries/queries'
 
 
-
 function Table({
   columns,
   data,
@@ -22,15 +21,6 @@ function Table({
     const { user } = useAuth();
 
 
-    const defaultColumn = React.useMemo(
-        () => ({ 
-        minWidth: 50, // minWidth is only used as a limit for resizing
-        width: 200, // width is used for both the flex-basis and flex-grow
-        maxWidth: 500, // maxWidth is only used as a limit for resizing
-        }),
-        []
-    )
-
     const {
             getTableProps,
             getTableBodyProps,
@@ -39,11 +29,11 @@ function Table({
             rows,   
             allColumns,
             setHiddenColumns,
-        } = useTable(
+      } = useTable(
         {
             columns,
             data,
-            },
+        },
      )
 
 

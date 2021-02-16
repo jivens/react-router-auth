@@ -19,11 +19,13 @@ import DeleteStem from './pages/DeleteStem';
 import EditRoot from './pages/EditRoot';
 import DeleteRoot from './pages/DeleteRoot';
 import AffixHistory from './pages/AffixHistory';
+import RootHistory from './pages/RootHistory';
 import UserListContainer from './pages/UserListContainer';
 import Affixes from './pages/Affixes';
 import Roots from './pages/Roots';
 import Stems from './pages/Stems';
 import Texts from './pages/Texts';
+import Metadata from './pages/Metadata';
 import Log from './pages/Log';
 import Audios from './pages/Audios';
 import Elicitations from './pages/Elicitations';
@@ -142,6 +144,7 @@ function App(props) {
               <Route path="/exactroot" component={ExactRoot} key="ExactRoot" />
               <Route path="/stems" component={Stems} key="Stems" />
               <Route path="/texts" component={Texts} key="Texts" />
+              <Route path="/metadata" component={Metadata} key="Metadata" />
               <Route path="/audios" component={Audios} key="Audios" />
               <Route path="/spelling" component={Spelling} key="Spelling" />
               <Route path="/bibliography" component={Bibliography} key="Bibliography" />
@@ -159,7 +162,7 @@ function App(props) {
               <PrivateRoute path="/editroot" component={EditRoot} key="EditRoot" />
               <PrivateRoute path="/deleteroot" component={DeleteRoot} key="DeleteRoot" /> 
               <PrivateRoute path="/affixhistory" component={AffixHistory} key="AffixHistory" />
-              <PrivateRoute path="/roothistory" component={AffixHistory} key="RootHistory" />
+              <PrivateRoute path="/roothistory" component={RootHistory} key="RootHistory" />
               <PrivateRoute path="/log" component={Log} key="Log" />
               <PrivateRoute path="/users" component={Users} key="Users" />
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />

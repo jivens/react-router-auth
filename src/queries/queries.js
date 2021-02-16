@@ -671,6 +671,10 @@ export const getTextsQuery = gql`
         subdir
         textId
         textfile_with_path
+        textfilemetadata {
+          metadata
+          textFileId
+        }
         textimages {
           id
           src
@@ -919,6 +923,26 @@ export const getExactRootQuery = gql `
       variant
     }
   }
+`
 
-
+export const getMetadataQuery = gql `
+  query Metadata($textFileId: Int!) {
+    textfilemetadata(where: {textFileId: {_eq: $textFileId}}) {
+      createdAt
+      id
+      metadata
+      textFileId
+      textfile {
+        createdAt
+        fileType
+        id
+        msType
+        resType
+        src
+        subdir
+        textId
+        textfile_with_path
+      }
+    }
+  }
 `
