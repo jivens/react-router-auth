@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
+import { Link,useHistory } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
 import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, SelectColumnFilter } from '../utils/Filters'
@@ -8,6 +8,7 @@ import { getAffixesQuery, getAnonAffixesQuery } from './../queries/queries'
 import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "./../stylesheets/table-styles"
 import { Icon, Button } from "semantic-ui-react";
+import { handleErrors } from '../utils/messages';
 
 function Table({
   columns,
@@ -277,7 +278,7 @@ function Table({
 
 
 function AffixTable(props) {
-  console.log(props.selectValues, props.globalSearch)
+  let history = useHistory()
 
   const updateColumns = React.useMemo(
     () => [
@@ -432,7 +433,7 @@ function AffixTable(props) {
   const [pageCount, setPageCount] = React.useState(0)
   //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
-  const { client, user } = useAuth();
+  const { client, setAuthTokens, user } = useAuth();
 
   
   async function getAffixes(limit, offset, sortBy, filters) {
@@ -494,9 +495,11 @@ function AffixTable(props) {
         })
         .catch((error) => {
           console.log(error)
+          handleErrors(error, {'logout': {'action': setAuthTokens, 'redirect': '/login'}})
           setData([])
           setPageCount(0)
           setLoading(false)
+          history.push('./login')
         })
       }
     }, 1000)
