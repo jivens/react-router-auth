@@ -125,7 +125,7 @@ function Search(props) {
             <Header as='h2'  textAlign='center'>
                 Search the COLRC
             </Header>
-            <Message>Use this page to search across all <Link to="/roots">roots</Link>, <Link to="/affixes">affixes</Link> and <Link to="/stem">stems</Link>.  Search is case-sensitive.</Message>
+            <Message>Use this page to search across all <Link to="/roots">roots</Link>, <Link to="/affixes">affixes</Link> and <Link to="/stem">stems</Link>.</Message>
         </Grid.Row>
         <Grid.Row>
           <Segment>

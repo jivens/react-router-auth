@@ -58,7 +58,7 @@ export function filterReshape(filters, globalFilter, globalFilterVariables) {
     if (globalFilterVariables && globalFilter) {
         globalFilterVariables.forEach((item) => {
             let h = {}
-            h = { [item]: { "_like": "%" + globalFilter + "%" } }     
+            h = { [item]: { "_ilike": "%" + globalFilter + "%" } }     
             globalOrCond.push(h)        
         })
     }
@@ -69,9 +69,9 @@ export function filterReshape(filters, globalFilter, globalFilterVariables) {
             if (item.id.includes(".")) {
                 // Make an assumption that there is only one '.' char in the string
                 let [outer, inner] = item.id.split(".")
-                h = { [outer]: { [inner]: { "_like": "%" + item.value + "%" } } }
+                h = { [outer]: { [inner]: { "_ilike": "%" + item.value + "%" } } }
             } else {
-                h = { [item.id]: { "_like": "%" + item.value + "%" } }
+                h = { [item.id]: { "_ilike": "%" + item.value + "%" } }
             }
             andCond.push(h)
         })
