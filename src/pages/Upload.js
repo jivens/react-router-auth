@@ -9,7 +9,7 @@ const Upload = () => (
     <Grid textAlign='center'  verticalAlign='top'>
         <Grid.Column>
             <Grid.Row>
-                <Uploady destination={{url: "https://thecolrc.org/upload/"}}>
+                <Uploady destination={{url: "https://thecolrc.org/upload_file"}}>
                 <UploadButton/>
                 </Uploady>
             </Grid.Row>
