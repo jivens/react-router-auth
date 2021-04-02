@@ -40,6 +40,7 @@ import { broadCastSuccess } from './utils/messages';
 import ImageViewer from './utils/ImageViewer';
 import SplitView from './utils/SplitView';
 import Upload from './pages/Upload'
+import TestUpload from './pages/TestUpload'
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 
@@ -169,6 +170,7 @@ function App(props) {
               <PrivateRoute path="/userprofile" component={UserProfile} key="UserProfile" />
               <PrivateRoute path="/userlist" component={UserListContainer} key="UserListContainer" />
               <Route path="/upload" component={Upload} key="Upload" />
+              <Route path="/crap/" component={TestUpload} key="TestUpload" />
               <Route path="/search" component={Search} key="Search" />
               <Route path="/searchresults" component={SearchResults} key="SearchResults" />
               <Route path="/not-found" component={NotFound} key="NotFound" />
