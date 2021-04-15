@@ -12,6 +12,7 @@ import AddAffix from './pages/AddAffix';
 import EditAffix from './pages/EditAffix';
 import DeleteAffix from './pages/DeleteAffix';
 import AddRoot from './pages/AddRoot';
+import BrowseRoot from './pages/BrowseRoot';
 import ExactRoot from './pages/ExactRoot';
 import AddStem from './pages/AddStem';
 import EditStem from './pages/EditStem';
@@ -143,6 +144,7 @@ function App(props) {
               <Route path="/signup" component={Signup} key="SignupPage" />
               <Route path="/affixes" component={Affixes} key="Affixes" />
               <Route path="/roots" component={Roots} key="Roots" />
+              <Route path="/browseroot" component={BrowseRoot} key="BrowseRoot" />
               <Route path="/exactroot" component={ExactRoot} key="ExactRoot" />
               <Route path="/stems" component={Stems} key="Stems" />
               <Route path="/texts" component={Texts} key="Texts" />

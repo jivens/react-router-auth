@@ -925,6 +925,29 @@ export const getExactRootQuery = gql `
   }
 `
 
+export const getBrowseRootQuery = gql `
+  query ExactRoot($root: String!) {
+    roots(where: {root: {_ilike: $root}}) {
+      cognate
+      createdAt
+      crossref
+      editnote
+      english
+      grammar
+      id
+      nicodemus
+      number
+      root
+      salish
+      sense
+      symbol
+      updatedAt
+      userId
+      variant
+    }
+  }
+`
+
 export const getMetadataQuery = gql `
   query Metadata($textFileId: Int!) {
     textfilemetadata(where: {textFileId: {_eq: $textFileId}}) {
