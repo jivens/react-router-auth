@@ -926,8 +926,13 @@ export const getExactRootQuery = gql `
 `
 
 export const getBrowseRootQuery = gql `
-  query ExactRoot($root: String!) {
-    roots(where: {root: {_ilike: $root}}) {
+  query BrowseRoot($where: roots_bool_exp!) {
+    roots_aggregate(where: $where) {
+      aggregate {
+        count
+      }
+    }
+    roots(where: $where) {
       cognate
       createdAt
       crossref

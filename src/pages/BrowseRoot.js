@@ -1,47 +1,96 @@
 import React from 'react'
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
-import { useTable, useSortBy, useFilters, useGlobalFilter  } from 'react-table'
-import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
+import { useTable, useSortBy, useFilters, usePagination } from 'react-table'
+//import matchSorter from 'match-sorter'
+//import { useTable, useSortBy, useFilters, useGlobalFilter, usePagination, , useAsyncDebounce } from 'react-table'
+//import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-import { sortReshape, filterReshape } from "./../utils/reshapers"
+//import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "../stylesheets/table-styles"
-import { Icon, Message, Button } from "semantic-ui-react";
+import { Icon, Message } from "semantic-ui-react";
 import { getBrowseRootQuery } from '../queries/queries'
 import { handleErrors } from '../utils/messages';
 import  BrowseList  from '../utils/BrowseList'
+//import { fromPromise } from 'apollo-link';
 
 
 function Table({
   columns,
   data,
   fetchData,
-  loading,
-  selectValues,
-  globalSearch
+  // selectValues,
+  // globalSearch
 }) 
 {
     let happy = new URLSearchParams(useLocation().search)
-    let root = happy.get('root')
+    // let root = happy.get('root')
 
     const { user } = useAuth();
 
-    const filterTypes = React.useMemo(
-      () => ({
-        fuzzyText: fuzzyTextFilterFn,
-        text: (rows, id, filterValue) => {
-          return rows.filter(row => {
-            const rowValue = row.values[id]
-            return rowValue !== undefined
-              ? String(rowValue)
-                  .toLowerCase()
-                  .startsWith(String(filterValue).toLowerCase())
-              : true
-          })
-        },
-      }),
-      []
-    )
+    // function GlobalFilter({
+    //   preGlobalFilteredRows,
+    //   globalFilter,
+    //   setGlobalFilter,
+    // }) {
+    //   const count = preGlobalFilteredRows.length
+    //   const [value, setValue] = React.useState(globalFilter)
+    //   const onChange = useAsyncDebounce(value => {
+    //     setGlobalFilter(value || undefined)
+    //   }, 200)
+    
+    //   return (
+    //     <span>
+    //       Search:{' '}
+    //       <input
+    //         value={value || ""}
+    //         onChange={e => {
+    //           setValue(e.target.value);
+    //           onChange(e.target.value);
+    //         }}
+    //         placeholder={`${count} records...`}
+    //         style={{
+    //           fontSize: '1.1rem',
+    //           border: '0',
+    //         }}
+    //       />
+    //     </span>
+    //   )
+    // }
+    
+    // Define a default UI for filtering
+    function DefaultColumnFilter({
+      column: { filterValue, preFilteredRows, setFilter },
+    }) {
+      const count = preFilteredRows.length
+    
+      return (
+        <input
+          value={filterValue || ''}
+          onChange={e => {
+            setFilter(e.target.value || undefined) // Set undefined to remove the filter entirely
+          }}
+          placeholder={`Search ${count} records...`}
+        />
+      )
+    }
+
+    // const filterTypes = React.useMemo(
+    //   () => ({
+    //     fuzzyText: fuzzyTextFilterFn,
+    //     text: (rows, id, filterValue) => {
+    //       return rows.filter(row => {
+    //         const rowValue = row.values[id]
+    //         return rowValue !== undefined
+    //           ? String(rowValue)
+    //               .toLowerCase()
+    //               .startsWith(String(filterValue).toLowerCase())
+    //           : true
+    //       })
+    //     },
+    //   }),
+    //   []
+    // )
   
     const defaultColumn = React.useMemo(
       () => ({
@@ -58,40 +107,45 @@ function Table({
             getTableBodyProps,
             headerGroups,
             prepareRow,
-            rows,
-            state,   
+            //rows,
+            page,
+            canPreviousPage,
+            canNextPage,
+            pageOptions,
+            pageCount,
+            gotoPage,
+            nextPage,
+            previousPage,
+            setPageSize,   
             allColumns,
             setHiddenColumns,
-            visibleColumns,
-            preGlobalFilteredRows,
-            setGlobalFilter,
+            // visibleColumns,
+            // preGlobalFilteredRows,
+            // setGlobalFilter,
             // Get the state from the instance
-            state: { sortBy, filters, globalFilter }
+            state: { pageIndex, pageSize }
       } = useTable(
         {
             columns,
             data,
-            initialState: { 
-              globalFilter: ((globalSearch && globalSearch !== '') ? globalSearch : null)
-             }, // Pass our hoisted table state
-            manualSortBy: true,
-            manualFilters: true,
-            manualGlobalFilter: true,
+            initialState: { pageIndex: 0 }, // Pass our hoisted table state
+            // manualSortBy: true,
+            // manualFilters: true,
+            // manualGlobalFilter: true,
             defaultColumn,
-            filterTypes,
-            //hiddenColumns: columns.filter(column => !column.show).map(column => column.id),
-            selectValues
+            //filterTypes,
+            //selectValues
         },
-        useGlobalFilter,
+        //useGlobalFilter,
         useFilters,
         useSortBy,
+        usePagination
      )
 
 
-     React.useEffect(() => {
-      fetchData({ sortBy, filters, globalFilter })
-      }, 
-      [fetchData, sortBy, filters, globalFilter])
+    React.useEffect(() => {
+      fetchData()
+    }, [fetchData])
     
 
     React.useEffect(
@@ -118,54 +172,28 @@ function Table({
       <BrowseList/>
       <table {...getTableProps()}>
       <thead>
-          <tr>
-            <th
-              colSpan={visibleColumns.length}
-            >
-            { (user && (user.roles.includes('update') || user.roles.includes('manager')))  &&
-              (
-                <Link 
-                  to={{
-                    pathname: "/addroot",
-                  }}>
-                  <Button animated='vertical' color='blue'>
-                    <Button.Content hidden>Add Root</Button.Content>
-                    <Button.Content visible>
-                      <Icon name='plus' />
-                    </Button.Content>
-                  </Button> 
-                </Link> 
-              )
-            }
-              <GlobalFilter
-                preGlobalFilteredRows={preGlobalFilteredRows}
-                globalFilter={state.globalFilter}
-                setGlobalFilter={setGlobalFilter}
-              />
-            </th>
-          </tr>
-          {headerGroups.map(headerGroup => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map(column => (
-                <th {...column.getHeaderProps()}>
-                  <span {...column.getSortByToggleProps()}>
-                    {column.render('Header')}                 
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' ▼'
-                        : ' ▲'
-                      : ''}
-                  </span>
-                  <div>
-                    {column.canFilter ? column.render('Filter') : null}
-                  </div>
-                </th>
+        {headerGroups.map(headerGroup => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map(column => (
+              <th {...column.getHeaderProps()}>
+                <span {...column.getSortByToggleProps()}>
+                  {column.render('Header')}                 
+                  {column.isSorted
+                    ? column.isSortedDesc
+                      ? ' ▼'
+                      : ' ▲'
+                    : ''}
+                </span>
+                <div>
+                  {column.canFilter ? column.render('Filter') : null}
+                </div>
+              </th>
               ))}
             </tr>
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-        {rows.map((row, i) => {
+        {page.map((row, i) => {
           prepareRow(row)
           return (
             <tr {...row.getRowProps()}>
@@ -178,15 +206,104 @@ function Table({
       </tbody>
     </table>
 
+    <div className="pagination">
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </button>{' '}
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </button>{' '}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </button>{' '}
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </button>{' '}
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <span>
+          | Go to page:{' '}
+          <input
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={e => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(page)
+            }}
+            style={{ width: '100px' }}
+          />
+        </span>{' '}
+        <select
+          value={pageSize}
+          onChange={e => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[10, 20, 30, 40, 50].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
     </>
   )
 }
 
 function BrowseRootTable(props) {
     let history = useHistory()
-    let happy = new URLSearchParams(useLocation().search)
-    let root = happy.get('root')
-    console.log('the root is ', root)    
+    let browseroot = new URLSearchParams(useLocation().search)
+    let root = browseroot.get('root')
+    let where = {}
+    if (root === "q%") {
+      where = {"_and": [{"root": {"_ilike": "q%"}}, {"root": {"_nilike": "q'%"}}, {"root": {"_nilike": "qʷ%"}}]}     
+    } 
+    else if (root === "q'%") {
+      where = {"_and": [{"root": {"_ilike": "q'%"}}, {"root": {"_nilike": "q'ʷ%"}}]}     
+    }
+    else if (root === "c%") {
+      where = {"_and": [{"root": {"_ilike": "c%"}}, {"root": {"_nilike": "c'%"}}]}     
+    }
+    else if (root === "č%") {
+      where = {"_and": [{"root": {"_ilike": "č%"}}, {"root": {"_nilike": "č'%"}}]}     
+    }
+    else if (root === "k%") {
+      where = {"_and": [{"root": {"_ilike": "k%"}}, {"root": {"_nilike": "k'%"}}, {"root": {"_nilike": "kʷ%"}}]}     
+    }
+    else if (root === "l%") {
+      where = {"_and": [{"root": {"_ilike": "l%"}}, {"root": {"_nilike": "l'%"}}]}     
+    }
+    else if (root === "m%") {
+      where = {"_and": [{"root": {"_ilike": "m%"}}, {"root": {"_nilike": "m'%"}}]}     
+    }
+    else if (root === "n%") {
+      where = {"_and": [{"root": {"_ilike": "n%"}}, {"root": {"_nilike": "n'%"}}]}     
+    }
+    else if (root === "p%") {
+      where = {"_and": [{"root": {"_ilike": "p%"}}, {"root": {"_nilike": "p'%"}}]}     
+    }
+    else if (root === "t%") {
+      where = {"_and": [{"root": {"_ilike": "t%"}}, {"root": {"_nilike": "t'%"}}]}     
+    }
+    else if (root === "w%") {
+      where = {"_and": [{"root": {"_ilike": "w%"}}, {"root": {"_nilike": "w'%"}}]}     
+    }
+    else if (root === "x̣%") {
+      where = {"_and": [{"root": {"_ilike": "x̣%"}}, {"root": {"_nilike": "x̣ʷ%"}}]}     
+    }
+    else if (root === "y%") {
+      where = {"_and": [{"root": {"_ilike": "y%"}}, {"root": {"_nilike": "y'%"}}]}     
+    }
+    else if (root === "ʕ%") {
+      where = {"_and": [{"root": {"_ilike": "ʕ%"}}, {"root": {"_nilike": "ʕʷ%"}}]}     
+    }
+    else { 
+      where = {root: {_ilike: `${root}` }}
+    }
   const updateColumns = React.useMemo(
     () => [
       {
@@ -235,6 +352,7 @@ function BrowseRootTable(props) {
         width: 75,
         accessor: 'root',
         tableName: 'BrowseRootTable',
+        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}} target="_blank">{row.original.root}</Link>,
         id: 'root',
         show: true,
         label: 'Root'
@@ -338,6 +456,7 @@ function BrowseRootTable(props) {
         width: 75,
         accessor: 'root',
         tableName: 'BrowseRootTable',
+        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}} target="_blank">{row.original.root}</Link>,
         id: 'root',
         show: true,
         label: 'Root'
@@ -426,39 +545,40 @@ function BrowseRootTable(props) {
         Header: 'Cog.',
         accessor: 'cognate',
         width: 150,
-        tableName: 'RootTable',
+        tableName: 'BrowseRootTable',
         id: 'cognate',
         show: false,
         label: 'Cognate',
       },
     ], []
   )
+
   // We'll start our table without any data
   const [data, setData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const fetchIdRef = React.useRef(0)
   const { client, setAuthTokens, user } = useAuth();
 
-  async function getRoots() {
+  async function getBrowseRoots() {
      let res = {} 
      res = await client.query({
         query: getBrowseRootQuery,
         variables: {
-            root: root
+            where: where
         }
       })
       return res.data
     }
 
 
-  const fetchData = React.useCallback(({ sortBy, filters, globalFilter }) => {
+  const fetchData = React.useCallback(() => {
     const fetchId = ++fetchIdRef.current
     setLoading(true)
     setTimeout(() => {
       if (fetchId === fetchIdRef.current) {
-        const controlledSort = sortReshape(sortBy) 
-        const controlledFilter = filterReshape(filters, globalFilter, ["root", "variant", "crossref", "cognate", "grammar", "english", "nicodemus", "salish"])
-        getRoots(controlledSort, controlledFilter)
+        // const controlledSort = sortReshape(sortBy) 
+        // const controlledFilter = filterReshape(filters, globalFilter, ["root", "variant", "crossref", "cognate", "grammar", "english", "nicodemus", "salish"])
+        getBrowseRoots()
         .then((data) => {
           setData(data.roots)
           setLoading(false)
@@ -483,15 +603,15 @@ function BrowseRootTable(props) {
 
   return (
     <>
-    <Message>Roots beginning with '{root}' </Message>
+    <Message>Browsing roots beginning with '{root}'.  Return to full table.</Message>
     <TableStyles>
       <Table
         columns={columns}
         data={data}
         fetchData={fetchData}
         loading={loading}
-        selectValues={props.selectValues}
-        globalSearch={props.globalSearch}
+        //selectValues={props.selectValues}
+        //globalSearch={props.globalSearch}
       />
     </TableStyles>
     </>

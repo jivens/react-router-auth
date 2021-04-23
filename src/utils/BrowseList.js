@@ -7,7 +7,8 @@ import { List } from "semantic-ui-react";
 function BrowseList() {
     return ( 
         <List horizontal>
-            <List.Item><Link to={{pathname: "/browseroot", search:`?root=a%`}} target="_blank">a</Link></List.Item> 
+            {/* <List.Item><Link to={{pathname: "/browseroot", search:`?root=a%`}} target="_blank">a</Link></List.Item>  */}
+            <List.Item><Link to={{pathname: "/browseroot", search:`?root=a%`}} target="_blank">a</Link></List.Item>
             <List.Item><Link to={{pathname: "/browseroot", search:`?root=b%`}} target="_blank">b</Link></List.Item>
             <List.Item><Link to={{pathname: "/browseroot", search:`?root=c%`}} target="_blank">c</Link></List.Item>
             <List.Item><Link to={{pathname: "/browseroot", search:`?root=c'%`}} target="_blank">c'</Link></List.Item>

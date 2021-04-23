@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link, useHistory } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
-import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter, useFlexLayout  } from 'react-table'
+import { useTable, usePagination, useSortBy, useFilters, useGlobalFilter } from 'react-table'
 import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
 import { sortReshape, filterReshape } from "./../utils/reshapers"
@@ -540,7 +540,6 @@ function RootTable(props) {
   const [data, setData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
   const [pageCount, setPageCount] = React.useState(0)
-  //const [orderBy, setOrderBy] = React.useState([{'english': 'desc'}, {'nicodemus': 'asc'}])
   const fetchIdRef = React.useRef(0)
   const { client, setAuthTokens, user } = useAuth();
 
@@ -574,27 +573,12 @@ function RootTable(props) {
 
 
   const fetchData = React.useCallback(({ pageSize, pageIndex, sortBy, filters, globalFilter }) => {
-    // This will get called when the table needs new data
-    // You could fetch your data from literally anywhere,
-    // even a server. But for this example, we'll just fake it.
-
-    // Give this fetch an ID
     const fetchId = ++fetchIdRef.current
-
-    // Set the loading state
     setLoading(true)
-
-    // We'll even set a delay to simulate a server here
     setTimeout(() => {
-      // Only update the data if this is the latest fetch
       if (fetchId === fetchIdRef.current) {
         const controlledSort = sortReshape(sortBy) 
         const controlledFilter = filterReshape(filters, globalFilter, ["root", "variant", "crossref", "cognate", "grammar", "english", "nicodemus", "salish"])
-        console.log(controlledFilter)
-        // reset to first page when filters change
-        // if (filters.length > 0) {
-        //   pageIndex = 0
-        // }
         getRoots(pageSize, pageSize * pageIndex, controlledSort, controlledFilter)
         .then((data) => {
           let totalCount = data.roots_aggregate.aggregate.count
