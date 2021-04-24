@@ -327,7 +327,7 @@ function RootTable(props) {
         Filter: NarrowColumnFilter,
         accessor: 'root',
         tableName: 'RootTable',
-        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}} target="_blank">{row.original.root}</Link>,
+        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}}>{row.original.root}</Link>,
         id: 'root',
         show: true,
         label: 'Root'
@@ -435,7 +435,7 @@ function RootTable(props) {
         width: 75,
         Filter: NarrowColumnFilter,
         accessor: 'root',
-        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}} target="_blank">{row.original.root}</Link>,
+        Cell: ({ row }) => <Link to={{pathname: "/exactroot", search:`?root=${row.original.root}`}}>{row.original.root}</Link>,
         tableName: 'RootTable',
         id: 'root',
         show: true,

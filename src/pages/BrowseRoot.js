@@ -2,63 +2,21 @@ import React from 'react'
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import { intersectionWith, isEqual } from 'lodash';
 import { useTable, useSortBy, useFilters, usePagination } from 'react-table'
-//import matchSorter from 'match-sorter'
-//import { useTable, useSortBy, useFilters, useGlobalFilter, usePagination, , useAsyncDebounce } from 'react-table'
-//import { DefaultColumnFilter, GlobalFilter, fuzzyTextFilterFn, NarrowColumnFilter } from '../utils/Filters'
 import { useAuth } from "../context/auth";
-//import { sortReshape, filterReshape } from "./../utils/reshapers"
 import TableStyles from "../stylesheets/table-styles"
-import { Icon, Message } from "semantic-ui-react";
+import { Icon, Message, Header } from "semantic-ui-react";
 import { getBrowseRootQuery } from '../queries/queries'
 import { handleErrors } from '../utils/messages';
 import  BrowseList  from '../utils/BrowseList'
-//import { fromPromise } from 'apollo-link';
-
 
 function Table({
   columns,
   data,
   fetchData,
-  // selectValues,
-  // globalSearch
 }) 
 {
-    let happy = new URLSearchParams(useLocation().search)
-    // let root = happy.get('root')
+  
 
-    const { user } = useAuth();
-
-    // function GlobalFilter({
-    //   preGlobalFilteredRows,
-    //   globalFilter,
-    //   setGlobalFilter,
-    // }) {
-    //   const count = preGlobalFilteredRows.length
-    //   const [value, setValue] = React.useState(globalFilter)
-    //   const onChange = useAsyncDebounce(value => {
-    //     setGlobalFilter(value || undefined)
-    //   }, 200)
-    
-    //   return (
-    //     <span>
-    //       Search:{' '}
-    //       <input
-    //         value={value || ""}
-    //         onChange={e => {
-    //           setValue(e.target.value);
-    //           onChange(e.target.value);
-    //         }}
-    //         placeholder={`${count} records...`}
-    //         style={{
-    //           fontSize: '1.1rem',
-    //           border: '0',
-    //         }}
-    //       />
-    //     </span>
-    //   )
-    // }
-    
-    // Define a default UI for filtering
     function DefaultColumnFilter({
       column: { filterValue, preFilteredRows, setFilter },
     }) {
@@ -75,22 +33,6 @@ function Table({
       )
     }
 
-    // const filterTypes = React.useMemo(
-    //   () => ({
-    //     fuzzyText: fuzzyTextFilterFn,
-    //     text: (rows, id, filterValue) => {
-    //       return rows.filter(row => {
-    //         const rowValue = row.values[id]
-    //         return rowValue !== undefined
-    //           ? String(rowValue)
-    //               .toLowerCase()
-    //               .startsWith(String(filterValue).toLowerCase())
-    //           : true
-    //       })
-    //     },
-    //   }),
-    //   []
-    // )
   
     const defaultColumn = React.useMemo(
       () => ({
@@ -107,7 +49,6 @@ function Table({
             getTableBodyProps,
             headerGroups,
             prepareRow,
-            //rows,
             page,
             canPreviousPage,
             canNextPage,
@@ -119,33 +60,26 @@ function Table({
             setPageSize,   
             allColumns,
             setHiddenColumns,
-            // visibleColumns,
-            // preGlobalFilteredRows,
-            // setGlobalFilter,
-            // Get the state from the instance
             state: { pageIndex, pageSize }
       } = useTable(
         {
             columns,
             data,
             initialState: { pageIndex: 0 }, // Pass our hoisted table state
-            // manualSortBy: true,
-            // manualFilters: true,
-            // manualGlobalFilter: true,
             defaultColumn,
-            //filterTypes,
-            //selectValues
+
         },
-        //useGlobalFilter,
+
         useFilters,
         useSortBy,
         usePagination
      )
 
-
+    let browseroot = new URLSearchParams(useLocation().search)
+    let root = browseroot.get('root')
     React.useEffect(() => {
-      fetchData()
-    }, [fetchData])
+      fetchData(root)
+    }, [fetchData, root])
     
 
     React.useEffect(
@@ -257,7 +191,9 @@ function Table({
 function BrowseRootTable(props) {
     let history = useHistory()
     let browseroot = new URLSearchParams(useLocation().search)
+    let browselabel = new URLSearchParams(useLocation().search)
     let root = browseroot.get('root')
+    let label = browselabel.get('label')
     let where = {}
     if (root === "q%") {
       where = {"_and": [{"root": {"_ilike": "q%"}}, {"root": {"_nilike": "q'%"}}, {"root": {"_nilike": "qʷ%"}}]}     
@@ -556,10 +492,11 @@ function BrowseRootTable(props) {
   // We'll start our table without any data
   const [data, setData] = React.useState([])
   const [loading, setLoading] = React.useState(false)
+  const [location, setLocation] = React.useState()
   const fetchIdRef = React.useRef(0)
   const { client, setAuthTokens, user } = useAuth();
 
-  async function getBrowseRoots() {
+  async function getBrowseRoots(root) {
      let res = {} 
      res = await client.query({
         query: getBrowseRootQuery,
@@ -571,16 +508,16 @@ function BrowseRootTable(props) {
     }
 
 
-  const fetchData = React.useCallback(() => {
+  const fetchData = React.useCallback(({where}) => {
     const fetchId = ++fetchIdRef.current
     setLoading(true)
     setTimeout(() => {
-      if (fetchId === fetchIdRef.current) {
-        // const controlledSort = sortReshape(sortBy) 
-        // const controlledFilter = filterReshape(filters, globalFilter, ["root", "variant", "crossref", "cognate", "grammar", "english", "nicodemus", "salish"])
-        getBrowseRoots()
+      if (fetchId === fetchIdRef.current) { 
+        const Root = root   
+        getBrowseRoots(Root)
         .then((data) => {
           setData(data.roots)
+          setLocation(location)
           setLoading(false)
         })
         .catch((error) => {
@@ -603,15 +540,15 @@ function BrowseRootTable(props) {
 
   return (
     <>
-    <Message>Browsing roots beginning with '{root}'.  Return to full table.</Message>
+    <Message>
+      <Header as='h4'>Browsing roots beginning with '{label}' | <Link to={{pathname: "/roots"}}>Return to full table</Link></Header> 
+    </Message>
     <TableStyles>
       <Table
         columns={columns}
         data={data}
         fetchData={fetchData}
         loading={loading}
-        //selectValues={props.selectValues}
-        //globalSearch={props.globalSearch}
       />
     </TableStyles>
     </>

@@ -4,8 +4,9 @@ import { intersectionWith, isEqual } from 'lodash';
 import { useTable } from 'react-table'
 import { useAuth } from "../context/auth";
 import TableStyles from "./../stylesheets/table-styles"
-import { Icon, Message } from "semantic-ui-react";
+import { Icon, Message, Header } from "semantic-ui-react";
 import { getExactRootQuery } from './../queries/queries'
+import  BrowseList  from '../utils/BrowseList'
 
 
 function Table({
@@ -65,6 +66,7 @@ function Table({
           </div>
         ))}
       </div>
+      <BrowseList/>
       <table {...getTableProps()}>
       <thead>
         {headerGroups.map(headerGroup => (
@@ -390,7 +392,8 @@ function ExactRootTable(props) {
 
   return (
     <>
-    <Message>Results for Exact Root {root} </Message>
+    <Message>      
+      <Header as='h4'>Viewing forms from root '{root}' | <Link to={{pathname: "/roots"}}>Return to full table</Link></Header> </Message>
     <TableStyles>
       <Table
         columns={columns}
